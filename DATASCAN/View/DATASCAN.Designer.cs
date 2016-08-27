@@ -1,6 +1,6 @@
-﻿namespace DATASCAN
+﻿namespace DATASCAN.View
 {
-    partial class Form1
+    partial class DATASCAN
     {
         /// <summary>
         /// Required designer variable.
