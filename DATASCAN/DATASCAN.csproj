@@ -55,6 +55,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Context\DataContext.cs" />
+    <Compile Include="Context\DataInitializer.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
     <Compile Include="Model\Common\DataRecordBase.cs" />
     <Compile Include="Model\Common\EntityBase.cs" />
@@ -122,7 +124,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Context\" />
     <Folder Include="Resources\Cursors\" />
     <Folder Include="Resources\Icons\" />
     <Folder Include="Resources\Images\" />
