@@ -15,7 +15,7 @@ namespace DATASCAN.Model.Floutecs
         /// Контрактный час
         /// </summary>
         [Required]
-        [Column(TypeName = "time(0)")]
+        [Column(TypeName = "time")]
         public TimeSpan KONTRH { get; set; }
 
         /// <summary>

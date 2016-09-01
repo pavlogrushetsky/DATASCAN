@@ -1,16 +1,24 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity;
+using System.Data.Entity.Migrations;
+using DATASCAN.Context;
 using DATASCAN.Model.Floutecs.Catalogs;
+using DATASCAN.Model.Rocs.Catalogs;
 
-namespace DATASCAN.Context
+namespace DATASCAN.Migrations
 {
-    public class DataInitializer : CreateDatabaseIfNotExists<DataContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<DataContext>
     {
+        public Configuration()
+        {
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
+        }
+
         protected override void Seed(DataContext context)
         {
-            List<FloutecParamsTypes> paramsTypes = new List<FloutecParamsTypes>
+            List<FloutecParamsTypes> floutecParamsTypes = new List<FloutecParamsTypes>
             {
-                new FloutecParamsTypes {Code = 0, Param = "Д", Description = "Давление"},
+                new FloutecParamsTypes { Code = 0, Param = "Д", Description = "Давление"},
                 new FloutecParamsTypes { Code = 1, Param = "Т", Description = "Температура" },
                 new FloutecParamsTypes { Code = 2, Param = "ПД", Description = "Перепад давления" },
                 new FloutecParamsTypes { Code = 3, Param = "ПДН", Description = "Перепад давления низкий" },
@@ -25,9 +33,9 @@ namespace DATASCAN.Context
                 new FloutecParamsTypes { Code = 42, Param = "Р,Т,П", Description = "Расход, температура, плотность" }
             };
 
-            context.FloutecParamsTypes.AddRange(paramsTypes);
+            context.FloutecParamsTypes.AddRange(floutecParamsTypes);
 
-            List<FloutecAlarmsTypes> alarmsTypes = new List<FloutecAlarmsTypes>
+            List<FloutecAlarmsTypes> floutecAlarmsTypes = new List<FloutecAlarmsTypes>
             {
                 new FloutecAlarmsTypes { Code = 0, Description = "Опрос в норме, конец замены предыдущим значением", Description_45 = "Опрос в норме, конец замены предыдущим значением" },
                 new FloutecAlarmsTypes { Code = 128, Description = "Опрос не в норме, начало замены предыдущим значением", Description_45 = "Опрос не в норме, начало замены предыдущим значением" },
@@ -166,10 +174,10 @@ namespace DATASCAN.Context
                 new FloutecAlarmsTypes { Code = 169, Description = "", Description_45 = "Изменены параметры АЦП" }
             };
 
-            context.FloutecAlarmsTypes.AddRange(alarmsTypes);
+            context.FloutecAlarmsTypes.AddRange(floutecAlarmsTypes);
 
-            List<FloutecIntersTypes> intersTypes = new List<FloutecIntersTypes>
-            { 
+            List<FloutecIntersTypes> floutecIntersTypes = new List<FloutecIntersTypes>
+            {
                 new FloutecIntersTypes { Code = 0, Description = "Наименование трубопровода", Description_45 = "Наименование трубопровода" },
                 new FloutecIntersTypes { Code = 1, Description = "Плотность, кг/м3", Description_45 = "Плотность, кг/м3" },
                 new FloutecIntersTypes { Code = 2, Description = "Молярная доля СО2, %", Description_45 = "Молярная доля СО2, %" },
@@ -317,18 +325,105 @@ namespace DATASCAN.Context
                 new FloutecIntersTypes { Code = 205, Description = "Объём газа на 1 импульс для импульсного выхода №3, м3", Description_45 = "" }
             };
 
-            context.FloutecIntersTypes.AddRange(intersTypes);
+            context.FloutecIntersTypes.AddRange(floutecIntersTypes);
 
-            List<FloutecSensorsTypes> sensorsTypes = new List<FloutecSensorsTypes>
+            List<FloutecSensorsTypes> floutecSensorsTypes = new List<FloutecSensorsTypes>
             {
-                new FloutecSensorsTypes {Code = 1, Description = "Диафрагма"},
-                new FloutecSensorsTypes {Code = 2, Description = "Счётчик"},
-                new FloutecSensorsTypes {Code = 3, Description = "Массовый расходомер"},
+                new FloutecSensorsTypes { Code = 1, Description = "Диафрагма" },
+                new FloutecSensorsTypes { Code = 2, Description = "Счётчик" },
+                new FloutecSensorsTypes { Code = 3, Description = "Массовый расходомер" },
             };
 
-            context.FloutecSensorsTypes.AddRange(sensorsTypes);
+            context.FloutecSensorsTypes.AddRange(floutecSensorsTypes);
 
-            base.Seed(context);
+            List<Roc809EventTypes> rocEventsTypes = new List<Roc809EventTypes>
+            {
+                new Roc809EventTypes { Code = 0, Description = "Событие отсутствует" },
+                new Roc809EventTypes { Code = 1, Description = "Событие изменения параметра" },
+                new Roc809EventTypes { Code = 2, Description = "Системное событие" },
+                new Roc809EventTypes { Code = 3, Description = "Событие таблицы последовательности функций (FST)" },
+                new Roc809EventTypes { Code = 4, Description = "Пользовательское событие" },
+                new Roc809EventTypes { Code = 5, Description = "Событие потери питания" },
+                new Roc809EventTypes { Code = 6, Description = "Событие установки часов" },
+                new Roc809EventTypes { Code = 7, Description = "Событие проверки калибровки" }
+            };
+
+            context.Roc809EventTypes.AddRange(rocEventsTypes);
+
+            List<Roc809EventCodes> rocEventsCodes = new List<Roc809EventCodes>
+            {
+                new Roc809EventCodes { Code = 144, Description = "Последовательность инициализации" },
+                new Roc809EventCodes { Code = 145, Description = "Отключено всё питание" },
+                new Roc809EventCodes { Code = 146, Description = "Инициализация значениями по умолчанию" },
+                new Roc809EventCodes { Code = 147, Description = "Ошибка контрольной суммы ПЗУ" },
+                new Roc809EventCodes { Code = 148, Description = "Инициализация базы данных" },
+                new Roc809EventCodes { Code = 150, Description = "Программирование FLASH-памяти" },
+                new Roc809EventCodes { Code = 151, Description = "Зарезервировано для ROC809" },
+                new Roc809EventCodes { Code = 152, Description = "Зарезервировано для ROC809" },
+                new Roc809EventCodes { Code = 153, Description = "Зарезервировано для ROC809" },
+                new Roc809EventCodes { Code = 154, Description = "Добавлен SMART-модуль" },
+                new Roc809EventCodes { Code = 155, Description = "Удалён SMART-модуль" },
+                new Roc809EventCodes { Code = 200, Description = "Установка часов" },
+                new Roc809EventCodes { Code = 248, Description = "Текстовое сообщение" },
+                new Roc809EventCodes { Code = 249, Description = "Конфигурирование загрузки" },
+                new Roc809EventCodes { Code = 250, Description = "Конфигурирование выгрузки" },
+                new Roc809EventCodes { Code = 251, Description = "Таймаут калибровки" },
+                new Roc809EventCodes { Code = 252, Description = "Отмена калибровки" },
+                new Roc809EventCodes { Code = 253, Description = "Сброс мультисегментной виртуальной памяти (MVS) к заводским настройкам" }
+            };
+
+            context.Roc809EventCodes.AddRange(rocEventsCodes);
+
+            List<Roc809AlarmTypes> rocAlarmsTypes = new List<Roc809AlarmTypes>
+            {
+                new Roc809AlarmTypes { Code = 0, Description = "Авария отсутствует"},
+                new Roc809AlarmTypes { Code = 1, Description = "Авария параметра" },
+                new Roc809AlarmTypes { Code = 2, Description = "Авария таблицы последовательности функций (FST)" },
+                new Roc809AlarmTypes { Code = 3, Description = "Авария пользовательского текста" },
+                new Roc809AlarmTypes { Code = 4, Description = "Авария пользовательского значения" }
+            };
+
+            context.Roc809AlarmTypes.AddRange(rocAlarmsTypes);
+
+            List<Roc809AlarmCodes> rocAlarmsCodes = new List<Roc809AlarmCodes>
+            {
+                new Roc809AlarmCodes { Code = 0, Description = "Авария нижней предупредительной границы" },
+                new Roc809AlarmCodes { Code = 1, Description = "Авария нижней аварийной границы" },
+                new Roc809AlarmCodes { Code = 2, Description = "Авария верхней предупредительной границы" },
+                new Roc809AlarmCodes { Code = 3, Description = "Авария верхней аварийной границы" },
+                new Roc809AlarmCodes { Code = 4, Description = "Авария скорости изменения значения" },
+                new Roc809AlarmCodes { Code = 5, Description = "Изменение статуса" },
+                new Roc809AlarmCodes { Code = 6, Description = "Ошибка точки измерения" },
+                new Roc809AlarmCodes { Code = 7, Description = "Сканирование отключено" },
+                new Roc809AlarmCodes { Code = 8, Description = "Сканирование в ручном режиме" },
+                new Roc809AlarmCodes { Code = 9, Description = "Переполнение суммирующих счётчиков" },
+                new Roc809AlarmCodes { Code = 10, Description = "Переполнение регистра потока" },
+                new Roc809AlarmCodes { Code = 11, Description = "Отсутствие потока" },
+                new Roc809AlarmCodes { Code = 12, Description = "Режим 'заморозки' входов" },
+                new Roc809AlarmCodes { Code = 13, Description = "Ошибка соединения с сенсором" },
+                new Roc809AlarmCodes { Code = 14, Description = "Ошибка соединения интерфейса RS-485" },
+                new Roc809AlarmCodes { Code = 15, Description = "Режим отключения сканирования" },
+                new Roc809AlarmCodes { Code = 16, Description = "Ошибка температуры измерителя" },
+                new Roc809AlarmCodes { Code = 17, Description = "Переполнение регистра потока" },
+                new Roc809AlarmCodes { Code = 18, Description = "Ошибка расчёта сжимаемости" },
+                new Roc809AlarmCodes { Code = 19, Description = "Сбой последовательности" },
+                new Roc809AlarmCodes { Code = 20, Description = "Перекос фаз" },
+                new Roc809AlarmCodes { Code = 21, Description = "Ошибка синхронизации импульсов" },
+                new Roc809AlarmCodes { Code = 22, Description = "Несоответствие частот" },
+                new Roc809AlarmCodes { Code = 23, Description = "Ошибка импульсного входа №1" },
+                new Roc809AlarmCodes { Code = 24, Description = "Ошибка импульсного входа №2" },
+                new Roc809AlarmCodes { Code = 25, Description = "Переполнение буфера импульсного выхода" },
+                new Roc809AlarmCodes { Code = 26,Description = "Предупреждение о переполнении буфера импульсного выхода" },
+                new Roc809AlarmCodes { Code = 27, Description = "Неисправность реле" },
+                new Roc809AlarmCodes { Code = 28, Description = "Ошибка реле" },
+                new Roc809AlarmCodes { Code = 29, Description = "Ограничение статического давления снизу" },
+                new Roc809AlarmCodes { Code = 30, Description = "Ограничение температуры снизу" },
+                new Roc809AlarmCodes { Code = 31, Description = "Ошибка обратной связи аналогового выхода" },
+                new Roc809AlarmCodes { Code = 32, Description = "Плохой уровень потока импульсов" },
+                new Roc809AlarmCodes { Code = 33, Description = "Авария импульса масштабной отметки" }
+            };
+
+            context.Roc809AlarmCodes.AddRange(rocAlarmsCodes);
         }
     }
 }

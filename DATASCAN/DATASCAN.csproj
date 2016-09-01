@@ -56,7 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\DataContext.cs" />
-    <Compile Include="Context\DataInitializer.cs" />
+    <Compile Include="Migrations\201609011852498_Initial.cs" />
+    <Compile Include="Migrations\201609011852498_Initial.Designer.cs">
+      <DependentUpon>201609011852498_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
     <Compile Include="Model\Common\DataRecordBase.cs" />
     <Compile Include="Model\Common\EntityBase.cs" />
@@ -100,6 +104,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Migrations\201609011852498_Initial.resx">
+      <DependentUpon>201609011852498_Initial.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

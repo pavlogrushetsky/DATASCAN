@@ -20,7 +20,7 @@ namespace DATASCAN.Model.Scanning
         /// Период (время) опроса
         /// </summary>
         [Required]
-        [Column(TypeName = "time(0)")]
+        [Column(TypeName = "time")]
         public TimeSpan Period { get; set; }
 
         /// <summary>

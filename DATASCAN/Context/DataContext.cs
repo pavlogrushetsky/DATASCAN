@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System.Data.Common;
+using System.Data.Entity;
+using DATASCAN.Migrations;
 using DATASCAN.Model;
 using DATASCAN.Model.Floutecs;
 using DATASCAN.Model.Floutecs.Catalogs;
@@ -12,7 +14,12 @@ namespace DATASCAN.Context
     {
         public DataContext() : base("DATASCAN")
         {
-            
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Configuration>("DATASCAN"));
+        }
+
+        public DataContext(DbConnection connection) : base(connection, true)
+        {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Configuration>(true));
         }
 
         public DbSet<Customer> Customers { get; set; }
@@ -50,7 +57,7 @@ namespace DATASCAN.Context
         public DbSet<Roc809AlarmData> Roc809AlarmData { get; set; }  
 
         public DbSet<FloutecSensorsTypes> FloutecSensorsTypes { get; set; }
-        
+
         public DbSet<FloutecParamsTypes> FloutecParamsTypes { get; set; }  
 
         public DbSet<FloutecAlarmsTypes> FloutecAlarmsTypes { get; set; } 
@@ -71,6 +78,6 @@ namespace DATASCAN.Context
         
         public DbSet<ScheduledScan> ScheduledScans { get; set; }
         
-        public DbSet<ScanMember> ScanMembers { get; set; }     
+        public DbSet<ScanMember> ScanMembers { get; set; }
     }
 }
