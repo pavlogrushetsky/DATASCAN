@@ -20,19 +20,19 @@ namespace DATASCAN.Model.Common
         /// </summary>
         [Required]
         [Column(TypeName = "datetime2")]
-        public DateTime DateCreated { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Дата и время изменения (модификации) сущности
         /// </summary>
         [Required]
         [Column(TypeName = "datetime2")]
-        public DateTime DateModified { get; set; }
+        public DateTime DateModified { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Признак активности сущности
         /// </summary>
         [Required]
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

@@ -56,9 +56,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\DataContext.cs" />
-    <Compile Include="Migrations\201609011852498_Initial.cs" />
-    <Compile Include="Migrations\201609011852498_Initial.Designer.cs">
-      <DependentUpon>201609011852498_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201609041020073_Initial.cs" />
+    <Compile Include="Migrations\201609041020073_Initial.Designer.cs">
+      <DependentUpon>201609041020073_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609041049472_AddedSchema.cs" />
+    <Compile Include="Migrations\201609041049472_AddedSchema.Designer.cs">
+      <DependentUpon>201609041049472_AddedSchema.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609041055324_ChangedNames.cs" />
+    <Compile Include="Migrations\201609041055324_ChangedNames.Designer.cs">
+      <DependentUpon>201609041055324_ChangedNames.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
@@ -66,10 +74,10 @@
     <Compile Include="Model\Common\EntityBase.cs" />
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Model\EstimatorBase.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecAlarmsTypes.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecIntersTypes.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecParamsTypes.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecSensorsTypes.cs" />
+    <Compile Include="Model\Floutecs\Catalogs\FloutecAlarmTypes.cs" />
+    <Compile Include="Model\Floutecs\Catalogs\FloutecInterTypes.cs" />
+    <Compile Include="Model\Floutecs\Catalogs\FloutecParamTypes.cs" />
+    <Compile Include="Model\Floutecs\Catalogs\FloutecSensorTypes.cs" />
     <Compile Include="Model\Floutecs\Common\FloutecDataBase.cs" />
     <Compile Include="Model\Floutecs\Floutec.cs" />
     <Compile Include="Model\Floutecs\FloutecIdentData.cs" />
@@ -104,8 +112,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Migrations\201609011852498_Initial.resx">
-      <DependentUpon>201609011852498_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609041020073_Initial.resx">
+      <DependentUpon>201609041020073_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609041049472_AddedSchema.resx">
+      <DependentUpon>201609041049472_AddedSchema.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609041055324_ChangedNames.resx">
+      <DependentUpon>201609041055324_ChangedNames.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -6,7 +6,7 @@ namespace DATASCAN.Model.Rocs
     /// <summary>
     /// Сущность "Периодические данные вычислителя ROC809"
     /// </summary>
-    [Table("Roc809PeriodicData")]
+    [Table("PeriodicData", Schema = "Roc809")]
     public class Roc809PeriodicData : Roc809PeriodicDataBase
     {
         /// <summary>

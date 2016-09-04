@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Rocs
     /// <summary>
     /// Сущность "Вычислитель ROC809"
     /// </summary>
-    [Table("Roc809s")]
+    [Table("Estimators", Schema = "Roc809")]
     public class Roc809 : EstimatorBase
     {
         /// <summary>

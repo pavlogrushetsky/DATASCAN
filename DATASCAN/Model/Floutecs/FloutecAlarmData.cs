@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Floutecs
     /// <summary>
     /// Сущность "Данные аварий вычислителя ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecAlarmData")]
+    [Table("AlarmData", Schema = "Floutec")]
     public class FloutecAlarmData : FloutecDataBase
     {
         /// <summary>

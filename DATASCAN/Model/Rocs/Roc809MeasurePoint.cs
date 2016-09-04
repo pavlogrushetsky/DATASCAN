@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Rocs
     /// <summary>
     /// Сущность "Точка измерения вычислителя ROC809"
     /// </summary>
-    [Table("Roc809MeasurePoints")]
+    [Table("MeasurePoints", Schema = "Roc809")]
     public class Roc809MeasurePoint : MeasurePointBase
     {
         /// <summary>

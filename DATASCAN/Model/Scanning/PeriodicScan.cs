@@ -5,7 +5,7 @@ namespace DATASCAN.Model.Scanning
     /// <summary>
     /// Сущность "Периодический опрос данных"
     /// </summary>
-    [Table("PeriodicScans")]
+    [Table("PeriodicScans", Schema = "Scan")]
     public class PeriodicScan : ScanBase
     {
         /// <summary>

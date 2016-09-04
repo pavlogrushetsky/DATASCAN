@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DATASCAN.Model.Common;
 
@@ -8,7 +7,7 @@ namespace DATASCAN.Model.Scanning
     /// <summary>
     /// Сущность "Элемент опроса данных"
     /// </summary>
-    [Table("ScanMembers")]
+    [Table("Members", Schema = "Scan")]
     public class ScanMember : EntityBase
     {
         /// <summary>

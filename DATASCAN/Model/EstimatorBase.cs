@@ -9,7 +9,7 @@ namespace DATASCAN.Model
     /// <summary>
     /// Абстрактный класс общего содержания сущностей "Вычислитель"
     /// </summary>
-    [Table("Estimators")]
+    [Table("Estimators", Schema = "General")]
     public abstract class EstimatorBase : EntityBase
     {
         /// <summary>

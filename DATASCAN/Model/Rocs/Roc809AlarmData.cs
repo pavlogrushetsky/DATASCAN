@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Rocs
     /// <summary>
     /// Сущность "Данные аварий вычислителя ROC809"
     /// </summary>
-    [Table("Roc809AlarmData")]
+    [Table("AlarmData", Schema = "Roc809")]
     public class Roc809AlarmData : DataRecordBase
     {
         /// <summary>

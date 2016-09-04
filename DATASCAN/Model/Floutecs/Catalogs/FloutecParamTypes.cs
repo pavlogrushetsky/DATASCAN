@@ -7,8 +7,8 @@ namespace DATASCAN.Model.Floutecs.Catalogs
     /// <summary>
     /// Справочная таблица "Типы параметров вычислителей ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecParamsTypes")]
-    public class FloutecParamsTypes : CatalogBase
+    [Table("ParamTypes", Schema = "Floutec")]
+    public class FloutecParamTypes : CatalogBase
     {
         /// <summary>
         /// Аббревиатура параметра

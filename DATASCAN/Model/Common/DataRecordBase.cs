@@ -20,6 +20,6 @@ namespace DATASCAN.Model.Common
         /// </summary>
         [Required]
         [Column(TypeName = "datetime2")]
-        public DateTime DateAdded { get; set; }
+        public DateTime DateAdded { get; set; } = DateTime.Now;
     }
 }

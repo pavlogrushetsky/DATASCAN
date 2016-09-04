@@ -6,7 +6,7 @@ namespace DATASCAN.Model.Rocs.Catalogs
     /// <summary>
     /// Справочная таблица "Дополнительные коды типов аварий вычислителей ROC809"
     /// </summary>
-    [Table("Roc809AlarmCodes")]
+    [Table("AlarmCodes", Schema = "Roc809")]
     public class Roc809AlarmCodes : CatalogBase
     {
     }

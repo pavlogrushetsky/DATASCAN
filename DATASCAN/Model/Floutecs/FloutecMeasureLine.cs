@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Floutecs
     /// <summary>
     /// Сущность "Нитка измерения вычислителя ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecMeasureLines")]
+    [Table("MeasureLines", Schema = "Floutec")]
     public class FloutecMeasureLine : MeasurePointBase
     {
         /// <summary>

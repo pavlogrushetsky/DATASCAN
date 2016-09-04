@@ -7,13 +7,13 @@ namespace DATASCAN.Model.Floutecs.Catalogs
     /// <summary>
     /// Справочная таблица "Типы вмешательств вычислителей ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecIntersTypes")]
-    public class FloutecIntersTypes : CatalogBase
+    [Table("InterTypes", Schema = "Floutec")]
+    public class FloutecInterTypes : CatalogBase
     {
         /// <summary>
         /// Описание кода вмешательства для вычислителей с версией ПО от 45 включительно
         /// </summary>
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [MaxLength(400)]
         public string Description_45 { get; set; }
     }

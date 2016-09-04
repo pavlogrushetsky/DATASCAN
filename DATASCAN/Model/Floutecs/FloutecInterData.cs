@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Floutecs
     /// <summary>
     /// Сущность "Данные вмешательств вычислителя ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecInterData")]
+    [Table("InterData", Schema = "Floutec")]
     public class FloutecInterData : FloutecDataBase
     {
         /// <summary>

@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Scanning
     /// <summary>
     /// Абстрактный класс общего содержания сущностей "Опрос данных"
     /// </summary>
-    [Table("Scans")]
+    [Table("Scans", Schema = "Scan")]
     public abstract class ScanBase : EntityBase
     {
         /// <summary>

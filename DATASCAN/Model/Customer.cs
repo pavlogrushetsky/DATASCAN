@@ -8,7 +8,7 @@ namespace DATASCAN.Model
     /// <summary>
     /// Сущность "Заказчик"
     /// </summary>
-    [Table("Customers")]
+    [Table("Customers", Schema = "General")]
     public class Customer : EntityBase
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace DATASCAN.Model.Scanning
     /// <summary>
     /// Сущность "Период опроса"
     /// </summary>
-    [Table("ScanPeriods")]
+    [Table("Periods", Schema = "Scan")]
     public class ScanPeriod
     {
         /// <summary>

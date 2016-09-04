@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Floutecs
     /// <summary>
     /// Сущность "Часовые данные вычислителя ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecHourlyData")]
+    [Table("HourlyData", Schema = "Floutec")]
     public class FloutecHourlyData : FloutecDataBase
     {
         /// <summary>

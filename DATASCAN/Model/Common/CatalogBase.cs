@@ -18,7 +18,7 @@ namespace DATASCAN.Model.Common
         /// <summary>
         /// Описание записи
         /// </summary>
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [MaxLength(400)]
         public string Description { get; set; }
     }

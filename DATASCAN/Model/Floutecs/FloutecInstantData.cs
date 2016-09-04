@@ -8,7 +8,7 @@ namespace DATASCAN.Model.Floutecs
     /// <summary>
     /// Сущность "Мгновенные данные вычислителя ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecInstantData")]
+    [Table("InstantData", Schema = "Floutec")]
     public class FloutecInstantData : FloutecDataBase
     {
         /// <summary>

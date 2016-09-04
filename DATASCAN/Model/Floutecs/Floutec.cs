@@ -6,7 +6,7 @@ namespace DATASCAN.Model.Floutecs
     /// <summary>
     /// Сущность "Вычислитель ФЛОУТЭК"
     /// </summary>
-    [Table("Floutecs")]
+    [Table("Estimators", Schema = "Floutec")]
     public class Floutec : EstimatorBase
     {
         /// <summary>

@@ -6,7 +6,7 @@ namespace DATASCAN.Model.Scanning
     /// <summary>
     /// Сущность "Опрос данных по расписанию"
     /// </summary>
-    [Table("PeriodicScans")]
+    [Table("SheduledScans", Schema = "Scan")]
     public class ScheduledScan : ScanBase
     {
         /// <summary>

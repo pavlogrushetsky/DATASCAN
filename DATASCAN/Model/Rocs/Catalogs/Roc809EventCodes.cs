@@ -6,7 +6,7 @@ namespace DATASCAN.Model.Rocs.Catalogs
     /// <summary>
     /// Справочная таблица "Дополнительные коды типов событий вычислителей ROC809"
     /// </summary>
-    [Table("Roc809EventCodes")]
+    [Table("EventCodes", Schema = "Roc809")]
     public class Roc809EventCodes : CatalogBase
     {
     }

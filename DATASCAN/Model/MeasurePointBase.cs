@@ -9,7 +9,7 @@ namespace DATASCAN.Model
     /// <summary>
     /// Абстрактный класс общего содержания сущностей "Точка измерения"
     /// </summary>
-    [Table("MeasurePoints")]
+    [Table("MeasurePoints", Schema = "General")]
     public abstract class MeasurePointBase : EntityBase
     {
         /// <summary>

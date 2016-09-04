@@ -6,8 +6,8 @@ namespace DATASCAN.Model.Floutecs.Catalogs
     /// <summary>
     /// Справочная таблица "Типы сенсоров для вычислителей ФЛОУТЭК"
     /// </summary>
-    [Table("FloutecSensorsTypes")]
-    public class FloutecSensorsTypes : CatalogBase
+    [Table("SensorTypes", Schema = "Floutec")]
+    public class FloutecSensorTypes : CatalogBase
     {
     }
 }
