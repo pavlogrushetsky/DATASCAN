@@ -104,6 +104,8 @@
     <Compile Include="Model\Scanning\PeriodicScan.cs" />
     <Compile Include="Model\Scanning\ScanBase.cs" />
     <Compile Include="Model\Scanning\ScanPeriod.cs" />
+    <Compile Include="Repositories\DataRecordRepository.cs" />
+    <Compile Include="Repositories\EntityRepository.cs" />
     <Compile Include="View\DATASCAN.cs">
       <SubType>Form</SubType>
     </Compile>
