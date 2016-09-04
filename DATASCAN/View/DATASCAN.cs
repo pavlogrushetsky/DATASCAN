@@ -11,14 +11,7 @@ namespace DATASCAN.View
             InitializeComponent();
 
             DataContext context = new DataContext();
-            try
-            {
-                context.Database.Initialize(true);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }            
+          
         }
     }
 }

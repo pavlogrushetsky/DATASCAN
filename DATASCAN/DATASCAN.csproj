@@ -131,7 +131,11 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="View\DATASCAN.resx">
+      <DependentUpon>DATASCAN.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -148,10 +152,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Cursors\" />
-    <Folder Include="Resources\Icons\" />
-    <Folder Include="Resources\Images\" />
     <Folder Include="View\Controls\" />
     <Folder Include="View\Forms\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icons\DATASCAN.ico" />
+    <Content Include="Resources\Images\ConnectionSettings.png" />
+    <Content Include="Resources\Images\DatabaseSettings.png" />
+    <Content Include="Resources\Images\Info.png" />
+    <Content Include="Resources\Images\Settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
