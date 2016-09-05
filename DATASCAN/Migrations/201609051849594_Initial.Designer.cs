@@ -13,12 +13,12 @@ namespace DATASCAN.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201609041020073_Initial"; }
+            get { return "201609051849594_Initial"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return Resources.GetString("Source"); }
+            get { return null; }
         }
         
         string IMigrationMetadata.Target

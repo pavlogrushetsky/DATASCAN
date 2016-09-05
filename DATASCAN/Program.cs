@@ -13,7 +13,7 @@ namespace DATASCAN
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new View.DATASCAN());
+            Application.Run(new View.DATASCANForm());
         }
     }
 }

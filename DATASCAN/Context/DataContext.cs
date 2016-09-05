@@ -180,6 +180,6 @@ namespace DATASCAN.Context
         /// <summary>
         /// Периоды опросов данных
         /// </summary>
-        public DbSet<ScanPeriod> ScanPeriods { get; set; } 
+        public DbSet<ScanPeriod> ScanPeriods { get; set; }       
     }
 }

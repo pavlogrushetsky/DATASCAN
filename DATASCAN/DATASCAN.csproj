@@ -64,17 +64,10 @@
     <Compile Include="Infrastructure\Logging\Logger.cs" />
     <Compile Include="Infrastructure\Logging\LogStatus.cs" />
     <Compile Include="Infrastructure\Logging\LogType.cs" />
-    <Compile Include="Migrations\201609041020073_Initial.cs" />
-    <Compile Include="Migrations\201609041020073_Initial.Designer.cs">
-      <DependentUpon>201609041020073_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609041049472_AddedSchema.cs" />
-    <Compile Include="Migrations\201609041049472_AddedSchema.Designer.cs">
-      <DependentUpon>201609041049472_AddedSchema.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609041055324_ChangedNames.cs" />
-    <Compile Include="Migrations\201609041055324_ChangedNames.Designer.cs">
-      <DependentUpon>201609041055324_ChangedNames.cs</DependentUpon>
+    <Compile Include="Infrastructure\Settings\ServerSettings.cs" />
+    <Compile Include="Migrations\201609051849594_Initial.cs" />
+    <Compile Include="Migrations\201609051849594_Initial.Designer.cs">
+      <DependentUpon>201609051849594_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
@@ -114,22 +107,22 @@
     <Compile Include="Model\Scanning\ScanPeriod.cs" />
     <Compile Include="Repositories\DataRecordRepository.cs" />
     <Compile Include="Repositories\EntityRepository.cs" />
-    <Compile Include="View\DATASCAN.cs">
+    <Compile Include="View\Controls\LogListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\Controls\LogListView.Designer.cs">
+      <DependentUpon>LogListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\DATASCANForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\DATASCAN.Designer.cs">
-      <DependentUpon>DATASCAN.cs</DependentUpon>
+    <Compile Include="View\DATASCANForm.Designer.cs">
+      <DependentUpon>DATASCANForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Migrations\201609041020073_Initial.resx">
-      <DependentUpon>201609041020073_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609041049472_AddedSchema.resx">
-      <DependentUpon>201609041049472_AddedSchema.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609041055324_ChangedNames.resx">
-      <DependentUpon>201609041055324_ChangedNames.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609051849594_Initial.resx">
+      <DependentUpon>201609051849594_Initial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -141,8 +134,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="View\DATASCAN.resx">
-      <DependentUpon>DATASCAN.cs</DependentUpon>
+    <EmbeddedResource Include="View\DATASCANForm.resx">
+      <DependentUpon>DATASCANForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -160,14 +153,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Cursors\" />
-    <Folder Include="View\Controls\" />
     <Folder Include="View\Forms\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Icons\DATASCAN.ico" />
+    <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\ConnectionSettings.png" />
     <Content Include="Resources\Images\DatabaseSettings.png" />
+    <Content Include="Resources\Images\HighPriority.png" />
     <Content Include="Resources\Images\Info.png" />
+    <Content Include="Resources\Images\Ok.png" />
     <Content Include="Resources\Images\Settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
