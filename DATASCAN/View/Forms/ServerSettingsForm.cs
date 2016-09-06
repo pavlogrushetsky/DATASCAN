@@ -11,25 +11,25 @@ namespace DATASCAN.View.Forms
 {
     public partial class ServerSettingsForm : Form
     {
-        private static bool _serverNameChanged;
+        private bool _serverNameChanged;
 
-        private static bool _databaseNameChanged;
+        private bool _databaseNameChanged;
 
-        private static bool _userNameChanged;
+        private bool _userNameChanged;
 
-        private static bool _userPasswordChanged;
+        private bool _userPasswordChanged;
 
-        private static bool _settingsChanged;
+        private bool _settingsChanged;
 
-        private static bool _serverNameValid = true;
+        private bool _serverNameValid = true;
 
-        private static bool _databaseNameValid = true;
+        private bool _databaseNameValid = true;
 
-        private static bool _userNameValid = true;
+        private bool _userNameValid = true;
 
-        private static bool _userPasswordValid = true;
+        private bool _userPasswordValid = true;
 
-        private static bool _settingsValid = true;
+        private bool _settingsValid = true;
 
         public ServerSettingsForm()
         {
@@ -95,12 +95,8 @@ namespace DATASCAN.View.Forms
             }
 
             btnTestConnection.Text = "Встановлення з'єднання ...";
-            txtServerName.Enabled = false;
-            txtDatabaseName.Enabled = false;
-            txtUserName.Enabled = false;
-            txtUserPassword.Enabled = false;
-            btnSave.Enabled = false;
-            btnCancel.Enabled = false;
+            
+            AllowEditing(false);
 
             Task.Factory.StartNew(() =>
             {
@@ -125,12 +121,7 @@ namespace DATASCAN.View.Forms
                     btnTestConnection.ForeColor = Color.Red;
                 }
 
-                txtServerName.Enabled = true;
-                txtDatabaseName.Enabled = true;
-                txtUserName.Enabled = true;
-                txtUserPassword.Enabled = true;
-                btnSave.Enabled = true;
-                btnCancel.Enabled = true;
+                AllowEditing(true);
             }, 
             TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -191,6 +182,16 @@ namespace DATASCAN.View.Forms
 
             btnTestConnection.Enabled = _settingsValid;
             btnSave.Enabled = _settingsValid;
+        }
+
+        private void AllowEditing(bool allow)
+        {
+            txtServerName.Enabled = allow;
+            txtDatabaseName.Enabled = allow;
+            txtUserName.Enabled = allow;
+            txtUserPassword.Enabled = allow;
+            btnSave.Enabled = allow;
+            btnCancel.Enabled = allow;
         }
     }
 }
