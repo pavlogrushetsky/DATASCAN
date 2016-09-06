@@ -91,6 +91,7 @@ namespace DATASCAN.View
             this.mnuDatabase.Name = "mnuDatabase";
             this.mnuDatabase.Size = new System.Drawing.Size(169, 22);
             this.mnuDatabase.Text = "Сервер баз даних";
+            this.mnuDatabase.Click += new System.EventHandler(this.mnuDatabase_Click);
             // 
             // mnuConnection
             // 
@@ -239,7 +240,7 @@ namespace DATASCAN.View
             this.imgMessages.Images.SetKeyName(2, "Attention.png");
             this.imgMessages.Images.SetKeyName(3, "HighPriority.png");
             // 
-            // DATASCAN
+            // DATASCANForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -249,7 +250,7 @@ namespace DATASCAN.View
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuDATASCAN;
             this.MinimumSize = new System.Drawing.Size(900, 600);
-            this.Name = "DATASCAN";
+            this.Name = "DATASCANForm";
             this.Text = "DATASCAN - Програма опитування обчислювачів";
             this.mnuDATASCAN.ResumeLayout(false);
             this.mnuDATASCAN.PerformLayout();

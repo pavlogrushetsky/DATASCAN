@@ -10,6 +10,7 @@ using DATASCAN.Model.Floutecs;
 using DATASCAN.Model.Rocs;
 using DATASCAN.Model.Scanning;
 using DATASCAN.Repositories;
+using DATASCAN.View.Forms;
 
 namespace DATASCAN.View
 {
@@ -144,6 +145,21 @@ namespace DATASCAN.View
             catch (Exception ex)
             {
                 Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+            }
+        }
+
+        private void mnuDatabase_Click(object sender, EventArgs e)
+        {
+            ServerSettingsForm form = new ServerSettingsForm { StartPosition = FormStartPosition.CenterParent };
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних було змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+
+                InitializeConnection();
+                UpdateData();
             }
         }
     }

@@ -93,6 +93,16 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon DatabaseSettings1 {
+            get {
+                object obj = ResourceManager.GetObject("DatabaseSettings1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon DATASCAN {
             get {
                 object obj = ResourceManager.GetObject("DATASCAN", resourceCulture);
