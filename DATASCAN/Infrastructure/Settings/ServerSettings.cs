@@ -22,6 +22,8 @@ namespace DATASCAN.Infrastructure.Settings
 
         public static string UserPassword { get; set; } = "";
 
+        public static string ConnectionTimeout { get; set; } = "10";
+
         /// <summary>
         /// Получает значения настроек из файла
         /// </summary>
@@ -43,6 +45,7 @@ namespace DATASCAN.Infrastructure.Settings
                         DatabaseName = settings["DatabaseName"]?.ToString() ?? "";
                         UserName = settings["UserName"]?.ToString() ?? "";
                         UserPassword = settings["UserPassword"]?.ToString() ?? "";
+                        ConnectionTimeout = settings["ConnectionTimeout"]?.ToString() ?? "";
                     }
                 }
             }
@@ -63,6 +66,7 @@ namespace DATASCAN.Infrastructure.Settings
                 { "DatabaseName", DatabaseName },
                 { "UserName", UserName },
                 { "UserPassword", UserPassword },
+                { "ConnectionTimeout", ConnectionTimeout }
             };
 
             if (!Directory.Exists(_filePath))

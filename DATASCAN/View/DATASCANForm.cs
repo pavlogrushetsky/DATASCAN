@@ -64,7 +64,7 @@ namespace DATASCAN.View
                 DataSource = ServerSettings.ServerName,
                 InitialCatalog = ServerSettings.DatabaseName,
                 MultipleActiveResultSets = true,
-                ConnectTimeout = 10
+                ConnectTimeout = int.Parse(ServerSettings.ConnectionTimeout)
             };
 
             if (string.IsNullOrEmpty(ServerSettings.UserName) || string.IsNullOrEmpty(ServerSettings.UserPassword))

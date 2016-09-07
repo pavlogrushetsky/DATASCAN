@@ -44,6 +44,9 @@
             this.btnTestConnection = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.lblConnectionTimeout = new System.Windows.Forms.Label();
+            this.numConnectionTimeout = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numConnectionTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // lblServerName
@@ -84,44 +87,44 @@
             // 
             // txtServerName
             // 
-            this.txtServerName.Location = new System.Drawing.Point(129, 30);
+            this.txtServerName.Location = new System.Drawing.Point(148, 30);
             this.txtServerName.Name = "txtServerName";
-            this.txtServerName.Size = new System.Drawing.Size(262, 20);
-            this.txtServerName.TabIndex = 4;
+            this.txtServerName.Size = new System.Drawing.Size(243, 20);
+            this.txtServerName.TabIndex = 5;
             this.txtServerName.TextChanged += new System.EventHandler(this.txtServerName_TextChanged);
             // 
             // txtDatabaseName
             // 
-            this.txtDatabaseName.Location = new System.Drawing.Point(129, 79);
+            this.txtDatabaseName.Location = new System.Drawing.Point(148, 79);
             this.txtDatabaseName.Name = "txtDatabaseName";
-            this.txtDatabaseName.Size = new System.Drawing.Size(262, 20);
-            this.txtDatabaseName.TabIndex = 5;
+            this.txtDatabaseName.Size = new System.Drawing.Size(243, 20);
+            this.txtDatabaseName.TabIndex = 6;
             this.txtDatabaseName.TextChanged += new System.EventHandler(this.txtDatabaseName_TextChanged);
             // 
             // txtUserName
             // 
-            this.txtUserName.Location = new System.Drawing.Point(129, 128);
+            this.txtUserName.Location = new System.Drawing.Point(148, 128);
             this.txtUserName.Name = "txtUserName";
-            this.txtUserName.Size = new System.Drawing.Size(262, 20);
-            this.txtUserName.TabIndex = 6;
+            this.txtUserName.Size = new System.Drawing.Size(243, 20);
+            this.txtUserName.TabIndex = 7;
             this.txtUserName.TextChanged += new System.EventHandler(this.txtUserName_TextChanged);
             // 
             // txtUserPassword
             // 
-            this.txtUserPassword.Location = new System.Drawing.Point(129, 177);
+            this.txtUserPassword.Location = new System.Drawing.Point(148, 177);
             this.txtUserPassword.Name = "txtUserPassword";
-            this.txtUserPassword.Size = new System.Drawing.Size(262, 20);
-            this.txtUserPassword.TabIndex = 7;
+            this.txtUserPassword.Size = new System.Drawing.Size(243, 20);
+            this.txtUserPassword.TabIndex = 8;
             this.txtUserPassword.TextChanged += new System.EventHandler(this.txtUserPassword_TextChanged);
             // 
             // lblServerNameError
             // 
             this.lblServerNameError.AutoSize = true;
             this.lblServerNameError.ForeColor = System.Drawing.Color.Red;
-            this.lblServerNameError.Location = new System.Drawing.Point(126, 14);
+            this.lblServerNameError.Location = new System.Drawing.Point(145, 14);
             this.lblServerNameError.Name = "lblServerNameError";
             this.lblServerNameError.Size = new System.Drawing.Size(124, 13);
-            this.lblServerNameError.TabIndex = 8;
+            this.lblServerNameError.TabIndex = 10;
             this.lblServerNameError.Text = "Вкажіть назву сервера";
             this.lblServerNameError.Visible = false;
             // 
@@ -129,10 +132,10 @@
             // 
             this.lblDatabaseNameError.AutoSize = true;
             this.lblDatabaseNameError.ForeColor = System.Drawing.Color.Red;
-            this.lblDatabaseNameError.Location = new System.Drawing.Point(126, 63);
+            this.lblDatabaseNameError.Location = new System.Drawing.Point(145, 63);
             this.lblDatabaseNameError.Name = "lblDatabaseNameError";
             this.lblDatabaseNameError.Size = new System.Drawing.Size(138, 13);
-            this.lblDatabaseNameError.TabIndex = 9;
+            this.lblDatabaseNameError.TabIndex = 11;
             this.lblDatabaseNameError.Text = "Вкажіть назву бази даних";
             this.lblDatabaseNameError.Visible = false;
             // 
@@ -140,10 +143,10 @@
             // 
             this.lblUserNameError.AutoSize = true;
             this.lblUserNameError.ForeColor = System.Drawing.Color.Red;
-            this.lblUserNameError.Location = new System.Drawing.Point(126, 112);
+            this.lblUserNameError.Location = new System.Drawing.Point(145, 112);
             this.lblUserNameError.Name = "lblUserNameError";
             this.lblUserNameError.Size = new System.Drawing.Size(134, 13);
-            this.lblUserNameError.TabIndex = 10;
+            this.lblUserNameError.TabIndex = 12;
             this.lblUserNameError.Text = "Вкажіть ім\'я користувача";
             this.lblUserNameError.Visible = false;
             // 
@@ -151,48 +154,83 @@
             // 
             this.lblUserPasswordError.AutoSize = true;
             this.lblUserPasswordError.ForeColor = System.Drawing.Color.Red;
-            this.lblUserPasswordError.Location = new System.Drawing.Point(126, 161);
+            this.lblUserPasswordError.Location = new System.Drawing.Point(145, 161);
             this.lblUserPasswordError.Name = "lblUserPasswordError";
             this.lblUserPasswordError.Size = new System.Drawing.Size(152, 13);
-            this.lblUserPasswordError.TabIndex = 11;
+            this.lblUserPasswordError.TabIndex = 13;
             this.lblUserPasswordError.Text = "Вкажіть пароль користувача";
             this.lblUserPasswordError.Visible = false;
             // 
             // btnTestConnection
             // 
-            this.btnTestConnection.Location = new System.Drawing.Point(129, 223);
+            this.btnTestConnection.Location = new System.Drawing.Point(148, 274);
             this.btnTestConnection.Name = "btnTestConnection";
-            this.btnTestConnection.Size = new System.Drawing.Size(262, 23);
-            this.btnTestConnection.TabIndex = 12;
+            this.btnTestConnection.Size = new System.Drawing.Size(244, 23);
+            this.btnTestConnection.TabIndex = 14;
             this.btnTestConnection.Text = "Тестувати з\'єднання";
             this.btnTestConnection.UseVisualStyleBackColor = true;
             this.btnTestConnection.Click += new System.EventHandler(this.btnTestConnection_Click);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(316, 286);
+            this.btnCancel.Location = new System.Drawing.Point(317, 326);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 14;
+            this.btnCancel.TabIndex = 16;
             this.btnCancel.Text = "Скасувати";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(235, 286);
+            this.btnSave.Location = new System.Drawing.Point(236, 326);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 13;
+            this.btnSave.TabIndex = 15;
             this.btnSave.Text = "Зберегти";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // lblConnectionTimeout
+            // 
+            this.lblConnectionTimeout.AutoSize = true;
+            this.lblConnectionTimeout.Location = new System.Drawing.Point(12, 229);
+            this.lblConnectionTimeout.Name = "lblConnectionTimeout";
+            this.lblConnectionTimeout.Size = new System.Drawing.Size(130, 13);
+            this.lblConnectionTimeout.TabIndex = 4;
+            this.lblConnectionTimeout.Text = "Таймаут з\'єднання, сек.";
+            // 
+            // numConnectionTimeout
+            // 
+            this.numConnectionTimeout.Location = new System.Drawing.Point(148, 227);
+            this.numConnectionTimeout.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.numConnectionTimeout.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numConnectionTimeout.Name = "numConnectionTimeout";
+            this.numConnectionTimeout.Size = new System.Drawing.Size(243, 20);
+            this.numConnectionTimeout.TabIndex = 9;
+            this.numConnectionTimeout.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numConnectionTimeout.ValueChanged += new System.EventHandler(this.numConnectionTimeout_ValueChanged);
+            this.numConnectionTimeout.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numConnectionTimeout_KeyDown);
             // 
             // ServerSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 321);
+            this.ClientSize = new System.Drawing.Size(404, 361);
+            this.Controls.Add(this.numConnectionTimeout);
+            this.Controls.Add(this.lblConnectionTimeout);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnTestConnection);
@@ -211,12 +249,13 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 360);
+            this.MaximumSize = new System.Drawing.Size(420, 400);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(420, 360);
+            this.MinimumSize = new System.Drawing.Size(420, 400);
             this.Name = "ServerSettingsForm";
             this.Text = "Налаштування сервера баз даних";
             this.TopMost = true;
+            ((System.ComponentModel.ISupportInitialize)(this.numConnectionTimeout)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -239,5 +278,7 @@
         private System.Windows.Forms.Button btnTestConnection;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lblConnectionTimeout;
+        private System.Windows.Forms.NumericUpDown numConnectionTimeout;
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using DATASCAN.Context;
 using DATASCAN.Infrastructure.Settings;
+using DATASCAN.Services;
 
 namespace DATASCAN.View.Forms
 {
@@ -21,6 +19,8 @@ namespace DATASCAN.View.Forms
 
         private bool _settingsChanged;
 
+        private bool _timeoutChanged;
+
         private bool _serverNameValid = true;
 
         private bool _databaseNameValid = true;
@@ -31,6 +31,8 @@ namespace DATASCAN.View.Forms
 
         private bool _settingsValid = true;
 
+        private bool _timeoutValid = true;
+
         public ServerSettingsForm()
         {
             InitializeComponent();
@@ -39,6 +41,7 @@ namespace DATASCAN.View.Forms
             txtDatabaseName.Text = ServerSettings.DatabaseName;
             txtUserName.Text = ServerSettings.UserName;
             txtUserPassword.Text = ServerSettings.UserPassword;
+            numConnectionTimeout.Text = ServerSettings.ConnectionTimeout;
 
             btnCancel.Select();
         }
@@ -53,6 +56,7 @@ namespace DATASCAN.View.Forms
                     ServerSettings.DatabaseName = txtDatabaseName.Text;
                     ServerSettings.UserName = txtUserName.Text;
                     ServerSettings.UserPassword = txtUserPassword.Text;
+                    ServerSettings.ConnectionTimeout = numConnectionTimeout.Text;
 
                     ServerSettings.Save();
 
@@ -73,14 +77,14 @@ namespace DATASCAN.View.Forms
             Close();
         }
 
-        private void btnTestConnection_Click(object sender, EventArgs e)
+        private async void btnTestConnection_Click(object sender, EventArgs e)
         {
             SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder
             {
                 DataSource = txtServerName.Text,
                 InitialCatalog = txtDatabaseName.Text,
                 MultipleActiveResultSets = true,
-                ConnectTimeout = 10
+                ConnectTimeout = int.Parse(numConnectionTimeout.Text)
             };
 
             if (string.IsNullOrEmpty(txtUserName.Text) || string.IsNullOrEmpty(txtUserPassword.Text))
@@ -95,35 +99,29 @@ namespace DATASCAN.View.Forms
             }
 
             btnTestConnection.Text = "Встановлення з'єднання ...";
-            
+            btnTestConnection.ForeColor = Color.Black;
+
             AllowEditing(false);
 
-            Task.Factory.StartNew(() =>
-            {
-                DbConnection connection = new SqlConnection(connectionString.ToString());
+            DataContextService service = new DataContextService();
 
-                using (DataContext context = new DataContext(connection))
-                {
-                    context.Database.Connection.Open();
-                }
-            }, 
-            TaskCreationOptions.LongRunning)
-            .ContinueWith(result =>
+
+            bool result = await service.TestConnection(connectionString.ToString());
+
+            if (!result)
             {
-                if (result.Exception == null)
-                {
-                    btnTestConnection.Text = "З'єднання встановлено";
-                    btnTestConnection.ForeColor = Color.Green;
-                }
-                else
-                {
-                    btnTestConnection.Text = "З'єднання не встановлено";
-                    btnTestConnection.ForeColor = Color.Red;
-                }
+                btnTestConnection.Text = "З'єднання не встановлено";
+                btnTestConnection.ForeColor = Color.Red;
 
                 AllowEditing(true);
-            }, 
-            TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            else
+            {
+                btnTestConnection.Text = "З'єднання встановлено";
+                btnTestConnection.ForeColor = Color.Green;
+            }                       
+
+            AllowEditing(true);
         }
 
         private void txtServerName_TextChanged(object sender, EventArgs e)
@@ -154,9 +152,16 @@ namespace DATASCAN.View.Forms
             ValidateSettings();
         }
 
+        private void numConnectionTimeout_ValueChanged(object sender, EventArgs e)
+        {
+            _timeoutChanged = !numConnectionTimeout.Text.Equals(ServerSettings.ConnectionTimeout);
+            SetSettingsChanged();
+            ValidateSettings();
+        }
+
         private void SetSettingsChanged()
         {
-            _settingsChanged = _serverNameChanged || _databaseNameChanged || _userNameChanged || _userPasswordChanged;
+            _settingsChanged = _serverNameChanged || _databaseNameChanged || _userNameChanged || _userPasswordChanged || _timeoutChanged;
 
             string title = "Налаштування сервера баз даних";
 
@@ -172,13 +177,14 @@ namespace DATASCAN.View.Forms
             _databaseNameValid = !string.IsNullOrEmpty(txtDatabaseName.Text);
             _userNameValid = !(string.IsNullOrEmpty(txtUserName.Text) & !string.IsNullOrEmpty(txtUserPassword.Text));
             _userPasswordValid = !(string.IsNullOrEmpty(txtUserPassword.Text) & !string.IsNullOrEmpty(txtUserName.Text));
+            _timeoutValid = true;
 
             lblServerNameError.Visible = !_serverNameValid;
             lblDatabaseNameError.Visible = !_databaseNameValid;
             lblUserNameError.Visible = !_userNameValid;
             lblUserPasswordError.Visible = !_userPasswordValid;
 
-            _settingsValid = _serverNameValid && _databaseNameValid && _userNameValid && _userPasswordValid;
+            _settingsValid = _serverNameValid && _databaseNameValid && _userNameValid && _userPasswordValid && _timeoutValid;
 
             btnTestConnection.Enabled = _settingsValid;
             btnSave.Enabled = _settingsValid;
@@ -190,8 +196,16 @@ namespace DATASCAN.View.Forms
             txtDatabaseName.Enabled = allow;
             txtUserName.Enabled = allow;
             txtUserPassword.Enabled = allow;
+            numConnectionTimeout.Enabled = allow;
             btnSave.Enabled = allow;
             btnCancel.Enabled = allow;
+        }
+
+        private void numConnectionTimeout_KeyDown(object sender, KeyEventArgs e)
+        {
+            _timeoutChanged = !numConnectionTimeout.Text.Equals(ServerSettings.ConnectionTimeout);
+            SetSettingsChanged();
+            ValidateSettings();
         }
     }
 }

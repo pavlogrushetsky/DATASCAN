@@ -107,6 +107,7 @@
     <Compile Include="Model\Scanning\ScanPeriod.cs" />
     <Compile Include="Repositories\DataRecordRepository.cs" />
     <Compile Include="Repositories\EntityRepository.cs" />
+    <Compile Include="Services\DataContextService.cs" />
     <Compile Include="View\Controls\LogListView.cs">
       <SubType>Component</SubType>
     </Compile>
