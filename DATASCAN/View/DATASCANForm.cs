@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DATASCAN.Infrastructure.Logging;
@@ -9,28 +11,18 @@ using DATASCAN.Model;
 using DATASCAN.Model.Floutecs;
 using DATASCAN.Model.Rocs;
 using DATASCAN.Model.Scanning;
+using DATASCAN.Properties;
 using DATASCAN.Repositories;
+using DATASCAN.Services;
 using DATASCAN.View.Forms;
 
 namespace DATASCAN.View
 {
     public partial class DATASCANForm : Form
     {
-        private List<Customer> _customers;
+        private List<Customer> _customers = new List<Customer>();
 
-        private List<Floutec> _floutecs;
-
-        private List<Roc809> _rocs;
-
-        private List<FloutecMeasureLine> _floutecLines;
-
-        private List<Roc809MeasurePoint> _rocPoints;
-
-        private List<PeriodicScan> _periodicScans;
-
-        private List<ScheduledScan> _scheduledScans;
-
-        private List<ScanMember> _scanMembers;
+        private List<ScanBase> _scans = new List<ScanBase>();
 
         private string _sqlConnection;  
 
@@ -81,66 +73,46 @@ namespace DATASCAN.View
             _sqlConnection = connection.ToString();
         }
 
-        private void UpdateData()
+        private async void UpdateData()
         {
+            DataContextService service = new DataContextService();
+
+            bool result = await service.TestConnection(_sqlConnection);
+
+            if (!result)
+            {
+                Logger.Log(lstMessages, new LogEntry { Message = "Неможливо встановити з'єднання з сервером баз даних. Перевірте налаштування з'єднання", Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                return;
+            }
+
             try
             {
                 using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
                 {
-                    _customers = new List<Customer>();
-                    _customers = repo.GetAll().ToList();
-
-                    if (!_customers.Any())
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = "Дані в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                        return;
-                    }
-
-                    _floutecs = new List<Floutec>();
-                    _customers.ForEach(c =>
-                    {
-                        _floutecs.AddRange(c.Estimators.OfType<Floutec>().OrderBy(o => o.Address).ToList());
-                    });
-
-                    _rocs = new List<Roc809>();
-                    _customers.ForEach(c =>
-                    {
-                        _rocs.AddRange(c.Estimators.OfType<Roc809>().OrderBy(o => o.Address).ToList());
-                    });
-
-                    _floutecLines = new List<FloutecMeasureLine>();
-                    _floutecs.ForEach(f =>
-                    {
-                        _floutecLines.AddRange(f.MeasurePoints.OfType<FloutecMeasureLine>().OrderBy(o => o.Number).ToList());
-                    });
-
-                    _rocPoints = new List<Roc809MeasurePoint>();
-                    _rocs.ForEach(r =>
-                    {
-                        _rocPoints.AddRange(r.MeasurePoints.OfType<Roc809MeasurePoint>().OrderBy(o => o.Number).ToList());
-                    });
+                    _customers = repo.GetAll()
+                        .Include(c => c.Estimators)
+                        .Include(c => c.Estimators.Select(e => e.MeasurePoints))
+                        .ToList();
                 }
+
+                if (!_customers.Any())
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = "Дані в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }               
 
                 using (EntityRepository<ScanBase> repo = new EntityRepository<ScanBase>(_sqlConnection))
                 {
-                    _periodicScans = new List<PeriodicScan>();
-                    _scheduledScans = new List<ScheduledScan>();
-
-                    _periodicScans = repo.GetAll().OfType<PeriodicScan>().ToList();
-                    _scheduledScans = repo.GetAll().OfType<ScheduledScan>().ToList();
-
-                    _scanMembers = new List<ScanMember>();
-
-                    _periodicScans.ForEach(s =>
-                    {
-                        _scanMembers.AddRange(s.Members);
-                    });
-
-                    _scheduledScans.ForEach(s =>
-                    {
-                        _scanMembers.AddRange(s.Members);
-                    });
+                    _scans = repo.GetAll()
+                        .Include(s => s.Members)
+                        .ToList();
                 }
+
+                if (!_customers.Any())
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = "Групи опитування відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }
+
+                FillEstimatorsTree();
             }
             catch (Exception ex)
             {
@@ -156,11 +128,65 @@ namespace DATASCAN.View
 
             if (result == DialogResult.OK)
             {
-                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних було змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних були змінені", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
 
                 InitializeConnection();
                 UpdateData();
             }
+        }
+
+        private void FillEstimatorsTree()
+        {
+            trvEstimators.Nodes.Clear();
+
+            if (!_customers.Any())
+            {
+                return;
+            }
+
+            _customers.ForEach(c =>
+            {
+                TreeNode customerNode = trvEstimators.Nodes.Add(c.Title);
+                customerNode.Tag = c;
+                customerNode.ImageIndex = c.IsActive ? 0 : 1;
+                customerNode.SelectedImageIndex = c.IsActive ? 0 : 1;
+                customerNode.ForeColor = c.IsActive ? Color.Black : Color.DarkGray;
+                
+                ContextMenuStrip customerMenu = new ContextMenuStrip();
+                ToolStripMenuItem addFloutecItem = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
+                ToolStripMenuItem addRocItem = new ToolStripMenuItem("Додати обчислювач ROC809");
+                ToolStripSeparator separatorItem = new ToolStripSeparator();
+                ToolStripMenuItem infoCustomerItem = new ToolStripMenuItem("Інформація", Resources.Information);
+                ToolStripMenuItem deactivateCustomerItem = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
+                ToolStripMenuItem activateCustomerItem = new ToolStripMenuItem("Активувати", Resources.Activate);
+                ToolStripMenuItem deleteCustomerItem = new ToolStripMenuItem("Видалити", Resources.Delete);
+
+                customerMenu.Items.AddRange(new ToolStripItem[]
+                {
+                    addFloutecItem,
+                    addRocItem,
+                    separatorItem,
+                    infoCustomerItem,
+                    c.IsActive ? deactivateCustomerItem : activateCustomerItem,
+                    deleteCustomerItem
+                });
+
+                customerNode.ContextMenuStrip = customerMenu;
+
+                if (c.Estimators.Any(e => e is Floutec))
+                {
+                    TreeNode floutecsGroupNode = customerNode.Nodes.Add("FloutecsGroup", "Обчислювачі ФЛОУТЕК");
+                    floutecsGroupNode.ImageIndex = 2;
+                    floutecsGroupNode.SelectedImageIndex = 2;
+                }
+
+                if (c.Estimators.Any(e => e is Roc809))
+                {
+                    TreeNode rocsGroupNode = customerNode.Nodes.Add("RocsGroup", "Обчислювачі ROC809");
+                    rocsGroupNode.ImageIndex = 2;
+                    rocsGroupNode.SelectedImageIndex = 2;
+                }
+            });
         }
     }
 }

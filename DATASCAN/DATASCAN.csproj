@@ -168,11 +168,19 @@
     <Content Include="Resources\Icons\DatabaseSettings.ico" />
     <Content Include="Resources\Icons\DATASCAN.ico" />
     <Content Include="Resources\Images\Attention.png" />
+    <Content Include="Resources\Images\Business.png" />
+    <Content Include="Resources\Images\Customer.png" />
     <Content Include="Resources\Images\ConnectionSettings.png" />
     <Content Include="Resources\Images\DatabaseSettings.png" />
+    <Content Include="Resources\Images\Delete.png" />
     <Content Include="Resources\Images\HighPriority.png" />
     <Content Include="Resources\Images\Info.png" />
+    <Content Include="Resources\Images\Estimator.png" />
+    <Content Include="Resources\Images\Information.png" />
     <Content Include="Resources\Images\Ok.png" />
+    <Content Include="Resources\Images\Group.png" />
+    <Content Include="Resources\Images\Deactivate.png" />
+    <Content Include="Resources\Images\Activate.png" />
     <Content Include="Resources\Images\Settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

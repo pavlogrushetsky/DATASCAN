@@ -63,6 +63,16 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Activate {
+            get {
+                object obj = ResourceManager.GetObject("Activate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Attention {
             get {
                 object obj = ResourceManager.GetObject("Attention", resourceCulture);
@@ -73,9 +83,29 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Business {
+            get {
+                object obj = ResourceManager.GetObject("Business", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ConnectionSettings {
             get {
                 object obj = ResourceManager.GetObject("ConnectionSettings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Customer {
+            get {
+                object obj = ResourceManager.GetObject("Customer", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,6 +143,46 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Deactivate {
+            get {
+                object obj = ResourceManager.GetObject("Deactivate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Delete {
+            get {
+                object obj = ResourceManager.GetObject("Delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Estimator {
+            get {
+                object obj = ResourceManager.GetObject("Estimator", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Group {
+            get {
+                object obj = ResourceManager.GetObject("Group", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap HighPriority {
             get {
                 object obj = ResourceManager.GetObject("HighPriority", resourceCulture);
@@ -126,6 +196,16 @@ namespace DATASCAN.Properties {
         internal static System.Drawing.Bitmap Info {
             get {
                 object obj = ResourceManager.GetObject("Info", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Information {
+            get {
+                object obj = ResourceManager.GetObject("Information", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

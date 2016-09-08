@@ -145,4 +145,28 @@
   <data name="DatabaseSettings1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\icons\databasesettings.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Customer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\customer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Estimator" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\estimator.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Group" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\group.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Activate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\activate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Deactivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\deactivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Information" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Business" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\business.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

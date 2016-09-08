@@ -105,22 +105,19 @@ namespace DATASCAN.View.Forms
 
             DataContextService service = new DataContextService();
 
-
             bool result = await service.TestConnection(connectionString.ToString());
 
-            if (!result)
-            {
-                btnTestConnection.Text = "З'єднання не встановлено";
-                btnTestConnection.ForeColor = Color.Red;
-
-                AllowEditing(true);
-            }
-            else
+            if (result)
             {
                 btnTestConnection.Text = "З'єднання встановлено";
                 btnTestConnection.ForeColor = Color.Green;
-            }                       
-
+            }
+            else
+            {
+                btnTestConnection.Text = "З'єднання не встановлено";
+                btnTestConnection.ForeColor = Color.Red;
+            }
+                                                             
             AllowEditing(true);
         }
 
@@ -199,6 +196,7 @@ namespace DATASCAN.View.Forms
             numConnectionTimeout.Enabled = allow;
             btnSave.Enabled = allow;
             btnCancel.Enabled = allow;
+            btnTestConnection.Enabled = allow;
         }
 
         private void numConnectionTimeout_KeyDown(object sender, KeyEventArgs e)

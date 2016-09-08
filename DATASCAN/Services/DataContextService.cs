@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using DATASCAN.Context;
@@ -17,21 +18,21 @@ namespace DATASCAN.Services
         /// <returns></returns>
         public async Task<bool> TestConnection(string connectionString)
         {
-            return await Task.Factory.StartNew(() => 
+            try
             {
                 DbConnection connection = new SqlConnection(connectionString);
 
                 using (DataContext context = new DataContext(connection))
                 {
-                    context.Database.Connection.Open();
+                    await context.Database.Connection.OpenAsync();
                 }
-            }, TaskCreationOptions.LongRunning)
-                .ContinueWith(result =>
-                {
-                    if (result.Exception != null)
-                        return false;
-                    return true;
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

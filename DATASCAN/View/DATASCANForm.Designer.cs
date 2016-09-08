@@ -41,6 +41,7 @@ namespace DATASCAN.View
             this.splVertical = new System.Windows.Forms.SplitContainer();
             this.grpEstimators = new System.Windows.Forms.GroupBox();
             this.trvEstimators = new System.Windows.Forms.TreeView();
+            this.imgEstimators = new System.Windows.Forms.ImageList(this.components);
             this.grpScans = new System.Windows.Forms.GroupBox();
             this.trvScans = new System.Windows.Forms.TreeView();
             this.grpMessages = new System.Windows.Forms.GroupBox();
@@ -158,10 +159,22 @@ namespace DATASCAN.View
             this.trvEstimators.BackColor = System.Drawing.SystemColors.Control;
             this.trvEstimators.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.trvEstimators.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trvEstimators.ImageIndex = 0;
+            this.trvEstimators.ImageList = this.imgEstimators;
             this.trvEstimators.Location = new System.Drawing.Point(3, 16);
             this.trvEstimators.Name = "trvEstimators";
+            this.trvEstimators.SelectedImageIndex = 0;
             this.trvEstimators.Size = new System.Drawing.Size(288, 275);
             this.trvEstimators.TabIndex = 0;
+            // 
+            // imgEstimators
+            // 
+            this.imgEstimators.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgEstimators.ImageStream")));
+            this.imgEstimators.TransparentColor = System.Drawing.Color.Transparent;
+            this.imgEstimators.Images.SetKeyName(0, "Customer.png");
+            this.imgEstimators.Images.SetKeyName(1, "Business.png");
+            this.imgEstimators.Images.SetKeyName(2, "Group.png");
+            this.imgEstimators.Images.SetKeyName(3, "Estimator.png");
             // 
             // grpScans
             // 
@@ -290,6 +303,7 @@ namespace DATASCAN.View
         private System.Windows.Forms.ColumnHeader colTimestamp;
         private System.Windows.Forms.ColumnHeader colMessage;
         private System.Windows.Forms.ImageList imgMessages;
+        private System.Windows.Forms.ImageList imgEstimators;
     }
 }
 
