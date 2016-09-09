@@ -34,13 +34,24 @@ namespace DATASCAN.Model
         /// <summary>
         /// Первичный ключ заказчика
         /// </summary>
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
 
         /// <summary>
         /// Заказчик
         /// </summary>
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
+
+        /// <summary>
+        /// Первичный ключ группы вычислителей
+        /// </summary>
+        public int? GroupId { get; set; }
+
+        /// <summary>
+        /// Группа вычислителей
+        /// </summary>
+        [ForeignKey("GroupId")]
+        public virtual EstimatorsGroup Group { get; set; }
 
         /// <summary>
         /// Коллекция точек измерения

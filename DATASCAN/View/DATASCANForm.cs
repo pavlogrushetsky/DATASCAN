@@ -20,7 +20,7 @@ namespace DATASCAN.View
 {
     public partial class DATASCANForm : Form
     {
-        private List<Customer> _customers = new List<Customer>();
+        private List<EstimatorBase> _estimators = new List<EstimatorBase>();
 
         private List<ScanBase> _scans = new List<ScanBase>();
 
@@ -87,30 +87,30 @@ namespace DATASCAN.View
 
             try
             {
-                using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
-                {
-                    _customers = repo.GetAll()
-                        .Include(c => c.Estimators)
-                        .Include(c => c.Estimators.Select(e => e.MeasurePoints))
-                        .ToList();
-                }
+                //using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
+                //{
+                //    _customers = repo.GetAll()
+                //        .Include(c => c.Estimators)
+                //        .Include(c => c.Estimators.Select(e => e.MeasurePoints))
+                //        .ToList();
+                //}
 
-                if (!_customers.Any())
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = "Дані в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                }               
+                //if (!_customers.Any())
+                //{
+                //    Logger.Log(lstMessages, new LogEntry { Message = "Дані в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                //}               
 
-                using (EntityRepository<ScanBase> repo = new EntityRepository<ScanBase>(_sqlConnection))
-                {
-                    _scans = repo.GetAll()
-                        .Include(s => s.Members)
-                        .ToList();
-                }
+                //using (EntityRepository<ScanBase> repo = new EntityRepository<ScanBase>(_sqlConnection))
+                //{
+                //    _scans = repo.GetAll()
+                //        .Include(s => s.Members)
+                //        .ToList();
+                //}
 
-                if (!_customers.Any())
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = "Групи опитування відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                }
+                //if (!_customers.Any())
+                //{
+                //    Logger.Log(lstMessages, new LogEntry { Message = "Групи опитування відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                //}
 
                 FillEstimatorsTree();
             }
@@ -139,54 +139,54 @@ namespace DATASCAN.View
         {
             trvEstimators.Nodes.Clear();
 
-            if (!_customers.Any())
-            {
-                return;
-            }
+        //    if (!_customers.Any())
+        //    {
+        //        return;
+        //    }
 
-            _customers.ForEach(c =>
-            {
-                TreeNode customerNode = trvEstimators.Nodes.Add(c.Title);
-                customerNode.Tag = c;
-                customerNode.ImageIndex = c.IsActive ? 0 : 1;
-                customerNode.SelectedImageIndex = c.IsActive ? 0 : 1;
-                customerNode.ForeColor = c.IsActive ? Color.Black : Color.DarkGray;
+        //    _customers.ForEach(c =>
+        //    {
+        //        TreeNode customerNode = trvEstimators.Nodes.Add(c.Title);
+        //        customerNode.Tag = c;
+        //        customerNode.ImageIndex = c.IsActive ? 0 : 1;
+        //        customerNode.SelectedImageIndex = c.IsActive ? 0 : 1;
+        //        customerNode.ForeColor = c.IsActive ? Color.Black : Color.DarkGray;
                 
-                ContextMenuStrip customerMenu = new ContextMenuStrip();
-                ToolStripMenuItem addFloutecItem = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
-                ToolStripMenuItem addRocItem = new ToolStripMenuItem("Додати обчислювач ROC809");
-                ToolStripSeparator separatorItem = new ToolStripSeparator();
-                ToolStripMenuItem infoCustomerItem = new ToolStripMenuItem("Інформація", Resources.Information);
-                ToolStripMenuItem deactivateCustomerItem = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
-                ToolStripMenuItem activateCustomerItem = new ToolStripMenuItem("Активувати", Resources.Activate);
-                ToolStripMenuItem deleteCustomerItem = new ToolStripMenuItem("Видалити", Resources.Delete);
+        //        ContextMenuStrip customerMenu = new ContextMenuStrip();
+        //        ToolStripMenuItem addFloutecItem = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
+        //        ToolStripMenuItem addRocItem = new ToolStripMenuItem("Додати обчислювач ROC809");
+        //        ToolStripSeparator separatorItem = new ToolStripSeparator();
+        //        ToolStripMenuItem infoCustomerItem = new ToolStripMenuItem("Інформація", Resources.Information);
+        //        ToolStripMenuItem deactivateCustomerItem = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
+        //        ToolStripMenuItem activateCustomerItem = new ToolStripMenuItem("Активувати", Resources.Activate);
+        //        ToolStripMenuItem deleteCustomerItem = new ToolStripMenuItem("Видалити", Resources.Delete);
 
-                customerMenu.Items.AddRange(new ToolStripItem[]
-                {
-                    addFloutecItem,
-                    addRocItem,
-                    separatorItem,
-                    infoCustomerItem,
-                    c.IsActive ? deactivateCustomerItem : activateCustomerItem,
-                    deleteCustomerItem
-                });
+        //        customerMenu.Items.AddRange(new ToolStripItem[]
+        //        {
+        //            addFloutecItem,
+        //            addRocItem,
+        //            separatorItem,
+        //            infoCustomerItem,
+        //            c.IsActive ? deactivateCustomerItem : activateCustomerItem,
+        //            deleteCustomerItem
+        //        });
 
-                customerNode.ContextMenuStrip = customerMenu;
+        //        customerNode.ContextMenuStrip = customerMenu;
 
-                if (c.Estimators.Any(e => e is Floutec))
-                {
-                    TreeNode floutecsGroupNode = customerNode.Nodes.Add("FloutecsGroup", "Обчислювачі ФЛОУТЕК");
-                    floutecsGroupNode.ImageIndex = 2;
-                    floutecsGroupNode.SelectedImageIndex = 2;
-                }
+        //        if (c.Estimators.Any(e => e is Floutec))
+        //        {
+        //            TreeNode floutecsGroupNode = customerNode.Nodes.Add("FloutecsGroup", "Обчислювачі ФЛОУТЕК");
+        //            floutecsGroupNode.ImageIndex = 2;
+        //            floutecsGroupNode.SelectedImageIndex = 2;
+        //        }
 
-                if (c.Estimators.Any(e => e is Roc809))
-                {
-                    TreeNode rocsGroupNode = customerNode.Nodes.Add("RocsGroup", "Обчислювачі ROC809");
-                    rocsGroupNode.ImageIndex = 2;
-                    rocsGroupNode.SelectedImageIndex = 2;
-                }
-            });
+        //        if (c.Estimators.Any(e => e is Roc809))
+        //        {
+        //            TreeNode rocsGroupNode = customerNode.Nodes.Add("RocsGroup", "Обчислювачі ROC809");
+        //            rocsGroupNode.ImageIndex = 2;
+        //            rocsGroupNode.SelectedImageIndex = 2;
+        //        }
+        //    });
         }
     }
 }

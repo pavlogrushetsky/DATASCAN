@@ -40,5 +40,10 @@ namespace DATASCAN.Model
         /// Коллекция вычислителей
         /// </summary>
         public virtual ICollection<EstimatorBase> Estimators { get; private set; } = new HashSet<EstimatorBase>(); 
+
+        /// <summary>
+        /// Коллекция групп вычислителей
+        /// </summary>
+        public virtual ICollection<EstimatorsGroup> Groups { get; set; } = new HashSet<EstimatorsGroup>(); 
     }
 }

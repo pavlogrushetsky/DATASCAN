@@ -41,6 +41,11 @@ namespace DATASCAN.Context
         /// Вычислители
         /// </summary>
         public DbSet<EstimatorBase> Estimators { get; set; }
+
+        /// <summary>
+        /// Группы вычислителей
+        /// </summary>
+        public DbSet<EstimatorsGroup> Groups { get; set; } 
         
         /// <summary>
         /// Точки измерения
