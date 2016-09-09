@@ -73,6 +73,10 @@
     <Compile Include="Migrations\201609091636241_AddedEstimatorsGroups.Designer.cs">
       <DependentUpon>201609091636241_AddedEstimatorsGroups.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.cs" />
+    <Compile Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.Designer.cs">
+      <DependentUpon>201609091704352_AddedNameToEstimatorsGroup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
     <Compile Include="Model\Common\DataRecordBase.cs" />
@@ -139,6 +143,9 @@
     <EmbeddedResource Include="Migrations\201609091636241_AddedEstimatorsGroups.resx">
       <DependentUpon>201609091636241_AddedEstimatorsGroups.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.resx">
+      <DependentUpon>201609091704352_AddedNameToEstimatorsGroup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -189,6 +196,7 @@
     <Content Include="Resources\Images\Group.png" />
     <Content Include="Resources\Images\Deactivate.png" />
     <Content Include="Resources\Images\Activate.png" />
+    <Content Include="Resources\Images\Sensor.png" />
     <Content Include="Resources\Images\Settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

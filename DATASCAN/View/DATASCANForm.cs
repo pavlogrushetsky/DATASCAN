@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DATASCAN.Infrastructure.Logging;
@@ -22,6 +21,12 @@ namespace DATASCAN.View
     {
         private List<EstimatorBase> _estimators = new List<EstimatorBase>();
 
+        private List<Customer> _customers = new List<Customer>();
+        
+        private List<EstimatorsGroup> _groups = new List<EstimatorsGroup>();
+        
+        private List<MeasurePointBase> _points = new List<MeasurePointBase>();   
+
         private List<ScanBase> _scans = new List<ScanBase>();
 
         private string _sqlConnection;  
@@ -34,7 +39,23 @@ namespace DATASCAN.View
 
             InitializeConnection();
 
-            UpdateData();          
+            UpdateData();
+            
+            ContextMenuStrip estimatorsMenu = new ContextMenuStrip();
+            ToolStripMenuItem addCustomerMenu = new ToolStripMenuItem("Додати замовника");
+            ToolStripMenuItem addGroupMenu = new ToolStripMenuItem("Додати групу обчислювачів");
+            ToolStripMenuItem addFloutecMenu = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
+            ToolStripMenuItem addRocMenu = new ToolStripMenuItem("Додати обчислювач ROC809");
+
+            estimatorsMenu.Items.AddRange(new ToolStripItem[]
+            {
+                addCustomerMenu,
+                addGroupMenu,
+                addFloutecMenu,
+                addRocMenu
+            });
+
+            trvEstimators.ContextMenuStrip = estimatorsMenu;
         }
 
         private void GetSettings()
@@ -87,30 +108,47 @@ namespace DATASCAN.View
 
             try
             {
-                //using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
-                //{
-                //    _customers = repo.GetAll()
-                //        .Include(c => c.Estimators)
-                //        .Include(c => c.Estimators.Select(e => e.MeasurePoints))
-                //        .ToList();
-                //}
+                using (EntityRepository<EstimatorBase> repo = new EntityRepository<EstimatorBase>(_sqlConnection))
+                {
+                    _estimators = repo.GetAll()
+                        .Include(c => c.Customer)
+                        .Include(c => c.Group)
+                        .Include(c => c.MeasurePoints)
+                        .OrderBy(o => o.Id)
+                        .ToList();
+                }
 
-                //if (!_customers.Any())
-                //{
-                //    Logger.Log(lstMessages, new LogEntry { Message = "Дані в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                //}               
+                using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
+                {
+                    _customers = repo.GetAll().OrderBy(o => o.Title).ToList();
+                }
 
-                //using (EntityRepository<ScanBase> repo = new EntityRepository<ScanBase>(_sqlConnection))
-                //{
-                //    _scans = repo.GetAll()
-                //        .Include(s => s.Members)
-                //        .ToList();
-                //}
+                using (EntityRepository<EstimatorsGroup> repo = new EntityRepository<EstimatorsGroup>(_sqlConnection))
+                {
+                    _groups = repo.GetAll().OrderBy(o => o.Name).ToList();
+                }
 
-                //if (!_customers.Any())
-                //{
-                //    Logger.Log(lstMessages, new LogEntry { Message = "Групи опитування відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                //}
+                using (EntityRepository<MeasurePointBase> repo = new EntityRepository<MeasurePointBase>(_sqlConnection))
+                {
+                    _points = repo.GetAll().OrderBy(o => o.Id).ToList();
+                }
+
+                if (!_estimators.Any())
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = "Дані обчислювачів в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }
+
+                using (EntityRepository<ScanBase> repo = new EntityRepository<ScanBase>(_sqlConnection))
+                {
+                    _scans = repo.GetAll()
+                        .Include(s => s.Members)
+                        .ToList();
+                }
+
+                if (!_scans.Any())
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = "Дані груп опитування в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }
 
                 FillEstimatorsTree();
             }
@@ -139,54 +177,150 @@ namespace DATASCAN.View
         {
             trvEstimators.Nodes.Clear();
 
-        //    if (!_customers.Any())
-        //    {
-        //        return;
-        //    }
+            _customers.ForEach(customer =>
+            {
+                TreeNode customerNode = trvEstimators.Nodes.Add(customer.Title);
+                customerNode.Tag = customer;                               
+                customerNode.ImageIndex = 0;
+                customerNode.SelectedImageIndex = 0;
 
-        //    _customers.ForEach(c =>
-        //    {
-        //        TreeNode customerNode = trvEstimators.Nodes.Add(c.Title);
-        //        customerNode.Tag = c;
-        //        customerNode.ImageIndex = c.IsActive ? 0 : 1;
-        //        customerNode.SelectedImageIndex = c.IsActive ? 0 : 1;
-        //        customerNode.ForeColor = c.IsActive ? Color.Black : Color.DarkGray;
-                
-        //        ContextMenuStrip customerMenu = new ContextMenuStrip();
-        //        ToolStripMenuItem addFloutecItem = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
-        //        ToolStripMenuItem addRocItem = new ToolStripMenuItem("Додати обчислювач ROC809");
-        //        ToolStripSeparator separatorItem = new ToolStripSeparator();
-        //        ToolStripMenuItem infoCustomerItem = new ToolStripMenuItem("Інформація", Resources.Information);
-        //        ToolStripMenuItem deactivateCustomerItem = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
-        //        ToolStripMenuItem activateCustomerItem = new ToolStripMenuItem("Активувати", Resources.Activate);
-        //        ToolStripMenuItem deleteCustomerItem = new ToolStripMenuItem("Видалити", Resources.Delete);
+                ContextMenuStrip customerMenu = new ContextMenuStrip();
+                ToolStripMenuItem addGroupToCustomerMenu = new ToolStripMenuItem("Додати групу обчислювачів");
+                ToolStripMenuItem addFloutecToCustomerMenu = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
+                ToolStripMenuItem addRocToCustomerMenu = new ToolStripMenuItem("Додати обчислювач ROC809");              
+                ToolStripMenuItem customerInfoMenu = new ToolStripMenuItem("Інформація", Resources.Information);
+                ToolStripMenuItem deactivateCustomerMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
+                ToolStripMenuItem activateCustomerMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
+                ToolStripMenuItem deleteCustomerMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
+                ToolStripSeparator customerSeparator1 = new ToolStripSeparator();
+                ToolStripSeparator customerSeparator2 = new ToolStripSeparator();
 
-        //        customerMenu.Items.AddRange(new ToolStripItem[]
-        //        {
-        //            addFloutecItem,
-        //            addRocItem,
-        //            separatorItem,
-        //            infoCustomerItem,
-        //            c.IsActive ? deactivateCustomerItem : activateCustomerItem,
-        //            deleteCustomerItem
-        //        });
+                customerMenu.Items.AddRange(new ToolStripItem[]
+                {
+                    addGroupToCustomerMenu,
+                    addFloutecToCustomerMenu,
+                    addRocToCustomerMenu,
+                    customerSeparator1,
+                    customerInfoMenu,
+                    customerSeparator2,
+                    customer.IsActive ? deactivateCustomerMenu : activateCustomerMenu,
+                    deleteCustomerMenu
+                });
 
-        //        customerNode.ContextMenuStrip = customerMenu;
+                customerNode.ContextMenuStrip = customerMenu;
 
-        //        if (c.Estimators.Any(e => e is Floutec))
-        //        {
-        //            TreeNode floutecsGroupNode = customerNode.Nodes.Add("FloutecsGroup", "Обчислювачі ФЛОУТЕК");
-        //            floutecsGroupNode.ImageIndex = 2;
-        //            floutecsGroupNode.SelectedImageIndex = 2;
-        //        }
+                _groups.Where(g => g.CustomerId == customer.Id).ToList().ForEach(group =>
+                {
+                    TreeNode groupNode = customerNode.Nodes.Add(group.Name);
+                    groupNode.Tag = group;
+                    groupNode.ImageIndex = 2;
+                    groupNode.SelectedImageIndex = 2;
 
-        //        if (c.Estimators.Any(e => e is Roc809))
-        //        {
-        //            TreeNode rocsGroupNode = customerNode.Nodes.Add("RocsGroup", "Обчислювачі ROC809");
-        //            rocsGroupNode.ImageIndex = 2;
-        //            rocsGroupNode.SelectedImageIndex = 2;
-        //        }
-        //    });
+                    ContextMenuStrip groupMenu = new ContextMenuStrip();
+                    ToolStripMenuItem addFloutecToGroupMenu = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
+                    ToolStripMenuItem addRocToGroupMenu = new ToolStripMenuItem("Додати обчислювач ROC809");
+                    ToolStripMenuItem groupInfoMenu = new ToolStripMenuItem("Інформація", Resources.Information);
+                    ToolStripMenuItem deactivateGroupMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
+                    ToolStripMenuItem activateGroupMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
+                    ToolStripMenuItem deleteGroupMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
+                    ToolStripSeparator groupSeparator1 = new ToolStripSeparator();
+                    ToolStripSeparator groupSeparator2 = new ToolStripSeparator();
+
+                    groupMenu.Items.AddRange(new ToolStripItem[]
+                    {
+                        addFloutecToGroupMenu,
+                        addRocToGroupMenu,
+                        groupSeparator1,
+                        groupInfoMenu,
+                        groupSeparator2,
+                        group.IsActive ? deactivateGroupMenu : activateGroupMenu,
+                        deleteGroupMenu
+                    });
+
+                    groupNode.ContextMenuStrip = groupMenu;
+
+                    _estimators.Where(e => e.GroupId == group.Id).ToList().ForEach(estimator =>
+                    {
+                        TreeNode estimatorNode = null;
+                        if (estimator is Floutec)
+                        {
+                            Floutec floutec = estimator as Floutec;
+                            estimatorNode = groupNode.Nodes.Add($"{floutec.Name} (ФЛОУТЕК, Адреса = {floutec.Address})");
+                        }
+                        else if (estimator is Roc809)
+                        {
+                            Roc809 roc = estimator as Roc809;
+                            estimatorNode = groupNode.Nodes.Add($"{roc.Name} (Адреса = {roc.Address})");
+                        }
+
+                        if (estimatorNode != null)
+                        {
+                            estimatorNode.Tag = estimator;
+                            estimatorNode.ImageIndex = 3;
+                            estimatorNode.SelectedImageIndex = 3;
+
+                            ContextMenuStrip estimatorMenu = new ContextMenuStrip();
+                            ToolStripMenuItem estimatorSettingsMenu = new ToolStripMenuItem("Налаштування", Resources.Settings);
+                            ToolStripMenuItem deactivateEstimatorMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
+                            ToolStripMenuItem activateEstimatorMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
+                            ToolStripMenuItem deleteEstimatorMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
+                            ToolStripSeparator estimatorSeparator = new ToolStripSeparator();
+
+                            estimatorMenu.Items.AddRange(new ToolStripItem[]
+                            {
+                                estimatorSettingsMenu,
+                                estimatorSeparator,
+                                group.IsActive ? deactivateEstimatorMenu : activateEstimatorMenu,
+                                deleteEstimatorMenu
+                            });
+
+                            estimatorNode.ContextMenuStrip = estimatorMenu;
+                        }
+
+                        _points.Where(p => p.EstimatorId == estimator.Id).ToList().ForEach(point =>
+                        {
+                            TreeNode pointNode = null;
+                            if (estimatorNode != null)
+                            {
+                                if (point is FloutecMeasureLine)
+                                {
+                                    FloutecMeasureLine floutecLine = point as FloutecMeasureLine;
+                                    pointNode = estimatorNode.Nodes.Add($"{floutecLine.Number} {floutecLine.Name}");
+                                }
+                                else if (point is Roc809MeasurePoint)
+                                {
+                                    Roc809MeasurePoint rocPoint = point as Roc809MeasurePoint;
+                                    pointNode = estimatorNode.Nodes.Add($"{rocPoint.Number} {rocPoint.Name} (Сегмент = {rocPoint.HistSegment})");
+                                }
+
+                                if (pointNode != null)
+                                {
+                                    pointNode.Tag = point;
+                                    pointNode.ImageIndex = 4;
+                                    pointNode.SelectedImageIndex = 4;
+
+                                    ContextMenuStrip pointMenu = new ContextMenuStrip();
+                                    ToolStripMenuItem pointSettingsMenu = new ToolStripMenuItem("Налаштування", Resources.Settings);
+                                    ToolStripMenuItem deactivatePointMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
+                                    ToolStripMenuItem activatePointMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
+                                    ToolStripMenuItem deletePointMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
+                                    ToolStripSeparator pointSeparator = new ToolStripSeparator();
+
+                                    pointMenu.Items.AddRange(new ToolStripItem[]
+                                    {
+                                        pointSettingsMenu,
+                                        pointSeparator,
+                                        group.IsActive ? deactivatePointMenu : activatePointMenu,
+                                        deletePointMenu
+                                    });
+
+                                    pointNode.ContextMenuStrip = pointMenu;
+                                }
+                            }
+                        });
+                    });
+                });
+            });
         }
     }
 }

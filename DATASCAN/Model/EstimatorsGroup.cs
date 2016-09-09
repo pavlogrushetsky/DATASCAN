@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DATASCAN.Model.Common;
 
@@ -10,6 +11,13 @@ namespace DATASCAN.Model
     [Table("Groups", Schema = "General")]
     public class EstimatorsGroup : EntityBase
     {
+        /// <summary>
+        /// Название
+        /// </summary>
+        [Required]
+        [MaxLength(50)]
+        public string Name { get; set; }
+
         /// <summary>
         /// Первичный ключ заказчика
         /// </summary>

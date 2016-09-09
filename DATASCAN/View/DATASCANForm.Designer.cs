@@ -2,7 +2,7 @@
 
 namespace DATASCAN.View
 {
-    partial class DATASCANForm
+    sealed partial class DATASCANForm
     {
         /// <summary>
         /// Required designer variable.
@@ -159,6 +159,7 @@ namespace DATASCAN.View
             this.trvEstimators.BackColor = System.Drawing.SystemColors.Control;
             this.trvEstimators.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.trvEstimators.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trvEstimators.FullRowSelect = true;
             this.trvEstimators.ImageIndex = 0;
             this.trvEstimators.ImageList = this.imgEstimators;
             this.trvEstimators.Location = new System.Drawing.Point(3, 16);
@@ -175,6 +176,7 @@ namespace DATASCAN.View
             this.imgEstimators.Images.SetKeyName(1, "Business.png");
             this.imgEstimators.Images.SetKeyName(2, "Group.png");
             this.imgEstimators.Images.SetKeyName(3, "Estimator.png");
+            this.imgEstimators.Images.SetKeyName(4, "Sensor.png");
             // 
             // grpScans
             // 
