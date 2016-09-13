@@ -42,17 +42,13 @@ namespace DATASCAN.View
             UpdateData();
             
             ContextMenuStrip estimatorsMenu = new ContextMenuStrip();
-            ToolStripMenuItem addCustomerMenu = new ToolStripMenuItem("Додати замовника");
-            ToolStripMenuItem addGroupMenu = new ToolStripMenuItem("Додати групу обчислювачів");
-            ToolStripMenuItem addFloutecMenu = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
-            ToolStripMenuItem addRocMenu = new ToolStripMenuItem("Додати обчислювач ROC809");
 
             estimatorsMenu.Items.AddRange(new ToolStripItem[]
             {
-                addCustomerMenu,
-                addGroupMenu,
-                addFloutecMenu,
-                addRocMenu
+                new ToolStripMenuItem("Додати замовника", null, AddCustomerMenu_Click),
+                new ToolStripMenuItem("Додати групу обчислювачів", null, AddGroupMenu_Click),
+                new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
+                new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click)
             });
 
             trvEstimators.ContextMenuStrip = estimatorsMenu;
@@ -177,150 +173,241 @@ namespace DATASCAN.View
         {
             trvEstimators.Nodes.Clear();
 
+            FillCustomers();
+
+            FillGroups();
+
+            FillEstimators();            
+        }
+
+        private void FillCustomers()
+        {
             _customers.ForEach(customer =>
             {
                 TreeNode customerNode = trvEstimators.Nodes.Add(customer.Title);
-                customerNode.Tag = customer;                               
+                customerNode.Tag = customer;
                 customerNode.ImageIndex = 0;
                 customerNode.SelectedImageIndex = 0;
 
                 ContextMenuStrip customerMenu = new ContextMenuStrip();
-                ToolStripMenuItem addGroupToCustomerMenu = new ToolStripMenuItem("Додати групу обчислювачів");
-                ToolStripMenuItem addFloutecToCustomerMenu = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
-                ToolStripMenuItem addRocToCustomerMenu = new ToolStripMenuItem("Додати обчислювач ROC809");              
-                ToolStripMenuItem customerInfoMenu = new ToolStripMenuItem("Інформація", Resources.Information);
-                ToolStripMenuItem deactivateCustomerMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
-                ToolStripMenuItem activateCustomerMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
-                ToolStripMenuItem deleteCustomerMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
-                ToolStripSeparator customerSeparator1 = new ToolStripSeparator();
-                ToolStripSeparator customerSeparator2 = new ToolStripSeparator();
 
                 customerMenu.Items.AddRange(new ToolStripItem[]
                 {
-                    addGroupToCustomerMenu,
-                    addFloutecToCustomerMenu,
-                    addRocToCustomerMenu,
-                    customerSeparator1,
-                    customerInfoMenu,
-                    customerSeparator2,
-                    customer.IsActive ? deactivateCustomerMenu : activateCustomerMenu,
-                    deleteCustomerMenu
+                    new ToolStripMenuItem("Додати групу обчислювачів", null, AddGroupMenu_Click),
+                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
+                    new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
+                    new ToolStripSeparator(),
+                    new ToolStripMenuItem("Інформація", Resources.Information, CustomerInfoMenu_Click),
+                    new ToolStripSeparator(), 
+                    customer.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
                 });
 
                 customerNode.ContextMenuStrip = customerMenu;
 
-                _groups.Where(g => g.CustomerId == customer.Id).ToList().ForEach(group =>
-                {
-                    TreeNode groupNode = customerNode.Nodes.Add(group.Name);
-                    groupNode.Tag = group;
-                    groupNode.ImageIndex = 2;
-                    groupNode.SelectedImageIndex = 2;
-
-                    ContextMenuStrip groupMenu = new ContextMenuStrip();
-                    ToolStripMenuItem addFloutecToGroupMenu = new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК");
-                    ToolStripMenuItem addRocToGroupMenu = new ToolStripMenuItem("Додати обчислювач ROC809");
-                    ToolStripMenuItem groupInfoMenu = new ToolStripMenuItem("Інформація", Resources.Information);
-                    ToolStripMenuItem deactivateGroupMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
-                    ToolStripMenuItem activateGroupMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
-                    ToolStripMenuItem deleteGroupMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
-                    ToolStripSeparator groupSeparator1 = new ToolStripSeparator();
-                    ToolStripSeparator groupSeparator2 = new ToolStripSeparator();
-
-                    groupMenu.Items.AddRange(new ToolStripItem[]
-                    {
-                        addFloutecToGroupMenu,
-                        addRocToGroupMenu,
-                        groupSeparator1,
-                        groupInfoMenu,
-                        groupSeparator2,
-                        group.IsActive ? deactivateGroupMenu : activateGroupMenu,
-                        deleteGroupMenu
-                    });
-
-                    groupNode.ContextMenuStrip = groupMenu;
-
-                    _estimators.Where(e => e.GroupId == group.Id).ToList().ForEach(estimator =>
-                    {
-                        TreeNode estimatorNode = null;
-                        if (estimator is Floutec)
-                        {
-                            Floutec floutec = estimator as Floutec;
-                            estimatorNode = groupNode.Nodes.Add($"{floutec.Name} (ФЛОУТЕК, Адреса = {floutec.Address})");
-                        }
-                        else if (estimator is Roc809)
-                        {
-                            Roc809 roc = estimator as Roc809;
-                            estimatorNode = groupNode.Nodes.Add($"{roc.Name} (Адреса = {roc.Address})");
-                        }
-
-                        if (estimatorNode != null)
-                        {
-                            estimatorNode.Tag = estimator;
-                            estimatorNode.ImageIndex = 3;
-                            estimatorNode.SelectedImageIndex = 3;
-
-                            ContextMenuStrip estimatorMenu = new ContextMenuStrip();
-                            ToolStripMenuItem estimatorSettingsMenu = new ToolStripMenuItem("Налаштування", Resources.Settings);
-                            ToolStripMenuItem deactivateEstimatorMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
-                            ToolStripMenuItem activateEstimatorMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
-                            ToolStripMenuItem deleteEstimatorMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
-                            ToolStripSeparator estimatorSeparator = new ToolStripSeparator();
-
-                            estimatorMenu.Items.AddRange(new ToolStripItem[]
-                            {
-                                estimatorSettingsMenu,
-                                estimatorSeparator,
-                                group.IsActive ? deactivateEstimatorMenu : activateEstimatorMenu,
-                                deleteEstimatorMenu
-                            });
-
-                            estimatorNode.ContextMenuStrip = estimatorMenu;
-                        }
-
-                        _points.Where(p => p.EstimatorId == estimator.Id).ToList().ForEach(point =>
-                        {
-                            TreeNode pointNode = null;
-                            if (estimatorNode != null)
-                            {
-                                if (point is FloutecMeasureLine)
-                                {
-                                    FloutecMeasureLine floutecLine = point as FloutecMeasureLine;
-                                    pointNode = estimatorNode.Nodes.Add($"{floutecLine.Number} {floutecLine.Name}");
-                                }
-                                else if (point is Roc809MeasurePoint)
-                                {
-                                    Roc809MeasurePoint rocPoint = point as Roc809MeasurePoint;
-                                    pointNode = estimatorNode.Nodes.Add($"{rocPoint.Number} {rocPoint.Name} (Сегмент = {rocPoint.HistSegment})");
-                                }
-
-                                if (pointNode != null)
-                                {
-                                    pointNode.Tag = point;
-                                    pointNode.ImageIndex = 4;
-                                    pointNode.SelectedImageIndex = 4;
-
-                                    ContextMenuStrip pointMenu = new ContextMenuStrip();
-                                    ToolStripMenuItem pointSettingsMenu = new ToolStripMenuItem("Налаштування", Resources.Settings);
-                                    ToolStripMenuItem deactivatePointMenu = new ToolStripMenuItem("Деактивувати", Resources.Deactivate);
-                                    ToolStripMenuItem activatePointMenu = new ToolStripMenuItem("Активувати", Resources.Activate);
-                                    ToolStripMenuItem deletePointMenu = new ToolStripMenuItem("Видалити", Resources.Delete);
-                                    ToolStripSeparator pointSeparator = new ToolStripSeparator();
-
-                                    pointMenu.Items.AddRange(new ToolStripItem[]
-                                    {
-                                        pointSettingsMenu,
-                                        pointSeparator,
-                                        group.IsActive ? deactivatePointMenu : activatePointMenu,
-                                        deletePointMenu
-                                    });
-
-                                    pointNode.ContextMenuStrip = pointMenu;
-                                }
-                            }
-                        });
-                    });
-                });
+                FillGroups(customerNode);
+                FillEstimators(customerNode);
             });
+        }
+
+        private void FillGroups(TreeNode customerNode = null)
+        {
+            List<EstimatorsGroup> groups;
+            Customer customer;
+
+            if (customerNode == null)
+            {
+                groups = _groups.Where(g => !g.CustomerId.HasValue).ToList();
+            }
+            else
+            {
+                customer = customerNode.Tag as Customer;
+                groups = _groups.Where(g => customer != null && g.CustomerId == customer.Id).ToList();
+            }
+
+            groups.ForEach(group =>
+            {
+                TreeNode groupNode = customerNode?.Nodes.Add(group.Name) ?? trvEstimators.Nodes.Add(group.Name);
+
+                groupNode.Tag = group;
+                groupNode.ImageIndex = 2;
+                groupNode.SelectedImageIndex = 2;
+
+                ContextMenuStrip groupMenu = new ContextMenuStrip();
+
+                groupMenu.Items.AddRange(new ToolStripItem[]
+                {
+                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
+                    new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
+                    new ToolStripSeparator(),
+                    new ToolStripMenuItem("Інформація", Resources.Information, GroupInfoMenu_Click),
+                    new ToolStripSeparator(),
+                    group.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
+                });
+
+                groupNode.ContextMenuStrip = groupMenu;
+
+                FillEstimators(groupNode);
+            });
+        }
+
+        private void FillEstimators(TreeNode parentNode = null)
+        {
+            List<EstimatorBase> estimators = new List<EstimatorBase>();
+
+            if (parentNode != null)
+            {
+                if (parentNode.Tag is EstimatorsGroup)
+                {
+                    EstimatorsGroup group = parentNode.Tag as EstimatorsGroup;
+                    estimators = _estimators.Where(e => e.GroupId == group.Id).ToList();
+                }
+                else if (parentNode.Tag is Customer)
+                {
+                    Customer customer = parentNode.Tag as Customer;
+                    estimators = _estimators.Where(e => e.CustomerId == customer.Id && !e.GroupId.HasValue).ToList();
+                }
+            }
+            else
+            {
+                estimators = _estimators.Where(e => !e.GroupId.HasValue && !e.CustomerId.HasValue).ToList();
+            }
+
+            estimators.ForEach(estimator =>
+            {
+                Floutec floutec = estimator as Floutec;
+                Roc809 roc = estimator as Roc809;
+
+                string nodeTitle = string.Empty;
+
+                if (floutec != null)
+                {
+                    nodeTitle = $"{floutec.Name} (ФЛОУТЕК, Адреса = {floutec.Address})";
+                }
+                else if (roc != null)
+                {
+                    nodeTitle = $"{roc.Name} (ROC, Адреса = {roc.Address})";
+                }
+
+                TreeNode estimatorNode = parentNode?.Nodes.Add(nodeTitle) ?? trvEstimators.Nodes.Add(nodeTitle);
+
+                estimatorNode.Tag = estimator;
+                estimatorNode.ImageIndex = 3;
+                estimatorNode.SelectedImageIndex = 3;
+
+                ContextMenuStrip estimatorMenu = new ContextMenuStrip();
+
+                estimatorMenu.Items.AddRange(new ToolStripItem[]
+                {
+                    new ToolStripMenuItem("Налаштування", Resources.Settings, EstimatorSettingsMenu_Click),
+                    new ToolStripSeparator(),
+                    estimator.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
+                });
+
+                estimatorNode.ContextMenuStrip = estimatorMenu;
+
+                FillPoints(estimatorNode);
+            });
+        }
+
+        private void FillPoints(TreeNode estimatorNode)
+        {
+            if (estimatorNode != null && estimatorNode.Tag is EstimatorBase)
+            {
+                EstimatorBase estimator = estimatorNode.Tag as EstimatorBase;
+
+                _points.Where(p => p.EstimatorId == estimator.Id).ToList().ForEach(point =>
+                {
+                    TreeNode pointNode = null;
+
+                    if (point is FloutecMeasureLine)
+                    {
+                        FloutecMeasureLine floutecLine = point as FloutecMeasureLine;
+                        pointNode = estimatorNode.Nodes.Add($"{floutecLine.Number} {floutecLine.Name}");
+                    }
+                    else if (point is Roc809MeasurePoint)
+                    {
+                        Roc809MeasurePoint rocPoint = point as Roc809MeasurePoint;
+                        pointNode = estimatorNode.Nodes.Add($"{rocPoint.Number} {rocPoint.Name} (Сегмент = {rocPoint.HistSegment})");
+                    }
+
+                    if (pointNode != null)
+                    {
+                        pointNode.Tag = point;
+                        pointNode.ImageIndex = 4;
+                        pointNode.SelectedImageIndex = 4;
+
+                        ContextMenuStrip pointMenu = new ContextMenuStrip();
+
+                        pointMenu.Items.AddRange(new ToolStripItem[]
+                        {
+                            new ToolStripMenuItem("Налаштування", Resources.Settings, PointSettingsMenu_Click),
+                            new ToolStripSeparator(),
+                            point.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
+                            new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
+                        });
+
+                        pointNode.ContextMenuStrip = pointMenu;
+                    }
+                });
+            }            
+        }
+
+        private void AddCustomerMenu_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void AddGroupMenu_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void AddFloutecMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AddRocMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CustomerInfoMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GroupInfoMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void EstimatorSettingsMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PointSettingsMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DeactivateMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ActivateMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DeleteMenu_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
