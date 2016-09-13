@@ -177,7 +177,9 @@ namespace DATASCAN.View
 
             FillGroups();
 
-            FillEstimators();            
+            FillEstimators();  
+            
+            trvEstimators.ExpandAll();          
         }
 
         private void FillCustomers()
@@ -300,6 +302,8 @@ namespace DATASCAN.View
 
                 estimatorMenu.Items.AddRange(new ToolStripItem[]
                 {
+                    estimator is Floutec ? new ToolStripMenuItem("Додати нитку вимірювання", null, AddPointMenu_Click) : new ToolStripMenuItem("Додати точку вимірювання", null, AddPointMenu_Click),
+                    new ToolStripSeparator(),
                     new ToolStripMenuItem("Налаштування", Resources.Settings, EstimatorSettingsMenu_Click),
                     new ToolStripSeparator(),
                     estimator.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
@@ -371,6 +375,11 @@ namespace DATASCAN.View
         }
 
         private void AddRocMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AddPointMenu_Click(object sender, EventArgs e)
         {
 
         }
