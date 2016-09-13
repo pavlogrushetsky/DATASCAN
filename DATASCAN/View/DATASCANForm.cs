@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DATASCAN.Infrastructure.Logging;
 using DATASCAN.Infrastructure.Settings;
 using DATASCAN.Model;
+using DATASCAN.Model.Common;
 using DATASCAN.Model.Floutecs;
 using DATASCAN.Model.Rocs;
 using DATASCAN.Model.Scanning;
@@ -40,7 +43,7 @@ namespace DATASCAN.View
             InitializeConnection();
 
             UpdateData();
-            
+
             ContextMenuStrip estimatorsMenu = new ContextMenuStrip();
 
             estimatorsMenu.Items.AddRange(new ToolStripItem[]
@@ -50,6 +53,8 @@ namespace DATASCAN.View
                 new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
                 new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click)
             });
+
+            estimatorsMenu.Opening += ContextMenu_Opening;
 
             trvEstimators.ContextMenuStrip = estimatorsMenu;
         }
@@ -127,24 +132,14 @@ namespace DATASCAN.View
                 using (EntityRepository<MeasurePointBase> repo = new EntityRepository<MeasurePointBase>(_sqlConnection))
                 {
                     _points = repo.GetAll().OrderBy(o => o.Id).ToList();
-                }
-
-                if (!_estimators.Any())
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = "Дані обчислювачів в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                }
+                }                
 
                 using (EntityRepository<ScanBase> repo = new EntityRepository<ScanBase>(_sqlConnection))
                 {
                     _scans = repo.GetAll()
                         .Include(s => s.Members)
                         .ToList();
-                }
-
-                if (!_scans.Any())
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = "Дані груп опитування в базі даних відсутні", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                }
+                }                
 
                 FillEstimatorsTree();
             }
@@ -187,6 +182,7 @@ namespace DATASCAN.View
             _customers.ForEach(customer =>
             {
                 TreeNode customerNode = trvEstimators.Nodes.Add(customer.Title);
+                customerNode.ForeColor = customer.IsActive ? Color.Black : Color.Red;
                 customerNode.Tag = customer;
                 customerNode.ImageIndex = 0;
                 customerNode.SelectedImageIndex = 0;
@@ -205,12 +201,14 @@ namespace DATASCAN.View
                     new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
                 });
 
+                customerMenu.Opening += ContextMenu_Opening;
+
                 customerNode.ContextMenuStrip = customerMenu;
 
                 FillGroups(customerNode);
                 FillEstimators(customerNode);
             });
-        }
+        }       
 
         private void FillGroups(TreeNode customerNode = null)
         {
@@ -231,6 +229,7 @@ namespace DATASCAN.View
             {
                 TreeNode groupNode = customerNode?.Nodes.Add(group.Name) ?? trvEstimators.Nodes.Add(group.Name);
 
+                groupNode.ForeColor = group.IsActive ? Color.Black : Color.Red;
                 groupNode.Tag = group;
                 groupNode.ImageIndex = 2;
                 groupNode.SelectedImageIndex = 2;
@@ -247,6 +246,8 @@ namespace DATASCAN.View
                     group.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
                     new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
                 });
+
+                groupMenu.Opening += ContextMenu_Opening;
 
                 groupNode.ContextMenuStrip = groupMenu;
 
@@ -294,6 +295,7 @@ namespace DATASCAN.View
 
                 TreeNode estimatorNode = parentNode?.Nodes.Add(nodeTitle) ?? trvEstimators.Nodes.Add(nodeTitle);
 
+                estimatorNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
                 estimatorNode.Tag = estimator;
                 estimatorNode.ImageIndex = 3;
                 estimatorNode.SelectedImageIndex = 3;
@@ -309,6 +311,8 @@ namespace DATASCAN.View
                     estimator.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
                     new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
                 });
+
+                estimatorMenu.Opening += ContextMenu_Opening;
 
                 estimatorNode.ContextMenuStrip = estimatorMenu;
 
@@ -339,6 +343,7 @@ namespace DATASCAN.View
 
                     if (pointNode != null)
                     {
+                        pointNode.ForeColor = point.IsActive ? Color.Black : Color.Red;
                         pointNode.Tag = point;
                         pointNode.ImageIndex = 4;
                         pointNode.SelectedImageIndex = 4;
@@ -353,10 +358,29 @@ namespace DATASCAN.View
                             new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
                         });
 
+                        pointMenu.Opening += ContextMenu_Opening;
+
                         pointNode.ContextMenuStrip = pointMenu;
                     }
                 });
             }            
+        }
+
+        private void ContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+            TreeNode nodeAtMousePosition = trvEstimators.GetNodeAt(trvEstimators.PointToClient(MousePosition));
+
+            TreeNode selectedNode = trvEstimators.SelectedNode;
+
+            if (nodeAtMousePosition != null)
+            {
+                if (nodeAtMousePosition != selectedNode)
+                    trvEstimators.SelectedNode = nodeAtMousePosition;
+            }
+            else
+            {
+                trvEstimators.SelectedNode = null;
+            }
         }
 
         private void AddCustomerMenu_Click(object sender, EventArgs e)
@@ -406,12 +430,38 @@ namespace DATASCAN.View
 
         private void DeactivateMenu_Click(object sender, EventArgs e)
         {
+            TreeNode node = trvEstimators.SelectedNode;
 
+            EntityBase entity = node?.Tag as EntityBase;
+
+            if (entity != null)
+            { 
+                using (EntityRepository<EntityBase> repo = new EntityRepository<EntityBase>(_sqlConnection))
+                {
+                    entity.IsActive = false;
+                    repo.Update(entity);
+                }
+
+                UpdateData();
+            }
         }
 
         private void ActivateMenu_Click(object sender, EventArgs e)
         {
+            TreeNode node = trvEstimators.SelectedNode;
 
+            EntityBase entity = node?.Tag as EntityBase;
+
+            if (entity != null)
+            {
+                using (EntityRepository<EntityBase> repo = new EntityRepository<EntityBase>(_sqlConnection))
+                {
+                    entity.IsActive = true;
+                    repo.Update(entity);
+                }
+
+                UpdateData();
+            }
         }
 
         private void DeleteMenu_Click(object sender, EventArgs e)
