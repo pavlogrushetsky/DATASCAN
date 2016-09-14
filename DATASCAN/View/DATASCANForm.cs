@@ -48,7 +48,7 @@ namespace DATASCAN.View
 
             estimatorsMenu.Items.AddRange(new ToolStripItem[]
             {
-                new ToolStripMenuItem("Додати замовника", null, AddCustomerMenu_Click),
+                new ToolStripMenuItem("Додати замовника", null, EditCustomerMenu_Click),
                 new ToolStripMenuItem("Додати групу обчислювачів", null, AddGroupMenu_Click),
                 new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
                 new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click)
@@ -195,7 +195,7 @@ namespace DATASCAN.View
                     new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
                     new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
                     new ToolStripSeparator(),
-                    new ToolStripMenuItem("Інформація", Resources.Information, CustomerInfoMenu_Click),
+                    new ToolStripMenuItem("Інформація", Resources.Information, EditCustomerMenu_Click),
                     new ToolStripSeparator(), 
                     customer.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
                     new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
@@ -383,9 +383,41 @@ namespace DATASCAN.View
             }
         }
 
-        private void AddCustomerMenu_Click(object sender, EventArgs e)
+        private void EditCustomerMenu_Click(object sender, EventArgs e)
         {
-            
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+
+            TreeNode node = trvEstimators.SelectedNode;
+
+            Customer customer = node?.Tag as Customer;
+
+            EditCustomerForm form = new EditCustomerForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                IsEdit = menuItem != null && menuItem.Text.Equals("Інформація"),
+                Customer = customer
+            };
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK && form.Customer != null)
+            {
+                using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
+                {
+                    if (form.IsEdit)
+                    {
+                        customer = form.Customer;
+                        customer.DateModified = DateTime.Now;
+                        repo.Update(customer);
+                    }
+                    else
+                    {
+                        repo.Insert(form.Customer);
+                    }
+                }
+
+                UpdateData();
+            }
         }
 
         private void AddGroupMenu_Click(object sender, EventArgs e)
@@ -404,11 +436,6 @@ namespace DATASCAN.View
         }
 
         private void AddPointMenu_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CustomerInfoMenu_Click(object sender, EventArgs e)
         {
 
         }
