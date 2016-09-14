@@ -122,7 +122,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(316, 225);
+            this.btnCancel.Location = new System.Drawing.Point(317, 225);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 11;
@@ -132,7 +132,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(235, 225);
+            this.btnSave.Location = new System.Drawing.Point(236, 225);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 10;
@@ -171,7 +171,7 @@
             this.lblPhoneError.Text = "Вказаний номер телефону не відповідає шаблону";
             this.lblPhoneError.Visible = false;
             // 
-            // AddCustomerForm
+            // EditCustomerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -195,7 +195,7 @@
             this.MaximumSize = new System.Drawing.Size(420, 300);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(420, 300);
-            this.Name = "AddCustomerForm";
+            this.Name = "EditCustomerForm";
             this.Text = "Додати замовника";
             this.ResumeLayout(false);
             this.PerformLayout();

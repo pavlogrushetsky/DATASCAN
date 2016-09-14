@@ -26,7 +26,7 @@ namespace DATASCAN.View.Forms
                 }
                 else
                 {
-                    Text = "Деталі замовника";
+                    Text = "Інформація про замовника";
                     txtTitle.Text = Customer.Title;
                     txtPerson.Text = Customer.Person;
                     txtPhone.Text = Customer.Phone;
@@ -36,12 +36,6 @@ namespace DATASCAN.View.Forms
             };
 
             btnCancel.Select();
-        }
-
-        public sealed override string Text
-        {
-            get { return base.Text; }
-            set { base.Text = value; }
         }
 
         private void btnSave_Click(object sender, EventArgs e)

@@ -49,7 +49,7 @@ namespace DATASCAN.View
             estimatorsMenu.Items.AddRange(new ToolStripItem[]
             {
                 new ToolStripMenuItem("Додати замовника", null, EditCustomerMenu_Click),
-                new ToolStripMenuItem("Додати групу обчислювачів", null, AddGroupMenu_Click),
+                new ToolStripMenuItem("Додати групу обчислювачів", null, EditGroupMenu_Click),
                 new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
                 new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click)
             });
@@ -191,7 +191,7 @@ namespace DATASCAN.View
 
                 customerMenu.Items.AddRange(new ToolStripItem[]
                 {
-                    new ToolStripMenuItem("Додати групу обчислювачів", null, AddGroupMenu_Click),
+                    new ToolStripMenuItem("Додати групу обчислювачів", null, EditGroupMenu_Click),
                     new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
                     new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
                     new ToolStripSeparator(),
@@ -241,7 +241,7 @@ namespace DATASCAN.View
                     new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
                     new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
                     new ToolStripSeparator(),
-                    new ToolStripMenuItem("Інформація", Resources.Information, GroupInfoMenu_Click),
+                    new ToolStripMenuItem("Інформація", Resources.Information, EditGroupMenu_Click),
                     new ToolStripSeparator(),
                     group.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
                     new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
@@ -420,9 +420,49 @@ namespace DATASCAN.View
             }
         }
 
-        private void AddGroupMenu_Click(object sender, EventArgs e)
+        private void EditGroupMenu_Click(object sender, EventArgs e)
         {
-            
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+
+            TreeNode node = trvEstimators.SelectedNode;
+
+            Customer customer = node?.Tag as Customer;
+
+            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+
+            EditEstimatorsGroupForm form = new EditEstimatorsGroupForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                IsEdit = menuItem != null && menuItem.Text.Equals("Інформація"),
+                Group = group
+            };
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK && form.Group != null)
+            {
+                using (EntityRepository<EstimatorsGroup> repo = new EntityRepository<EstimatorsGroup>(_sqlConnection))
+                {
+                    group = form.Group;
+
+                    if (form.IsEdit)
+                    {                        
+                        group.DateModified = DateTime.Now;
+                        repo.Update(group);
+                    }
+                    else
+                    {
+                        if (customer != null)
+                        {
+                            group.CustomerId = customer.Id;                            
+                        }
+
+                        repo.Insert(group);
+                    }
+                }
+
+                UpdateData();
+            }
         }
 
         private void AddFloutecMenu_Click(object sender, EventArgs e)
@@ -436,11 +476,6 @@ namespace DATASCAN.View
         }
 
         private void AddPointMenu_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GroupInfoMenu_Click(object sender, EventArgs e)
         {
 
         }

@@ -137,6 +137,12 @@
     <Compile Include="View\Forms\EditCustomerForm.Designer.cs">
       <DependentUpon>EditCustomerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\EditEstimatorsGroupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditEstimatorsGroupForm.Designer.cs">
+      <DependentUpon>EditEstimatorsGroupForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\ServerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +173,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditCustomerForm.resx">
       <DependentUpon>EditCustomerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditEstimatorsGroupForm.resx">
+      <DependentUpon>EditEstimatorsGroupForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\ServerSettingsForm.resx">
       <DependentUpon>ServerSettingsForm.cs</DependentUpon>
