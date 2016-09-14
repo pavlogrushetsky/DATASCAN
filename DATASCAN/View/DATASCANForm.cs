@@ -57,6 +57,11 @@ namespace DATASCAN.View
             estimatorsMenu.Opening += ContextMenu_Opening;
 
             trvEstimators.ContextMenuStrip = estimatorsMenu;
+
+            trvEstimators.AllowDrop = true;
+            trvEstimators.ItemDrag += TrvEstimators_ItemDrag;
+            trvEstimators.DragEnter += TrvEstimators_DragEnter;
+            trvEstimators.DragDrop += TrvEstimators_DragDrop;
         }
 
         private void GetSettings()
@@ -530,5 +535,107 @@ namespace DATASCAN.View
         {
 
         }
+
+        #region Drag and Drop
+
+        private void TrvEstimators_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Item != null)
+            {
+                TreeNode node = e.Item as TreeNode;
+
+                if (node != null)
+                {
+                    EntityBase entity = node.Tag as EntityBase;
+
+                    if (entity is EstimatorsGroup || entity is EstimatorBase)
+                    {
+                        trvEstimators.DoDragDrop(e.Item, DragDropEffects.Move);
+                    }
+                }               
+            }
+        }
+
+        private void TrvEstimators_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void TrvEstimators_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            {
+                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+                TreeNode destNode = ((TreeView)sender).GetNodeAt(pt);
+                TreeNode newNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+
+                if ((TreeView)sender == newNode.TreeView)
+                {
+                    EstimatorsGroup estimatorsGroup = newNode.Tag as EstimatorsGroup;
+                    EstimatorBase estimator = newNode.Tag as EstimatorBase;
+                    if (estimatorsGroup != null)
+                    {
+                        if (destNode == null)
+                        {
+                            estimatorsGroup.CustomerId = null;
+                            estimatorsGroup.Customer = null;
+                        }
+                        else
+                        {
+                            Customer customer = destNode.Tag as Customer;
+                            if (customer != null)
+                            {
+                                estimatorsGroup.CustomerId = customer.Id;
+                                estimatorsGroup.Customer = customer;
+                            }
+                        }
+
+                        using (EntityRepository<EstimatorsGroup> repo = new EntityRepository<EstimatorsGroup>(_sqlConnection))
+                        {
+                            repo.Update(estimatorsGroup);
+                        }
+                    }
+                    else if (newNode.Tag is EstimatorBase)
+                    {
+                        if (destNode == null)
+                        {
+                            estimator.CustomerId = null;
+                            estimator.Customer = null;
+                            estimator.GroupId = null;
+                            estimator.Group = null;
+                        }
+                        else
+                        {
+                            EstimatorsGroup group = destNode.Tag as EstimatorsGroup;
+                            Customer customer = destNode.Tag as Customer;
+                            if (group != null)
+                            {
+                                estimator.GroupId = group.Id;
+                                estimator.Group = group;
+                                estimator.CustomerId = group.CustomerId;
+                                estimator.Customer = _customers.SingleOrDefault(c => c.Id == group.CustomerId);
+                            }
+                            else if (customer != null)
+                            {
+                                estimator.GroupId = null;
+                                estimator.Group = null;
+                                estimator.CustomerId = customer.Id;
+                                estimator.Customer = customer;
+                            }
+                        }
+
+                        using (EntityRepository<EstimatorBase> repo = new EntityRepository<EstimatorBase>(_sqlConnection))
+                        {
+                            repo.Update(estimator);
+                        }
+                    }
+
+                    UpdateData();
+                }
+            }
+        }
+
+        #endregion
+
     }
 }
