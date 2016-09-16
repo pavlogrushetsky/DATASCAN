@@ -11,24 +11,35 @@ namespace DATASCAN.Services
     /// </summary>
     public class DataContextService
     {
+        private readonly string _connection;
+
+        /// <summary>
+        /// Сервис доступа к данным контекста данных
+        /// </summary>
+        /// <param name="connection">Строка соединения</param>
+        public DataContextService(string connection)
+        {
+            _connection = connection;
+        }
+
         /// <summary>
         /// Возвращает true, если соединение установлено, иначе false
         /// </summary>
-        /// <param name="connectionString">Строка соединения</param>
         /// <returns></returns>
-        public async Task<bool> TestConnection(string connectionString)
+        public async Task<bool> TestConnection(Action<Exception> onException = null)
         {
             try
             {
-                DbConnection connection = new SqlConnection(connectionString);
+                DbConnection connection = new SqlConnection(_connection);
 
                 using (DataContext context = new DataContext(connection))
                 {
                     await context.Database.Connection.OpenAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                onException?.Invoke(ex);
                 return false;
             }
 

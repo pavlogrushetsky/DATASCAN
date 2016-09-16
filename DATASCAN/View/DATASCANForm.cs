@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
@@ -22,25 +21,45 @@ namespace DATASCAN.View
 {
     public partial class DATASCANForm : Form
     {
-        private List<EstimatorBase> _estimators = new List<EstimatorBase>();
+        #region Services
 
-        private List<Customer> _customers = new List<Customer>();
-        
-        private List<EstimatorsGroup> _groups = new List<EstimatorsGroup>();
-        
-        private List<MeasurePointBase> _points = new List<MeasurePointBase>();   
+        private readonly DataContextService _contextService;
+        private readonly EstimatorsService _estimatorsService;
+        private readonly CustomersService _customersService;
+        private readonly EstimatorsGroupsService _groupsService;
+        private readonly MeasurePointsService _pointsService;
+        private readonly ScansService _scansService;
 
+        #endregion
+
+        #region Entities collections
+
+        private List<EstimatorBase> _estimators = new List<EstimatorBase>();        
+        private List<Customer> _customers = new List<Customer>();               
+        private List<EstimatorsGroup> _groups = new List<EstimatorsGroup>();                
+        private List<MeasurePointBase> _points = new List<MeasurePointBase>();        
         private List<ScanBase> _scans = new List<ScanBase>();
+
+        #endregion
+
+        #region Fields & constructor
 
         private string _sqlConnection;  
 
         public DATASCANForm()
         {
-            InitializeComponent();
+            InitializeComponent();            
 
             GetSettings();
 
             InitializeConnection();
+
+            _contextService = new DataContextService(_sqlConnection);
+            _estimatorsService = new EstimatorsService(_sqlConnection);
+            _customersService = new CustomersService(_sqlConnection);
+            _groupsService = new EstimatorsGroupsService(_sqlConnection);
+            _pointsService = new MeasurePointsService(_sqlConnection);
+            _scansService = new ScansService(_sqlConnection);
 
             UpdateData();
 
@@ -51,7 +70,9 @@ namespace DATASCAN.View
                 new ToolStripMenuItem("Додати замовника", null, EditCustomerMenu_Click),
                 new ToolStripMenuItem("Додати групу обчислювачів", null, EditGroupMenu_Click),
                 new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
-                new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click)
+                new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
+                new ToolStripSeparator(), 
+                new ToolStripMenuItem("Оновити", Resources.Refresh, RefreshMenu_Click)
             });
 
             estimatorsMenu.Opening += ContextMenu_Opening;
@@ -63,6 +84,10 @@ namespace DATASCAN.View
             trvEstimators.DragEnter += TrvEstimators_DragEnter;
             trvEstimators.DragDrop += TrvEstimators_DragDrop;
         }
+
+        #endregion
+
+        #region Setup
 
         private void GetSettings()
         {
@@ -102,72 +127,45 @@ namespace DATASCAN.View
 
         private async void UpdateData()
         {
-            DataContextService service = new DataContextService();
-
-            bool result = await service.TestConnection(_sqlConnection);
-
-            if (!result)
+            bool connected = await _contextService.TestConnection(ex =>
             {
-                Logger.Log(lstMessages, new LogEntry { Message = "Неможливо встановити з'єднання з сервером баз даних. Перевірте налаштування з'єднання", Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                return;
-            }
+                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+            });
 
-            try
-            {
-                using (EntityRepository<EstimatorBase> repo = new EntityRepository<EstimatorBase>(_sqlConnection))
+            if (connected)
+            { 
+                _estimators = await _estimatorsService.GetAll(ex =>
                 {
-                    _estimators = repo.GetAll()
-                        .Include(c => c.Customer)
-                        .Include(c => c.Group)
-                        .Include(c => c.MeasurePoints)
-                        .OrderBy(o => o.Id)
-                        .ToList();
-                }
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
 
-                using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
+                _customers = await _customersService.GetAll(ex =>
                 {
-                    _customers = repo.GetAll().OrderBy(o => o.Title).ToList();
-                }
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
 
-                using (EntityRepository<EstimatorsGroup> repo = new EntityRepository<EstimatorsGroup>(_sqlConnection))
+                _groups = await _groupsService.GetAll(ex =>
                 {
-                    _groups = repo.GetAll().OrderBy(o => o.Name).ToList();
-                }
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
 
-                using (EntityRepository<MeasurePointBase> repo = new EntityRepository<MeasurePointBase>(_sqlConnection))
+                _points = await _pointsService.GetAll(ex =>
                 {
-                    _points = repo.GetAll().OrderBy(o => o.Id).ToList();
-                }                
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
 
-                using (EntityRepository<ScanBase> repo = new EntityRepository<ScanBase>(_sqlConnection))
+                _scans = await _scansService.GetAll(ex =>
                 {
-                    _scans = repo.GetAll()
-                        .Include(s => s.Members)
-                        .ToList();
-                }                
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
 
                 FillEstimatorsTree();
             }
-            catch (Exception ex)
-            {
-                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-            }
         }
 
-        private void mnuDatabase_Click(object sender, EventArgs e)
-        {
-            ServerSettingsForm form = new ServerSettingsForm { StartPosition = FormStartPosition.CenterParent };
+        #endregion
 
-            DialogResult result = form.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних були змінені", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-
-                InitializeConnection();
-                UpdateData();
-            }
-        }
+        #region Estimators tree filling
 
         private void FillEstimatorsTree()
         {
@@ -371,6 +369,8 @@ namespace DATASCAN.View
             }            
         }
 
+        #endregion
+
         private void ContextMenu_Opening(object sender, CancelEventArgs e)
         {
             TreeNode nodeAtMousePosition = trvEstimators.GetNodeAt(trvEstimators.PointToClient(MousePosition));
@@ -385,6 +385,21 @@ namespace DATASCAN.View
             else
             {
                 trvEstimators.SelectedNode = null;
+            }
+        }
+
+        private void mnuDatabase_Click(object sender, EventArgs e)
+        {
+            ServerSettingsForm form = new ServerSettingsForm { StartPosition = FormStartPosition.CenterParent };
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних були змінені", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+
+                InitializeConnection();
+                UpdateData();
             }
         }
 
@@ -468,6 +483,11 @@ namespace DATASCAN.View
 
                 UpdateData();
             }
+        }
+
+        private void RefreshMenu_Click(object sender, EventArgs e)
+        {
+            UpdateData();
         }
 
         private void AddFloutecMenu_Click(object sender, EventArgs e)

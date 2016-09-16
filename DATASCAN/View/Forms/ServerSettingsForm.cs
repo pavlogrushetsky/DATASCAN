@@ -103,9 +103,9 @@ namespace DATASCAN.View.Forms
 
             AllowEditing(false);
 
-            DataContextService service = new DataContextService();
+            DataContextService service = new DataContextService(connectionString.ToString());
 
-            bool result = await service.TestConnection(connectionString.ToString());
+            bool result = await service.TestConnection();
 
             if (result)
             {
