@@ -116,12 +116,8 @@
     <Compile Include="Model\Scanning\ScanPeriod.cs" />
     <Compile Include="Repositories\DataRecordRepository.cs" />
     <Compile Include="Repositories\EntityRepository.cs" />
-    <Compile Include="Services\ScansService.cs" />
-    <Compile Include="Services\MeasurePointsService.cs" />
-    <Compile Include="Services\EstimatorsGroupsService.cs" />
+    <Compile Include="Services\EntitiesService.cs" />
     <Compile Include="Services\DataContextService.cs" />
-    <Compile Include="Services\CustomersService.cs" />
-    <Compile Include="Services\EstimatorsService.cs" />
     <Compile Include="View\Controls\LogListView.cs">
       <SubType>Component</SubType>
     </Compile>

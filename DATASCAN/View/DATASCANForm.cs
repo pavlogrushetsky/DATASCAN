@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DATASCAN.Infrastructure.Logging;
 using DATASCAN.Infrastructure.Settings;
@@ -24,11 +25,12 @@ namespace DATASCAN.View
         #region Services
 
         private readonly DataContextService _contextService;
-        private readonly EstimatorsService _estimatorsService;
-        private readonly CustomersService _customersService;
-        private readonly EstimatorsGroupsService _groupsService;
-        private readonly MeasurePointsService _pointsService;
-        private readonly ScansService _scansService;
+        private readonly EntitiesService<EntityBase> _entitiesService; 
+        private readonly EntitiesService<EstimatorBase> _estimatorsService;
+        private readonly EntitiesService<Customer> _customersService;
+        private readonly EntitiesService<EstimatorsGroup> _groupsService;
+        private readonly EntitiesService<MeasurePointBase> _pointsService;
+        private readonly EntitiesService<ScanBase> _scansService;
 
         #endregion
 
@@ -55,13 +57,14 @@ namespace DATASCAN.View
             InitializeConnection();
 
             _contextService = new DataContextService(_sqlConnection);
-            _estimatorsService = new EstimatorsService(_sqlConnection);
-            _customersService = new CustomersService(_sqlConnection);
-            _groupsService = new EstimatorsGroupsService(_sqlConnection);
-            _pointsService = new MeasurePointsService(_sqlConnection);
-            _scansService = new ScansService(_sqlConnection);
+            _entitiesService = new EntitiesService<EntityBase>(_sqlConnection);
+            _estimatorsService = new EntitiesService<EstimatorBase>(_sqlConnection);
+            _customersService = new EntitiesService<Customer>(_sqlConnection);
+            _groupsService = new EntitiesService<EstimatorsGroup>(_sqlConnection);
+            _pointsService = new EntitiesService<MeasurePointBase>(_sqlConnection);
+            _scansService = new EntitiesService<ScanBase>(_sqlConnection);
 
-            UpdateData();
+            UpdateData().ConfigureAwait(false);
 
             ContextMenuStrip estimatorsMenu = new ContextMenuStrip();
 
@@ -125,7 +128,7 @@ namespace DATASCAN.View
             _sqlConnection = connection.ToString();
         }
 
-        private async void UpdateData()
+        private async Task UpdateData()
         {
             bool connected = await _contextService.TestConnection(ex =>
             {
@@ -133,31 +136,31 @@ namespace DATASCAN.View
             });
 
             if (connected)
-            { 
-                _estimators = await _estimatorsService.GetAll(ex =>
+            {
+                _estimators = await _estimatorsService.GetAll(null, ex =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                }, e => e.OrderBy(o => o.Id), e => e.Customer, e => e.Group, e => e.MeasurePoints);
 
-                _customers = await _customersService.GetAll(ex =>
+                _customers = await _customersService.GetAll(null, ex =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                }, c => c.OrderBy(o => o.Title));
 
-                _groups = await _groupsService.GetAll(ex =>
+                _groups = await _groupsService.GetAll(null, ex =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                }, g => g.OrderBy(o => o.Name));
 
-                _points = await _pointsService.GetAll(ex =>
+                _points = await _pointsService.GetAll(null, ex =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                }, p => p.OrderBy(o => o.Id));
 
-                _scans = await _scansService.GetAll(ex =>
+                _scans = await _scansService.GetAll(null, ex =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                }, null, s => s.Members);
 
                 FillEstimatorsTree();
             }
@@ -388,7 +391,7 @@ namespace DATASCAN.View
             }
         }
 
-        private void mnuDatabase_Click(object sender, EventArgs e)
+        private async void mnuDatabase_Click(object sender, EventArgs e)
         {
             ServerSettingsForm form = new ServerSettingsForm { StartPosition = FormStartPosition.CenterParent };
 
@@ -399,11 +402,11 @@ namespace DATASCAN.View
                 Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних були змінені", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
 
                 InitializeConnection();
-                UpdateData();
+                await UpdateData();
             }
         }
 
-        private void EditCustomerMenu_Click(object sender, EventArgs e)
+        private async void EditCustomerMenu_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 
@@ -422,25 +425,34 @@ namespace DATASCAN.View
 
             if (result == DialogResult.OK && form.Customer != null)
             {
-                using (EntityRepository<Customer> repo = new EntityRepository<Customer>(_sqlConnection))
+                customer = form.Customer;
+
+                if (form.IsEdit)
+                {                        
+                    await _customersService.Update(customer, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані замовника з Id={customer.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+                else
                 {
-                    if (form.IsEdit)
+                    await _customersService.Insert(customer, () =>
                     {
-                        customer = form.Customer;
-                        customer.DateModified = DateTime.Now;
-                        repo.Update(customer);
-                    }
-                    else
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано замовника з Id={customer.Id} та назвою '{customer.Title}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
                     {
-                        repo.Insert(form.Customer);
-                    }
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
                 }
 
-                UpdateData();
+                await UpdateData();
             }
         }
 
-        private void EditGroupMenu_Click(object sender, EventArgs e)
+        private async void EditGroupMenu_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 
@@ -461,14 +473,17 @@ namespace DATASCAN.View
 
             if (result == DialogResult.OK && form.Group != null)
             {
-                using (EntityRepository<EstimatorsGroup> repo = new EntityRepository<EstimatorsGroup>(_sqlConnection))
-                {
                     group = form.Group;
 
                     if (form.IsEdit)
-                    {                        
-                        group.DateModified = DateTime.Now;
-                        repo.Update(group);
+                    {
+                        await _groupsService.Update(group, () =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = $"Дані групи обчислювачів з Id={group.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                        });
                     }
                     else
                     {
@@ -477,17 +492,22 @@ namespace DATASCAN.View
                             group.CustomerId = customer.Id;                            
                         }
 
-                        repo.Insert(group);
+                        await _groupsService.Insert(group, () =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = $"Додано групу обчислювачів з Id={group.Id} та назвою '{group.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                        });
                     }
-                }
 
-                UpdateData();
+                await UpdateData();
             }
         }
 
-        private void RefreshMenu_Click(object sender, EventArgs e)
+        private async void RefreshMenu_Click(object sender, EventArgs e)
         {
-            UpdateData();
+            await UpdateData();
         }
 
         private void AddFloutecMenu_Click(object sender, EventArgs e)
@@ -515,25 +535,7 @@ namespace DATASCAN.View
 
         }
 
-        private void DeactivateMenu_Click(object sender, EventArgs e)
-        {
-            TreeNode node = trvEstimators.SelectedNode;
-
-            EntityBase entity = node?.Tag as EntityBase;
-
-            if (entity != null)
-            { 
-                using (EntityRepository<EntityBase> repo = new EntityRepository<EntityBase>(_sqlConnection))
-                {
-                    entity.IsActive = false;
-                    repo.Update(entity);
-                }
-
-                UpdateData();
-            }
-        }
-
-        private void ActivateMenu_Click(object sender, EventArgs e)
+        private async void DeactivateMenu_Click(object sender, EventArgs e)
         {
             TreeNode node = trvEstimators.SelectedNode;
 
@@ -541,13 +543,31 @@ namespace DATASCAN.View
 
             if (entity != null)
             {
-                using (EntityRepository<EntityBase> repo = new EntityRepository<EntityBase>(_sqlConnection))
+                entity.IsActive = false;
+                await _entitiesService.Update(entity, null, ex =>
                 {
-                    entity.IsActive = true;
-                    repo.Update(entity);
-                }
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
 
-                UpdateData();
+                await UpdateData();
+            }
+        }
+
+        private async void ActivateMenu_Click(object sender, EventArgs e)
+        {
+            TreeNode node = trvEstimators.SelectedNode;
+
+            EntityBase entity = node?.Tag as EntityBase;
+
+            if (entity != null)
+            {
+                entity.IsActive = true;
+                await _entitiesService.Update(entity, null, ex =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
+
+                await UpdateData();
             }
         }
 
@@ -581,7 +601,7 @@ namespace DATASCAN.View
             e.Effect = DragDropEffects.Move;
         }
 
-        private void TrvEstimators_DragDrop(object sender, DragEventArgs e)
+        private async void TrvEstimators_DragDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
             {
@@ -610,19 +630,25 @@ namespace DATASCAN.View
                             }
                         }
 
-                        using (EntityRepository<EstimatorsGroup> repo = new EntityRepository<EstimatorsGroup>(_sqlConnection))
+                        await _groupsService.Update(estimatorsGroup, () =>
                         {
-                            repo.Update(estimatorsGroup);
-                        }
+                            Logger.Log(lstMessages, new LogEntry { Message = destNode == null ? $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' відкріплено від замовника" : $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' закріплено за замовником з Id={estimatorsGroup.Customer.Id} та назвою '{estimatorsGroup.Customer.Title}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                        });
                     }
                     else if (newNode.Tag is EstimatorBase)
                     {
+                        string message = string.Empty;
+
                         if (destNode == null)
                         {
                             estimator.CustomerId = null;
                             estimator.Customer = null;
                             estimator.GroupId = null;
                             estimator.Group = null;
+                            message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' відкріплено від замовників та груп";
                         }
                         else
                         {
@@ -634,6 +660,7 @@ namespace DATASCAN.View
                                 estimator.Group = group;
                                 estimator.CustomerId = group.CustomerId;
                                 estimator.Customer = _customers.SingleOrDefault(c => c.Id == group.CustomerId);
+                                message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' закріплено за групою з Id={group.Id} та назвою '{group.Name}'";
                             }
                             else if (customer != null)
                             {
@@ -641,16 +668,20 @@ namespace DATASCAN.View
                                 estimator.Group = null;
                                 estimator.CustomerId = customer.Id;
                                 estimator.Customer = customer;
+                                message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' закріплено за замовником з Id={customer.Id} та назвою '{customer.Title}'";
                             }
                         }
 
-                        using (EntityRepository<EstimatorBase> repo = new EntityRepository<EstimatorBase>(_sqlConnection))
+                        await _estimatorsService.Update(estimator, () =>
                         {
-                            repo.Update(estimator);
-                        }
+                            Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                        });
                     }
 
-                    UpdateData();
+                    await UpdateData();
                 }
             }
         }

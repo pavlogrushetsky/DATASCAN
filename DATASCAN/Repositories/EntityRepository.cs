@@ -42,75 +42,75 @@ namespace DATASCAN.Repositories
         /// <summary>
         /// Возвращает сущность указанного типа по уникальному идентификатору
         /// </summary>
-        public Entity Get(int id)
+        public async Task<Entity> Get(int id)
         {
-            return _context.Set<Entity>().SingleOrDefault(e => e.Id == id);
+            return await _context.Set<Entity>().SingleOrDefaultAsync(e => e.Id == id);
         }
 
         /// <summary>
         /// Добавляет коллекцию сущностей указанного типа
         /// </summary>
-        public void Insert(IEnumerable<Entity> entities)
+        public async Task Insert(IEnumerable<Entity> entities)
         {
             _context.Set<Entity>().AddRange(entities);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Добавляет сущность указанного типа
         /// </summary>
-        public void Insert(Entity entity)
+        public async Task Insert(Entity entity)
         {
             _context.Set<Entity>().Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Обновляет данные коллекции сущностей указанного типа
         /// </summary>
-        public void Update(IEnumerable<Entity> entities)
+        public async Task Update(IEnumerable<Entity> entities)
         {
             foreach (Entity entity in entities)
             {
                 _context.Entry(entity).State = EntityState.Modified;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
         /// <summary>
         /// Обновляет данные сущности указанного типа
         /// </summary>
-        public void Update(Entity entity)
+        public async Task Update(Entity entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Удаляет все сущности указанного типа
         /// </summary>
-        public void DeleteAll()
+        public async Task DeleteAll()
         {
             _context.Set<Entity>().RemoveRange(GetAll());
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Удаляет коллекцию сущностей указанного типа
         /// </summary>
-        public void Delete(IEnumerable<Entity> entities)
+        public async Task Delete(IEnumerable<Entity> entities)
         {
             _context.Set<Entity>().RemoveRange(entities);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Удаляет сущность указанного типа по уникальному идентификатору
         /// </summary>
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _context.Set<Entity>().Remove(Get(id));
-            _context.SaveChanges();
+            _context.Set<Entity>().Remove(await Get(id));
+            await _context.SaveChangesAsync();
         }
 
         /*
