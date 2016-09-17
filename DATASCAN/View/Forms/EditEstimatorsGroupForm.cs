@@ -11,6 +11,12 @@ namespace DATASCAN.View.Forms
 
         public bool IsEdit { get; set; }
 
+        private bool _changed;
+
+        private const string TITLE_CREATE = "Додати групу обчислювачів";
+
+        private const string TITLE_EDIT = "Інформація про групу обчислювачів";
+
         public EditEstimatorsGroupForm()
         {
             InitializeComponent();
@@ -20,12 +26,12 @@ namespace DATASCAN.View.Forms
                 if (!IsEdit)
                 {
                     Group = new EstimatorsGroup();
-                    Text = "Додати групу обчислювачів";
+                    Text = TITLE_CREATE;
                     Icon = Resources.Add;
                 }
                 else
                 {
-                    Text = "Інформація про групу обчислювачів";
+                    Text = TITLE_EDIT;
                     txtName.Text = Group.Name;
                     Icon = Resources.Information1;
                 }
@@ -40,8 +46,16 @@ namespace DATASCAN.View.Forms
             {
                 Group.Name = txtName.Text;
 
-                DialogResult = DialogResult.OK;
-                Close();
+                if (IsEdit && !_changed)
+                {
+                    DialogResult = DialogResult.Cancel;
+                    Close();
+                }
+                else
+                {
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
             }
         }
 
@@ -62,7 +76,13 @@ namespace DATASCAN.View.Forms
 
         private void txtName_TextChanged(object sender, EventArgs e)
         {
+            _changed = !txtName.Text.Equals(Group.Name);
             lblNameError.Visible = false;
+
+            if (IsEdit)
+            {
+                Text = _changed ? TITLE_EDIT + " *" : TITLE_EDIT;
+            }
         }
     }
 }

@@ -96,6 +96,7 @@
             this.txtPerson.Name = "txtPerson";
             this.txtPerson.Size = new System.Drawing.Size(273, 20);
             this.txtPerson.TabIndex = 5;
+            this.txtPerson.TextChanged += new System.EventHandler(this.txtPerson_TextChanged);
             // 
             // txtPhone
             // 

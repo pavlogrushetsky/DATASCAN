@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Linq;
 using DATASCAN.Context;
 using DATASCAN.Model.Floutecs.Catalogs;
 using DATASCAN.Model.Rocs.Catalogs;
@@ -41,7 +42,10 @@ namespace DATASCAN.Migrations
                 new FloutecParamTypes { Code = 42, Param = "Р,Т,П", Description = "Расход, температура, плотность" }
             };
 
-            floutecParamTypes.ForEach(p => { context.FloutecParamTypes.AddOrUpdate(p); });
+            if (!floutecParamTypes.Any())
+            {
+                floutecParamTypes.ForEach(p => { context.FloutecParamTypes.AddOrUpdate(p); });
+            }            
 
             List<FloutecAlarmTypes> floutecAlarmTypes = new List<FloutecAlarmTypes>
             {
@@ -182,7 +186,10 @@ namespace DATASCAN.Migrations
                 new FloutecAlarmTypes { Code = 169, Description = "", Description_45 = "Изменены параметры АЦП" }
             };
 
-            floutecAlarmTypes.ForEach(a => { context.FloutecAlarmTypes.AddOrUpdate(a); });
+            if (!floutecAlarmTypes.Any())
+            {
+                floutecAlarmTypes.ForEach(a => { context.FloutecAlarmTypes.AddOrUpdate(a); });
+            }            
 
             List<FloutecInterTypes> floutecInterTypes = new List<FloutecInterTypes>
             {
@@ -333,7 +340,10 @@ namespace DATASCAN.Migrations
                 new FloutecInterTypes { Code = 205, Description = "Объём газа на 1 импульс для импульсного выхода №3, м3", Description_45 = "" }
             };
 
-            floutecInterTypes.ForEach(i => { context.FloutecInterTypes.AddOrUpdate(i); });
+            if (!floutecInterTypes.Any())
+            {
+                floutecInterTypes.ForEach(i => { context.FloutecInterTypes.AddOrUpdate(i); });
+            }            
 
             List<FloutecSensorTypes> floutecSensorTypes = new List<FloutecSensorTypes>
             {
@@ -342,7 +352,10 @@ namespace DATASCAN.Migrations
                 new FloutecSensorTypes { Code = 3, Description = "Массовый расходомер" },
             };
 
-            floutecSensorTypes.ForEach(s => { context.FloutecSensorTypes.AddOrUpdate(s); });
+            if (!floutecSensorTypes.Any())
+            {
+                floutecSensorTypes.ForEach(s => { context.FloutecSensorTypes.AddOrUpdate(s); });
+            }            
 
             List<Roc809EventTypes> rocEventTypes = new List<Roc809EventTypes>
             {
@@ -356,7 +369,10 @@ namespace DATASCAN.Migrations
                 new Roc809EventTypes { Code = 7, Description = "Событие проверки калибровки" }
             };
 
-            rocEventTypes.ForEach(e => { context.Roc809EventTypes.AddOrUpdate(e); });
+            if (!rocEventTypes.Any())
+            {
+                rocEventTypes.ForEach(e => { context.Roc809EventTypes.AddOrUpdate(e); });
+            }           
 
             List<Roc809EventCodes> rocEventCodes = new List<Roc809EventCodes>
             {
@@ -380,7 +396,10 @@ namespace DATASCAN.Migrations
                 new Roc809EventCodes { Code = 253, Description = "Сброс мультисегментной виртуальной памяти (MVS) к заводским настройкам" }
             };
 
-            rocEventCodes.ForEach(e => { context.Roc809EventCodes.AddOrUpdate(e); });
+            if (!rocEventCodes.Any())
+            {
+                rocEventCodes.ForEach(e => { context.Roc809EventCodes.AddOrUpdate(e); });
+            }            
 
             List<Roc809AlarmTypes> rocAlarmTypes = new List<Roc809AlarmTypes>
             {
@@ -391,7 +410,10 @@ namespace DATASCAN.Migrations
                 new Roc809AlarmTypes { Code = 4, Description = "Авария пользовательского значения" }
             };
 
-            rocAlarmTypes.ForEach(a => { context.Roc809AlarmTypes.AddOrUpdate(a); });
+            if (!rocAlarmTypes.Any())
+            {
+                rocAlarmTypes.ForEach(a => { context.Roc809AlarmTypes.AddOrUpdate(a); });
+            }            
 
             List<Roc809AlarmCodes> rocAlarmCodes = new List<Roc809AlarmCodes>
             {
@@ -431,7 +453,10 @@ namespace DATASCAN.Migrations
                 new Roc809AlarmCodes { Code = 33, Description = "Авария импульса масштабной отметки" }
             };
 
-            rocAlarmCodes.ForEach(a => { context.Roc809AlarmCodes.AddOrUpdate(a); });
+            if (!rocAlarmCodes.Any())
+            {
+                rocAlarmCodes.ForEach(a => { context.Roc809AlarmCodes.AddOrUpdate(a); });
+            }
         }
     }
 }
