@@ -33,7 +33,7 @@ namespace DATASCAN.View.Forms
                 {
                     Text = TITLE_EDIT;
                     txtName.Text = Group.Name;
-                    Icon = Resources.Information1;
+                    Icon = Resources.Group1;
                 }
             };
         }

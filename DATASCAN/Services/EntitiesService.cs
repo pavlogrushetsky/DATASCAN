@@ -65,7 +65,7 @@ namespace DATASCAN.Services
             {
                 if (result.Exception != null)
                 {
-                    onException?.Invoke(result.Exception);
+                    onException?.Invoke(result.Exception.InnerException);
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
@@ -80,19 +80,25 @@ namespace DATASCAN.Services
         /// <param name="onException">Действие, выполняемое в случае исключения</param>
         public async Task Update(T entity, Action onSuccess = null, Action<Exception> onException = null)
         {
-            try
+            await Task.Factory.StartNew(() =>
             {
                 using (EntityRepository<T> repo = new EntityRepository<T>(_connection))
                 {
                     entity.DateModified = DateTime.Now;
-                    await repo.Update(entity);
+                    repo.Update(entity);
+                }
+            }, TaskCreationOptions.LongRunning)
+            .ContinueWith(result =>
+            {
+                if (result.Exception != null)
+                {
+                    onException?.Invoke(result.Exception.InnerException);
+                }
+                else
+                {
                     onSuccess?.Invoke();
                 }
-            }
-            catch (Exception ex)
-            {
-                onException?.Invoke(ex);
-            }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         /// <summary>
@@ -103,18 +109,24 @@ namespace DATASCAN.Services
         /// <param name="onException">Действие, выполняемое в случае исключения</param>
         public async Task Insert(T entity, Action onSuccess = null, Action<Exception> onException = null)
         {
-            try
+            await Task.Factory.StartNew(() =>
             {
                 using (EntityRepository<T> repo = new EntityRepository<T>(_connection))
                 {
-                    await repo.Insert(entity);
+                    repo.Insert(entity);
+                }
+            }, TaskCreationOptions.LongRunning)
+            .ContinueWith(result =>
+            {
+                if (result.Exception != null)
+                {
+                    onException?.Invoke(result.Exception.InnerException);
+                }
+                else
+                {
                     onSuccess?.Invoke();
                 }
-            }
-            catch (Exception ex)
-            {
-                onException?.Invoke(ex);
-            }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

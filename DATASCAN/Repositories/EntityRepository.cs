@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using DATASCAN.Context;
 using DATASCAN.Model.Common;
 
@@ -42,75 +41,75 @@ namespace DATASCAN.Repositories
         /// <summary>
         /// Возвращает сущность указанного типа по уникальному идентификатору
         /// </summary>
-        public async Task<Entity> Get(int id)
+        public Entity Get(int id)
         {
-            return await _context.Set<Entity>().SingleOrDefaultAsync(e => e.Id == id);
+            return _context.Set<Entity>().SingleOrDefault(e => e.Id == id);
         }
 
         /// <summary>
         /// Добавляет коллекцию сущностей указанного типа
         /// </summary>
-        public async Task Insert(IEnumerable<Entity> entities)
+        public void Insert(IEnumerable<Entity> entities)
         {
             _context.Set<Entity>().AddRange(entities);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         /// <summary>
         /// Добавляет сущность указанного типа
         /// </summary>
-        public async Task Insert(Entity entity)
+        public void Insert(Entity entity)
         {
             _context.Set<Entity>().Add(entity);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         /// <summary>
         /// Обновляет данные коллекции сущностей указанного типа
         /// </summary>
-        public async Task Update(IEnumerable<Entity> entities)
+        public void Update(IEnumerable<Entity> entities)
         {
             foreach (Entity entity in entities)
             {
                 _context.Entry(entity).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
         }
 
         /// <summary>
         /// Обновляет данные сущности указанного типа
         /// </summary>
-        public async Task Update(Entity entity)
+        public void Update(Entity entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         /// <summary>
         /// Удаляет все сущности указанного типа
         /// </summary>
-        public async Task DeleteAll()
+        public void DeleteAll()
         {
             _context.Set<Entity>().RemoveRange(GetAll());
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         /// <summary>
         /// Удаляет коллекцию сущностей указанного типа
         /// </summary>
-        public async Task Delete(IEnumerable<Entity> entities)
+        public void Delete(IEnumerable<Entity> entities)
         {
             _context.Set<Entity>().RemoveRange(entities);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         /// <summary>
         /// Удаляет сущность указанного типа по уникальному идентификатору
         /// </summary>
-        public async Task Delete(int id)
+        public void Delete(int id)
         {
-            _context.Set<Entity>().Remove(await Get(id));
-            await _context.SaveChangesAsync();
+            _context.Set<Entity>().Remove(Get(id));
+            _context.SaveChanges();
         }
 
         /*

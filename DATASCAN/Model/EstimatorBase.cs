@@ -32,6 +32,11 @@ namespace DATASCAN.Model
         public string Phone { get; set; }
 
         /// <summary>
+        /// Опрос осуществляется по телефону через GPRS
+        /// </summary>
+        public bool IsScannedViaGPRS { get; set; }
+
+        /// <summary>
         /// Первичный ключ заказчика
         /// </summary>
         public int? CustomerId { get; set; }

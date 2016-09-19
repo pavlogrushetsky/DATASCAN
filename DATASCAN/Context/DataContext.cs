@@ -30,6 +30,7 @@ namespace DATASCAN.Context
         public DataContext(DbConnection connection) : base(connection, true)
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Configuration>(true));
+            Database.Initialize(true);
         }
 
         /// <summary>

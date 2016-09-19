@@ -77,6 +77,10 @@
     <Compile Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.Designer.cs">
       <DependentUpon>201609091704352_AddedNameToEstimatorsGroup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609191842505_AddedScanViaGPRSToEstimators.cs" />
+    <Compile Include="Migrations\201609191842505_AddedScanViaGPRSToEstimators.Designer.cs">
+      <DependentUpon>201609191842505_AddedScanViaGPRSToEstimators.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
     <Compile Include="Model\Common\DataRecordBase.cs" />
@@ -144,6 +148,12 @@
     <Compile Include="View\Forms\EditEstimatorsGroupForm.Designer.cs">
       <DependentUpon>EditEstimatorsGroupForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\EditFloutecForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditFloutecForm.Designer.cs">
+      <DependentUpon>EditFloutecForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\ServerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.resx">
       <DependentUpon>201609091704352_AddedNameToEstimatorsGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609191842505_AddedScanViaGPRSToEstimators.resx">
+      <DependentUpon>201609191842505_AddedScanViaGPRSToEstimators.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -177,6 +190,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditEstimatorsGroupForm.resx">
       <DependentUpon>EditEstimatorsGroupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditFloutecForm.resx">
+      <DependentUpon>EditFloutecForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\ServerSettingsForm.resx">
       <DependentUpon>ServerSettingsForm.cs</DependentUpon>
@@ -199,10 +215,14 @@
     <Folder Include="Resources\Cursors\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Icons\Customer.ico" />
     <Content Include="Resources\Icons\DatabaseSettings.ico" />
     <Content Include="Resources\Icons\DATASCAN.ico" />
     <Content Include="Resources\Icons\Add.ico" />
     <Content Include="Resources\Icons\Information.ico" />
+    <Content Include="Resources\Icons\Group.ico" />
+    <Content Include="Resources\Icons\Estimator.ico" />
+    <Content Include="Resources\Icons\Sensor.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
     <Content Include="Resources\Images\Customer.png" />

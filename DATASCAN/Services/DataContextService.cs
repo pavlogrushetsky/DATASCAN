@@ -28,22 +28,25 @@ namespace DATASCAN.Services
         /// <returns></returns>
         public async Task<bool> TestConnection(Action<Exception> onException = null)
         {
-            try
+            return await Task.Factory.StartNew(() =>
             {
                 DbConnection connection = new SqlConnection(_connection);
 
                 using (DataContext context = new DataContext(connection))
                 {
-                    await context.Database.Connection.OpenAsync();
+                    context.Database.Connection.Open();
                 }
-            }
-            catch (Exception ex)
+            }, TaskCreationOptions.LongRunning)
+            .ContinueWith(result =>
             {
-                onException?.Invoke(ex);
-                return false;
-            }
+                if (result.Exception != null)
+                {
+                    onException?.Invoke(result.Exception.InnerException);
+                    return false;
+                }
 
-            return true;
+                return true;
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

@@ -121,6 +121,16 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Customer1 {
+            get {
+                object obj = ResourceManager.GetObject("Customer1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap DatabaseSettings {
@@ -181,12 +191,32 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Estimator1 {
+            get {
+                object obj = ResourceManager.GetObject("Estimator1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Group {
             get {
                 object obj = ResourceManager.GetObject("Group", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Group1 {
+            get {
+                object obj = ResourceManager.GetObject("Group1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
@@ -257,6 +287,16 @@ namespace DATASCAN.Properties {
             get {
                 object obj = ResourceManager.GetObject("Sensor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Sensor1 {
+            get {
+                object obj = ResourceManager.GetObject("Sensor1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

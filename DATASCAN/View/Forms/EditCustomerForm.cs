@@ -45,7 +45,7 @@ namespace DATASCAN.View.Forms
                     txtPerson.Text = Customer.Person;
                     txtPhone.Text = Customer.Phone;
                     txtEmail.Text = Customer.Email;
-                    Icon = Resources.Information1;
+                    Icon = Resources.Customer1;
                 }
             };
 

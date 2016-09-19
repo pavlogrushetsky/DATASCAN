@@ -14,7 +14,6 @@ using DATASCAN.Model.Floutecs;
 using DATASCAN.Model.Rocs;
 using DATASCAN.Model.Scanning;
 using DATASCAN.Properties;
-using DATASCAN.Repositories;
 using DATASCAN.Services;
 using DATASCAN.View.Forms;
 
@@ -164,6 +163,15 @@ namespace DATASCAN.View
 
                 FillEstimatorsTree();
             }
+            else
+            {
+                trvEstimators.Nodes.Clear();                
+            }
+
+            trvEstimators.ContextMenuStrip.Items[0].Enabled = connected;
+            trvEstimators.ContextMenuStrip.Items[1].Enabled = connected;
+            trvEstimators.ContextMenuStrip.Items[2].Enabled = connected;
+            trvEstimators.ContextMenuStrip.Items[3].Enabled = connected;
         }
 
         #endregion
@@ -312,7 +320,7 @@ namespace DATASCAN.View
                 {
                     estimator is Floutec ? new ToolStripMenuItem("Додати нитку вимірювання", null, AddPointMenu_Click) : new ToolStripMenuItem("Додати точку вимірювання", null, AddPointMenu_Click),
                     new ToolStripSeparator(),
-                    new ToolStripMenuItem("Налаштування", Resources.Settings, EstimatorSettingsMenu_Click),
+                    estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, AddFloutecMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, AddRocMenu_Click),
                     new ToolStripSeparator(),
                     estimator.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
                     new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
@@ -473,33 +481,33 @@ namespace DATASCAN.View
 
             if (result == DialogResult.OK && form.Group != null)
             {
-                    group = form.Group;
+                group = form.Group;
 
-                    if (form.IsEdit)
+                if (form.IsEdit)
+                {
+                    await _groupsService.Update(group, () =>
                     {
-                        await _groupsService.Update(group, () =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = $"Дані групи обчислювачів з Id={group.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                        }, ex =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                        });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані групи обчислювачів з Id={group.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+                else
+                {
+                    if (customer != null)
+                    {
+                        group.CustomerId = customer.Id;                            
                     }
-                    else
-                    {
-                        if (customer != null)
-                        {
-                            group.CustomerId = customer.Id;                            
-                        }
 
-                        await _groupsService.Insert(group, () =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = $"Додано групу обчислювачів з Id={group.Id} та назвою '{group.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                        }, ex =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                        });
-                    }
+                    await _groupsService.Insert(group, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано групу обчислювачів з Id={group.Id} та назвою '{group.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
 
                 await UpdateData();
             }
@@ -510,9 +518,64 @@ namespace DATASCAN.View
             await UpdateData();
         }
 
-        private void AddFloutecMenu_Click(object sender, EventArgs e)
+        private async void AddFloutecMenu_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 
+            TreeNode node = trvEstimators.SelectedNode;
+
+            Customer customer = node?.Tag as Customer;
+
+            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+
+            Floutec floutec = node?.Tag as Floutec;
+
+            EditFloutecForm form = new EditFloutecForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                Floutec = floutec
+            };
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK && form.Floutec != null)
+            {
+                floutec = form.Floutec;
+
+                if (form.IsEdit)
+                {
+                    await _estimatorsService.Update(floutec, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ФЛОУТЕК з Id={floutec.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+                else
+                {
+                    if (customer != null)
+                    {
+                        floutec.CustomerId = customer.Id;
+                    }
+                    else if (group != null)
+                    {
+                        floutec.GroupId = group.Id;
+                        floutec.CustomerId = group.CustomerId;
+                    }
+
+                    await _estimatorsService.Insert(floutec, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ФЛОУТЕК з Id={floutec.Id} та назвою '{floutec.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+
+                await UpdateData();
+            }         
         }
 
         private void AddRocMenu_Click(object sender, EventArgs e)
@@ -521,11 +584,6 @@ namespace DATASCAN.View
         }
 
         private void AddPointMenu_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void EstimatorSettingsMenu_Click(object sender, EventArgs e)
         {
 
         }
