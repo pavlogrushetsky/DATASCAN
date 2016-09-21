@@ -14,14 +14,12 @@ namespace DATASCAN.Model.Rocs
         /// <summary>
         /// Адрес
         /// </summary>
-        [Required]
         [MaxLength(15)]
         public string Address { get; set; }
 
         /// <summary>
         /// Порт
         /// </summary>
-        [Required]
         public int Port { get; set; }
 
         /// <summary>

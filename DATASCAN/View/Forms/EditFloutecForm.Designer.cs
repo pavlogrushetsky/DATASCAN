@@ -38,11 +38,12 @@
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.txtPhone = new System.Windows.Forms.MaskedTextBox();
             this.numAddress = new System.Windows.Forms.NumericUpDown();
-            this.cbScanType = new System.Windows.Forms.CheckBox();
-            this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.lblNameError = new System.Windows.Forms.Label();
             this.lblPhoneError = new System.Windows.Forms.Label();
+            this.rbDbf = new System.Windows.Forms.RadioButton();
+            this.rbGPRS = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.numAddress)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,7 +68,7 @@
             // lblPhone
             // 
             this.lblPhone.AutoSize = true;
-            this.lblPhone.Location = new System.Drawing.Point(12, 131);
+            this.lblPhone.Location = new System.Drawing.Point(12, 179);
             this.lblPhone.Name = "lblPhone";
             this.lblPhone.Size = new System.Drawing.Size(92, 13);
             this.lblPhone.TabIndex = 2;
@@ -76,7 +77,7 @@
             // lblAddress
             // 
             this.lblAddress.AutoSize = true;
-            this.lblAddress.Location = new System.Drawing.Point(12, 179);
+            this.lblAddress.Location = new System.Drawing.Point(12, 131);
             this.lblAddress.Name = "lblAddress";
             this.lblAddress.Size = new System.Drawing.Size(44, 13);
             this.lblAddress.TabIndex = 3;
@@ -87,43 +88,42 @@
             this.lblScanType.AutoSize = true;
             this.lblScanType.Location = new System.Drawing.Point(12, 230);
             this.lblScanType.Name = "lblScanType";
-            this.lblScanType.Size = new System.Drawing.Size(101, 13);
+            this.lblScanType.Size = new System.Drawing.Size(67, 13);
             this.lblScanType.TabIndex = 4;
-            this.lblScanType.Text = "Спосіб опитування";
+            this.lblScanType.Text = "Опитування";
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(119, 30);
+            this.txtName.Location = new System.Drawing.Point(110, 30);
             this.txtName.MaxLength = 50;
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(273, 20);
+            this.txtName.Size = new System.Drawing.Size(282, 20);
             this.txtName.TabIndex = 5;
             this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(119, 79);
+            this.txtDescription.Location = new System.Drawing.Point(110, 79);
             this.txtDescription.MaxLength = 200;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(273, 20);
+            this.txtDescription.Size = new System.Drawing.Size(282, 20);
             this.txtDescription.TabIndex = 6;
             this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
             // 
             // txtPhone
             // 
-            this.txtPhone.HidePromptOnLeave = true;
-            this.txtPhone.Location = new System.Drawing.Point(119, 128);
-            this.txtPhone.Mask = "+38 (999) 000-0000";
+            this.txtPhone.Location = new System.Drawing.Point(110, 176);
+            this.txtPhone.Mask = "+38 (000) 000-0000";
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.RejectInputOnFirstFailure = true;
-            this.txtPhone.Size = new System.Drawing.Size(273, 20);
+            this.txtPhone.Size = new System.Drawing.Size(282, 20);
             this.txtPhone.TabIndex = 7;
             this.txtPhone.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
             this.txtPhone.TextChanged += new System.EventHandler(this.txtPhone_TextChanged);
             // 
             // numAddress
             // 
-            this.numAddress.Location = new System.Drawing.Point(119, 177);
+            this.numAddress.Location = new System.Drawing.Point(110, 129);
             this.numAddress.Maximum = new decimal(new int[] {
             255,
             0,
@@ -135,7 +135,7 @@
             0,
             0});
             this.numAddress.Name = "numAddress";
-            this.numAddress.Size = new System.Drawing.Size(273, 20);
+            this.numAddress.Size = new System.Drawing.Size(282, 20);
             this.numAddress.TabIndex = 8;
             this.numAddress.Value = new decimal(new int[] {
             1,
@@ -144,42 +144,31 @@
             0});
             this.numAddress.ValueChanged += new System.EventHandler(this.numAddress_ValueChanged);
             // 
-            // cbScanType
+            // btnCancel
             // 
-            this.cbScanType.AutoSize = true;
-            this.cbScanType.Location = new System.Drawing.Point(119, 229);
-            this.cbScanType.Name = "cbScanType";
-            this.cbScanType.Size = new System.Drawing.Size(89, 17);
-            this.cbScanType.TabIndex = 9;
-            this.cbScanType.Text = "Таблиці DBF";
-            this.cbScanType.UseVisualStyleBackColor = true;
-            this.cbScanType.CheckedChanged += new System.EventHandler(this.cbScanType_CheckedChanged);
+            this.btnCancel.Location = new System.Drawing.Point(317, 276);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 13;
+            this.btnCancel.Text = "Скасувати";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(317, 276);
+            this.btnSave.Location = new System.Drawing.Point(236, 276);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 13;
-            this.btnSave.Text = "Скасувати";
+            this.btnSave.TabIndex = 12;
+            this.btnSave.Text = "Зберегти";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(236, 276);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 12;
-            this.btnCancel.Text = "Зберегти";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // lblNameError
             // 
             this.lblNameError.AutoSize = true;
             this.lblNameError.ForeColor = System.Drawing.Color.Red;
-            this.lblNameError.Location = new System.Drawing.Point(116, 14);
+            this.lblNameError.Location = new System.Drawing.Point(107, 14);
             this.lblNameError.Name = "lblNameError";
             this.lblNameError.Size = new System.Drawing.Size(148, 13);
             this.lblNameError.TabIndex = 10;
@@ -190,23 +179,49 @@
             // 
             this.lblPhoneError.AutoSize = true;
             this.lblPhoneError.ForeColor = System.Drawing.Color.Red;
-            this.lblPhoneError.Location = new System.Drawing.Point(116, 112);
+            this.lblPhoneError.Location = new System.Drawing.Point(107, 160);
             this.lblPhoneError.Name = "lblPhoneError";
             this.lblPhoneError.Size = new System.Drawing.Size(258, 13);
             this.lblPhoneError.TabIndex = 11;
             this.lblPhoneError.Text = "Вказаний номер телефону не відповідає шаблону";
             this.lblPhoneError.Visible = false;
             // 
+            // rbDbf
+            // 
+            this.rbDbf.AutoSize = true;
+            this.rbDbf.Checked = true;
+            this.rbDbf.Location = new System.Drawing.Point(110, 228);
+            this.rbDbf.Name = "rbDbf";
+            this.rbDbf.Size = new System.Drawing.Size(88, 17);
+            this.rbDbf.TabIndex = 14;
+            this.rbDbf.TabStop = true;
+            this.rbDbf.Text = "Таблиці DBF";
+            this.rbDbf.UseVisualStyleBackColor = true;
+            this.rbDbf.CheckedChanged += new System.EventHandler(this.rbDbf_CheckedChanged);
+            // 
+            // rbGPRS
+            // 
+            this.rbGPRS.AutoSize = true;
+            this.rbGPRS.Enabled = false;
+            this.rbGPRS.Location = new System.Drawing.Point(204, 228);
+            this.rbGPRS.Name = "rbGPRS";
+            this.rbGPRS.Size = new System.Drawing.Size(72, 17);
+            this.rbGPRS.TabIndex = 15;
+            this.rbGPRS.Text = "По GPRS";
+            this.rbGPRS.UseVisualStyleBackColor = true;
+            this.rbGPRS.CheckedChanged += new System.EventHandler(this.rbGPRS_CheckedChanged);
+            // 
             // EditFloutecForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(404, 311);
+            this.Controls.Add(this.rbGPRS);
+            this.Controls.Add(this.rbDbf);
             this.Controls.Add(this.lblPhoneError);
             this.Controls.Add(this.lblNameError);
-            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.cbScanType);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.numAddress);
             this.Controls.Add(this.txtPhone);
             this.Controls.Add(this.txtDescription);
@@ -241,10 +256,11 @@
         private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.MaskedTextBox txtPhone;
         private System.Windows.Forms.NumericUpDown numAddress;
-        private System.Windows.Forms.CheckBox cbScanType;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblNameError;
         private System.Windows.Forms.Label lblPhoneError;
+        private System.Windows.Forms.RadioButton rbDbf;
+        private System.Windows.Forms.RadioButton rbGPRS;
     }
 }

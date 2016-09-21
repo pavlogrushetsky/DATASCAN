@@ -46,14 +46,15 @@ namespace DATASCAN.View.Forms
                     txtDescription.Text = Floutec.Description;
                     txtPhone.Text = Floutec.Phone;
                     numAddress.Value = Floutec.Address;
-                    cbScanType.Checked = Floutec.IsScannedViaGPRS;
+                    rbGPRS.Checked = Floutec.IsScannedViaGPRS;
+                    rbDbf.Checked = !rbGPRS.Checked;
                     Icon = Resources.Estimator1;
                 }
 
-                txtPhone.Enabled = cbScanType.Checked;
+                txtPhone.Enabled = rbGPRS.Checked;
             };
 
-            btnCancel.Select();
+            btnSave.Select();
         }
 
         private void txtName_TextChanged(object sender, EventArgs e)
@@ -82,20 +83,33 @@ namespace DATASCAN.View.Forms
             SetChanged();
         }
 
-        private void cbScanType_CheckedChanged(object sender, EventArgs e)
+        private void rbDbf_CheckedChanged(object sender, EventArgs e)
         {
-            _scanTypeChanged = cbScanType.Checked != Floutec.IsScannedViaGPRS;
+            _scanTypeChanged = rbGPRS.Checked != Floutec.IsScannedViaGPRS;
             SetChanged();
-            txtPhone.Enabled = cbScanType.Checked;
-            cbScanType.Text = cbScanType.Checked ? "За номером телефону через GPRS" : "Таблиці DBF";
-            if (!cbScanType.Checked)
+            txtPhone.Enabled = rbGPRS.Checked;
+        }
+
+        private void rbGPRS_CheckedChanged(object sender, EventArgs e)
+        {
+            _scanTypeChanged = rbGPRS.Checked != Floutec.IsScannedViaGPRS;
+            SetChanged();
+            txtPhone.Enabled = rbGPRS.Checked;
+            if (!rbGPRS.Checked)
             {
                 lblPhoneError.Visible = false;
+                txtPhone.Text = Floutec.Phone;
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {           
             bool valid = ValidateFields();
 
             if (valid)
@@ -104,7 +118,7 @@ namespace DATASCAN.View.Forms
                 Floutec.Description = txtDescription.Text;
                 Floutec.Phone = txtPhone.Text;
                 Floutec.Address = (int)numAddress.Value;
-                Floutec.IsScannedViaGPRS = cbScanType.Checked;
+                Floutec.IsScannedViaGPRS = rbGPRS.Checked;
 
                 if (IsEdit && !_changed)
                 {
@@ -119,16 +133,10 @@ namespace DATASCAN.View.Forms
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
-
         private bool ValidateFields()
         {
             bool nameIsValid = !string.IsNullOrEmpty(txtName.Text);
-            bool phoneIsValid = !cbScanType.Checked || (cbScanType.Checked && !string.IsNullOrEmpty(txtPhone.Text) && txtPhone.MaskCompleted);
+            bool phoneIsValid = !rbGPRS.Checked || (rbGPRS.Checked && !string.IsNullOrEmpty(txtPhone.Text) && txtPhone.MaskCompleted);
 
             lblNameError.Visible = !nameIsValid;
             lblPhoneError.Visible = !phoneIsValid;

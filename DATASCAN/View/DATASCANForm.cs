@@ -71,8 +71,8 @@ namespace DATASCAN.View
             {
                 new ToolStripMenuItem("Додати замовника", null, EditCustomerMenu_Click),
                 new ToolStripMenuItem("Додати групу обчислювачів", null, EditGroupMenu_Click),
-                new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
-                new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
+                new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, EditFloutecMenu_Click),
+                new ToolStripMenuItem("Додати обчислювач ROC809", null, EditRocMenu_Click),
                 new ToolStripSeparator(), 
                 new ToolStripMenuItem("Оновити", Resources.Refresh, RefreshMenu_Click)
             });
@@ -206,8 +206,8 @@ namespace DATASCAN.View
                 customerMenu.Items.AddRange(new ToolStripItem[]
                 {
                     new ToolStripMenuItem("Додати групу обчислювачів", null, EditGroupMenu_Click),
-                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
-                    new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
+                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, EditFloutecMenu_Click),
+                    new ToolStripMenuItem("Додати обчислювач ROC809", null, EditRocMenu_Click),
                     new ToolStripSeparator(),
                     new ToolStripMenuItem("Інформація", Resources.Information, EditCustomerMenu_Click),
                     new ToolStripSeparator(), 
@@ -252,8 +252,8 @@ namespace DATASCAN.View
 
                 groupMenu.Items.AddRange(new ToolStripItem[]
                 {
-                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, AddFloutecMenu_Click),
-                    new ToolStripMenuItem("Додати обчислювач ROC809", null, AddRocMenu_Click),
+                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, EditFloutecMenu_Click),
+                    new ToolStripMenuItem("Додати обчислювач ROC809", null, EditRocMenu_Click),
                     new ToolStripSeparator(),
                     new ToolStripMenuItem("Інформація", Resources.Information, EditGroupMenu_Click),
                     new ToolStripSeparator(),
@@ -320,7 +320,7 @@ namespace DATASCAN.View
                 {
                     estimator is Floutec ? new ToolStripMenuItem("Додати нитку вимірювання", null, AddPointMenu_Click) : new ToolStripMenuItem("Додати точку вимірювання", null, AddPointMenu_Click),
                     new ToolStripSeparator(),
-                    estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, AddFloutecMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, AddRocMenu_Click),
+                    estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, EditFloutecMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, EditRocMenu_Click),
                     new ToolStripSeparator(),
                     estimator.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
                     new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
@@ -518,7 +518,7 @@ namespace DATASCAN.View
             await UpdateData();
         }
 
-        private async void AddFloutecMenu_Click(object sender, EventArgs e)
+        private async void EditFloutecMenu_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 
@@ -578,9 +578,64 @@ namespace DATASCAN.View
             }         
         }
 
-        private void AddRocMenu_Click(object sender, EventArgs e)
+        private async void EditRocMenu_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 
+            TreeNode node = trvEstimators.SelectedNode;
+
+            Customer customer = node?.Tag as Customer;
+
+            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+
+            Roc809 roc = node?.Tag as Roc809;
+
+            EditRocForm form = new EditRocForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                Roc = roc
+            };
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK && form.Roc != null)
+            {
+                roc = form.Roc;
+
+                if (form.IsEdit)
+                {
+                    await _estimatorsService.Update(roc, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ROC809 з Id={roc.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+                else
+                {
+                    if (customer != null)
+                    {
+                        roc.CustomerId = customer.Id;
+                    }
+                    else if (group != null)
+                    {
+                        roc.GroupId = group.Id;
+                        roc.CustomerId = group.CustomerId;
+                    }
+
+                    await _estimatorsService.Insert(roc, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ROC809 з Id={roc.Id} та назвою '{roc.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+
+                await UpdateData();
+            }
         }
 
         private void AddPointMenu_Click(object sender, EventArgs e)
