@@ -158,6 +158,12 @@
     <Compile Include="View\Forms\EditFloutecForm.Designer.cs">
       <DependentUpon>EditFloutecForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\EditFloutecLineForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditFloutecLineForm.Designer.cs">
+      <DependentUpon>EditFloutecLineForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\EditRocForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -206,6 +212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditFloutecForm.resx">
       <DependentUpon>EditFloutecForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditFloutecLineForm.resx">
+      <DependentUpon>EditFloutecLineForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditRocForm.resx">
       <DependentUpon>EditRocForm.cs</DependentUpon>

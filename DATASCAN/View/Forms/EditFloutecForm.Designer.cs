@@ -71,7 +71,7 @@
             this.lblPhone.Location = new System.Drawing.Point(12, 179);
             this.lblPhone.Name = "lblPhone";
             this.lblPhone.Size = new System.Drawing.Size(92, 13);
-            this.lblPhone.TabIndex = 2;
+            this.lblPhone.TabIndex = 3;
             this.lblPhone.Text = "Номер телефону";
             // 
             // lblAddress
@@ -80,7 +80,7 @@
             this.lblAddress.Location = new System.Drawing.Point(12, 131);
             this.lblAddress.Name = "lblAddress";
             this.lblAddress.Size = new System.Drawing.Size(44, 13);
-            this.lblAddress.TabIndex = 3;
+            this.lblAddress.TabIndex = 2;
             this.lblAddress.Text = "Адреса";
             // 
             // lblScanType
@@ -117,7 +117,7 @@
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.RejectInputOnFirstFailure = true;
             this.txtPhone.Size = new System.Drawing.Size(282, 20);
-            this.txtPhone.TabIndex = 7;
+            this.txtPhone.TabIndex = 8;
             this.txtPhone.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
             this.txtPhone.TextChanged += new System.EventHandler(this.txtPhone_TextChanged);
             // 
@@ -136,7 +136,7 @@
             0});
             this.numAddress.Name = "numAddress";
             this.numAddress.Size = new System.Drawing.Size(282, 20);
-            this.numAddress.TabIndex = 8;
+            this.numAddress.TabIndex = 7;
             this.numAddress.Value = new decimal(new int[] {
             1,
             0,
@@ -149,7 +149,7 @@
             this.btnCancel.Location = new System.Drawing.Point(317, 276);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 13;
+            this.btnCancel.TabIndex = 14;
             this.btnCancel.Text = "Скасувати";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -159,7 +159,7 @@
             this.btnSave.Location = new System.Drawing.Point(236, 276);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 12;
+            this.btnSave.TabIndex = 13;
             this.btnSave.Text = "Зберегти";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -171,7 +171,7 @@
             this.lblNameError.Location = new System.Drawing.Point(107, 14);
             this.lblNameError.Name = "lblNameError";
             this.lblNameError.Size = new System.Drawing.Size(148, 13);
-            this.lblNameError.TabIndex = 10;
+            this.lblNameError.TabIndex = 11;
             this.lblNameError.Text = "Вкажіть назву обчислювача";
             this.lblNameError.Visible = false;
             // 
@@ -182,7 +182,7 @@
             this.lblPhoneError.Location = new System.Drawing.Point(107, 160);
             this.lblPhoneError.Name = "lblPhoneError";
             this.lblPhoneError.Size = new System.Drawing.Size(258, 13);
-            this.lblPhoneError.TabIndex = 11;
+            this.lblPhoneError.TabIndex = 12;
             this.lblPhoneError.Text = "Вказаний номер телефону не відповідає шаблону";
             this.lblPhoneError.Visible = false;
             // 
@@ -193,7 +193,7 @@
             this.rbDbf.Location = new System.Drawing.Point(110, 228);
             this.rbDbf.Name = "rbDbf";
             this.rbDbf.Size = new System.Drawing.Size(88, 17);
-            this.rbDbf.TabIndex = 14;
+            this.rbDbf.TabIndex = 9;
             this.rbDbf.TabStop = true;
             this.rbDbf.Text = "Таблиці DBF";
             this.rbDbf.UseVisualStyleBackColor = true;
@@ -206,7 +206,7 @@
             this.rbGPRS.Location = new System.Drawing.Point(204, 228);
             this.rbGPRS.Name = "rbGPRS";
             this.rbGPRS.Size = new System.Drawing.Size(72, 17);
-            this.rbGPRS.TabIndex = 15;
+            this.rbGPRS.TabIndex = 10;
             this.rbGPRS.Text = "По GPRS";
             this.rbGPRS.UseVisualStyleBackColor = true;
             this.rbGPRS.CheckedChanged += new System.EventHandler(this.rbGPRS_CheckedChanged);

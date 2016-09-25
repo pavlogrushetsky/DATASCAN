@@ -318,7 +318,7 @@ namespace DATASCAN.View
 
                 estimatorMenu.Items.AddRange(new ToolStripItem[]
                 {
-                    estimator is Floutec ? new ToolStripMenuItem("Додати нитку вимірювання", null, AddPointMenu_Click) : new ToolStripMenuItem("Додати точку вимірювання", null, AddPointMenu_Click),
+                    estimator is Floutec ? new ToolStripMenuItem("Додати нитку вимірювання", null, EditLineMenu_Click) : new ToolStripMenuItem("Додати точку вимірювання", null, EditPointMenu_Click),
                     new ToolStripSeparator(),
                     estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, EditFloutecMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, EditRocMenu_Click),
                     new ToolStripSeparator(),
@@ -366,7 +366,7 @@ namespace DATASCAN.View
 
                         pointMenu.Items.AddRange(new ToolStripItem[]
                         {
-                            new ToolStripMenuItem("Налаштування", Resources.Settings, PointSettingsMenu_Click),
+                            estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, EditLineMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, EditPointMenu_Click),
                             new ToolStripSeparator(),
                             point.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
                             new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
@@ -638,14 +638,80 @@ namespace DATASCAN.View
             }
         }
 
-        private void AddPointMenu_Click(object sender, EventArgs e)
+        private void EditPointMenu_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void PointSettingsMenu_Click(object sender, EventArgs e)
+        private async void EditLineMenu_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 
+            TreeNode node = trvEstimators.SelectedNode;
+
+            Floutec floutec = node?.Tag as Floutec;
+
+            FloutecMeasureLine line = node?.Tag as FloutecMeasureLine;
+
+            EditFloutecLineForm form = new EditFloutecLineForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                Line = line
+            };
+
+            if (line != null)
+            {
+                form.Numbers = _estimators
+                    .Where(est => est is Floutec)
+                    .Cast<Floutec>()
+                    .Single(f => f.Id == line.EstimatorId)
+                    .MeasurePoints.Cast<FloutecMeasureLine>()
+                    .Select(l => l.Number)
+                    .Except(new List<int> {line.Number})
+                    .ToList();
+            }
+            else if (floutec != null)
+            {
+                form.Numbers = floutec.MeasurePoints.Cast<FloutecMeasureLine>()
+                    .Select(l => l.Number)
+                    .ToList();
+            }
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK && form.Line != null)
+            {
+                line = form.Line;
+
+                if (form.IsEdit)
+                {
+                    await _pointsService.Update(line, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної нитки обчислювача ФЛОУТЕК з Id={line.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+                else
+                {
+                    if (floutec != null)
+                    {
+                        line.EstimatorId = floutec.Id;
+                    }
+
+                    await _pointsService.Insert(line, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну нитку обчислювача ФЛОУТЕК з Id={line.Id} та назвою '{line.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+
+                await UpdateData();
+            }
         }
 
         private async void DeactivateMenu_Click(object sender, EventArgs e)
