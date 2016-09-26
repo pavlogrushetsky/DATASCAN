@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditRocPointForm));
             this.lblName = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
@@ -37,18 +38,18 @@
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.numNumber = new System.Windows.Forms.NumericUpDown();
             this.numHistSegment = new System.Windows.Forms.NumericUpDown();
-            this.lblNameError = new System.Windows.Forms.Label();
-            this.lblNumberError = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.err = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.numNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHistSegment)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.err)).BeginInit();
             this.SuspendLayout();
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(12, 33);
+            this.lblName.Location = new System.Drawing.Point(12, 23);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(39, 13);
             this.lblName.TabIndex = 0;
@@ -57,7 +58,7 @@
             // lblDescription
             // 
             this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(12, 83);
+            this.lblDescription.Location = new System.Drawing.Point(12, 63);
             this.lblDescription.Name = "lblDescription";
             this.lblDescription.Size = new System.Drawing.Size(33, 13);
             this.lblDescription.TabIndex = 1;
@@ -66,7 +67,7 @@
             // lblNumber
             // 
             this.lblNumber.AutoSize = true;
-            this.lblNumber.Location = new System.Drawing.Point(12, 132);
+            this.lblNumber.Location = new System.Drawing.Point(12, 102);
             this.lblNumber.Name = "lblNumber";
             this.lblNumber.Size = new System.Drawing.Size(41, 13);
             this.lblNumber.TabIndex = 2;
@@ -75,7 +76,7 @@
             // lblHistSegment
             // 
             this.lblHistSegment.AutoSize = true;
-            this.lblHistSegment.Location = new System.Drawing.Point(195, 132);
+            this.lblHistSegment.Location = new System.Drawing.Point(184, 102);
             this.lblHistSegment.Name = "lblHistSegment";
             this.lblHistSegment.Size = new System.Drawing.Size(81, 13);
             this.lblHistSegment.TabIndex = 3;
@@ -83,25 +84,25 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(59, 30);
+            this.txtName.Location = new System.Drawing.Point(59, 20);
             this.txtName.MaxLength = 50;
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(333, 20);
+            this.txtName.Size = new System.Drawing.Size(312, 20);
             this.txtName.TabIndex = 4;
             this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(59, 80);
+            this.txtDescription.Location = new System.Drawing.Point(59, 60);
             this.txtDescription.MaxLength = 200;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(333, 20);
+            this.txtDescription.Size = new System.Drawing.Size(312, 20);
             this.txtDescription.TabIndex = 5;
             this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
             // 
             // numNumber
             // 
-            this.numNumber.Location = new System.Drawing.Point(59, 130);
+            this.numNumber.Location = new System.Drawing.Point(59, 100);
             this.numNumber.Maximum = new decimal(new int[] {
             200,
             0,
@@ -113,7 +114,7 @@
             0,
             0});
             this.numNumber.Name = "numNumber";
-            this.numNumber.Size = new System.Drawing.Size(110, 20);
+            this.numNumber.Size = new System.Drawing.Size(100, 20);
             this.numNumber.TabIndex = 6;
             this.numNumber.Value = new decimal(new int[] {
             1,
@@ -124,68 +125,49 @@
             // 
             // numHistSegment
             // 
-            this.numHistSegment.Location = new System.Drawing.Point(282, 130);
+            this.numHistSegment.Location = new System.Drawing.Point(271, 100);
             this.numHistSegment.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numHistSegment.Name = "numHistSegment";
-            this.numHistSegment.Size = new System.Drawing.Size(110, 20);
+            this.numHistSegment.Size = new System.Drawing.Size(100, 20);
             this.numHistSegment.TabIndex = 7;
             this.numHistSegment.ValueChanged += new System.EventHandler(this.numHistSegment_ValueChanged);
             // 
-            // lblNameError
-            // 
-            this.lblNameError.AutoSize = true;
-            this.lblNameError.ForeColor = System.Drawing.Color.Red;
-            this.lblNameError.Location = new System.Drawing.Point(56, 14);
-            this.lblNameError.Name = "lblNameError";
-            this.lblNameError.Size = new System.Drawing.Size(110, 13);
-            this.lblNameError.TabIndex = 8;
-            this.lblNameError.Text = "Вкажіть назву точки";
-            this.lblNameError.Visible = false;
-            // 
-            // lblNumberError
-            // 
-            this.lblNumberError.AutoSize = true;
-            this.lblNumberError.ForeColor = System.Drawing.Color.Red;
-            this.lblNumberError.Location = new System.Drawing.Point(56, 114);
-            this.lblNumberError.Name = "lblNumberError";
-            this.lblNumberError.Size = new System.Drawing.Size(275, 13);
-            this.lblNumberError.TabIndex = 9;
-            this.lblNumberError.Text = "Номер точки має бути унікальним в межах сегменту";
-            this.lblNumberError.Visible = false;
-            // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(317, 176);
+            this.btnCancel.Location = new System.Drawing.Point(296, 146);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 10;
+            this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "Скасувати";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(236, 176);
+            this.btnSave.Location = new System.Drawing.Point(215, 146);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 11;
+            this.btnSave.TabIndex = 8;
             this.btnSave.Text = "Зберегти";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // err
+            // 
+            this.err.ContainerControl = this;
+            this.err.Icon = ((System.Drawing.Icon)(resources.GetObject("err.Icon")));
             // 
             // EditRocPointForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 211);
+            this.ClientSize = new System.Drawing.Size(404, 181);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.lblNumberError);
-            this.Controls.Add(this.lblNameError);
             this.Controls.Add(this.numHistSegment);
             this.Controls.Add(this.numNumber);
             this.Controls.Add(this.txtDescription);
@@ -197,13 +179,14 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 250);
+            this.MaximumSize = new System.Drawing.Size(420, 220);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(420, 250);
+            this.MinimumSize = new System.Drawing.Size(420, 220);
             this.Name = "EditRocPointForm";
             this.Text = "Додати вимірювальну точку";
             ((System.ComponentModel.ISupportInitialize)(this.numNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHistSegment)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.err)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -219,9 +202,8 @@
         private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.NumericUpDown numNumber;
         private System.Windows.Forms.NumericUpDown numHistSegment;
-        private System.Windows.Forms.Label lblNameError;
-        private System.Windows.Forms.Label lblNumberError;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.ErrorProvider err;
     }
 }

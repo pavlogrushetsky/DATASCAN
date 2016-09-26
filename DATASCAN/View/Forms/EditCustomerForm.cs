@@ -54,7 +54,7 @@ namespace DATASCAN.View.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            bool valid = ValidateFields();
+            bool valid = ValidateTitle() & ValidatePhone() & ValidateEmail();
 
             if (valid)
             {
@@ -82,11 +82,58 @@ namespace DATASCAN.View.Forms
             Close();
         }
 
-        private bool ValidateFields()
+        private void txtTitle_TextChanged(object sender, EventArgs e)
         {
-            bool titleIsValid = !string.IsNullOrEmpty(txtTitle.Text);
+            _titleChanged = !txtTitle.Text.Equals(Customer.Title);
+            SetChanged();
+            err.SetError(txtTitle, "");
+        }
+
+        private void txtEmail_TextChanged(object sender, EventArgs e)
+        {
+            _emailChanged = !txtEmail.Text.Equals(Customer.Email);
+            SetChanged();
+            err.SetError(txtEmail, "");
+        }
+
+        private void txtPhone_TextChanged(object sender, EventArgs e)
+        {
+            _phoneChanged = !txtPhone.Text.Equals(Customer.Phone);
+            SetChanged();
+            err.SetError(txtPhone, "");
+        }
+
+        private void txtPerson_TextChanged(object sender, EventArgs e)
+        {
+            _personChanged = !txtPerson.Text.Equals(Customer.Person);
+            SetChanged();
+        }
+
+        private void SetChanged()
+        {
+            _changed = _titleChanged || _personChanged || _phoneChanged || _emailChanged;
+
+            if (IsEdit)
+            {
+                Text = _changed ? TITLE_EDIT + " *" : TITLE_EDIT;
+            }
+        }
+
+        private bool ValidateTitle()
+        {
+            err.SetError(txtTitle, string.IsNullOrEmpty(txtTitle.Text) ? "Вкажіть назву замовника" : "");
+            return string.IsNullOrEmpty(err.GetError(txtTitle));
+        }
+
+        private bool ValidatePhone()
+        {
+            err.SetError(txtPhone, string.IsNullOrEmpty(txtPhone.Text) || txtPhone.MaskCompleted ? "" : "Номер телефону вказано невірно");
+            return string.IsNullOrEmpty(err.GetError(txtPhone));
+        }
+
+        private bool ValidateEmail()
+        {
             bool emailIsValid = true;
-            bool phoneIsValid = string.IsNullOrEmpty(txtPhone.Text) || txtPhone.MaskCompleted;
 
             if (!string.IsNullOrEmpty(txtEmail.Text))
             {
@@ -101,48 +148,8 @@ namespace DATASCAN.View.Forms
                 }
             }
 
-            lblTitleError.Visible = !titleIsValid;
-            lblEmailError.Visible = !emailIsValid;
-            lblPhoneError.Visible = !phoneIsValid;
-
-            return titleIsValid && emailIsValid && phoneIsValid;
-        }
-
-        private void txtTitle_TextChanged(object sender, EventArgs e)
-        {
-            _titleChanged = !txtTitle.Text.Equals(Customer.Title);
-            SetChanged();
-            lblTitleError.Visible = false;
-        }
-
-        private void txtEmail_TextChanged(object sender, EventArgs e)
-        {
-            _emailChanged = !txtTitle.Text.Equals(Customer.Email);
-            SetChanged();
-            lblEmailError.Visible = false;
-        }
-
-        private void txtPhone_TextChanged(object sender, EventArgs e)
-        {
-            _phoneChanged = !txtTitle.Text.Equals(Customer.Phone);
-            SetChanged();
-            lblPhoneError.Visible = false;
-        }
-
-        private void txtPerson_TextChanged(object sender, EventArgs e)
-        {
-            _personChanged = !txtTitle.Text.Equals(Customer.Person);
-            SetChanged();
-        }
-
-        private void SetChanged()
-        {
-            _changed = _titleChanged || _personChanged || _phoneChanged || _emailChanged;
-
-            if (IsEdit)
-            {
-                Text = _changed ? TITLE_EDIT + " *" : TITLE_EDIT;
-            }
+            err.SetError(txtEmail, emailIsValid ? "" : "Адресу електронної пошти вказано невірно");
+            return emailIsValid;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace DATASCAN.View.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            bool valid = ValidateFields();
+            bool valid = ValidateName();
 
             if (valid)
             {
@@ -65,24 +65,21 @@ namespace DATASCAN.View.Forms
             Close();
         }
 
-        private bool ValidateFields()
-        {
-            bool nameIsValid = !string.IsNullOrEmpty(txtName.Text);
-
-            lblNameError.Visible = !nameIsValid;
-
-            return nameIsValid;
-        }
-
         private void txtName_TextChanged(object sender, EventArgs e)
         {
             _changed = !txtName.Text.Equals(Group.Name);
-            lblNameError.Visible = false;
+            err.SetError(txtName, "");
 
             if (IsEdit)
             {
                 Text = _changed ? TITLE_EDIT + " *" : TITLE_EDIT;
             }
+        }
+
+        private bool ValidateName()
+        {
+            err.SetError(txtName, string.IsNullOrEmpty(txtName.Text) ? "Вкажіть назву групи" : "");
+            return string.IsNullOrEmpty(err.GetError(txtName));
         }
     }
 }

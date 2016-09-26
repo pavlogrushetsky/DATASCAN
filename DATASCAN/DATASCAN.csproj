@@ -253,6 +253,7 @@
     <Content Include="Resources\Icons\DatabaseSettings.ico" />
     <Content Include="Resources\Icons\DATASCAN.ico" />
     <Content Include="Resources\Icons\Add.ico" />
+    <Content Include="Resources\Icons\Error.ico" />
     <Content Include="Resources\Icons\Information.ico" />
     <Content Include="Resources\Icons\Group.ico" />
     <Content Include="Resources\Icons\Estimator.ico" />

@@ -32,7 +32,7 @@ namespace DATASCAN.View.Forms
         {
             InitializeComponent();
 
-            cmbSensorType.Items.AddRange(new object[]{ "Діафрагма", "Лічильник", "Масовий витратомір" });
+            cmbSensorType.Items.AddRange(new object[]{ "Діафрагма", "Лічильник", "Витратомір" });
 
             Load += (sender, args) =>
             {
@@ -61,7 +61,7 @@ namespace DATASCAN.View.Forms
         {
             _nameChanged = !txtName.Text.Equals(Line.Name);
             SetChanged();
-            lblNameError.Visible = false;
+            err.SetError(txtName, "");
         }
 
         private void txtDescription_TextChanged(object sender, EventArgs e)
@@ -74,12 +74,12 @@ namespace DATASCAN.View.Forms
         {
             _numberChanged = !numNumber.Value.Equals(Line.Number);
             SetChanged();
-            lblNumberError.Visible = false;
+            err.SetError(numNumber, "");
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            bool valid = ValidateFields();
+            bool valid = ValidateName() & ValidateNumber();
 
             if (valid)
             {
@@ -123,15 +123,16 @@ namespace DATASCAN.View.Forms
             }
         }
 
-        private bool ValidateFields()
+        private bool ValidateName()
         {
-            bool nameIsValid = !string.IsNullOrEmpty(txtName.Text);
-            bool numberIsValid = !Numbers.Contains((int)numNumber.Value);
+            err.SetError(txtName, string.IsNullOrEmpty(txtName.Text) ? "Вкажіть назву нитки" : "");
+            return string.IsNullOrEmpty(err.GetError(txtName));
+        }
 
-            lblNameError.Visible = !nameIsValid;
-            lblNumberError.Visible = !numberIsValid;
-
-            return nameIsValid && numberIsValid;
+        private bool ValidateNumber()
+        {
+            err.SetError(numNumber, Numbers.Contains((int)numNumber.Value) ? "Номер нитки має бути унікальним" : "");
+            return string.IsNullOrEmpty(err.GetError(numNumber));
         }
     }
 }

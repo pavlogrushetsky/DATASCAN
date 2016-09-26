@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditFloutecLineForm));
             this.lblName = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
@@ -38,16 +39,16 @@
             this.numNumber = new System.Windows.Forms.NumericUpDown();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.lblNameError = new System.Windows.Forms.Label();
-            this.lblNumberError = new System.Windows.Forms.Label();
             this.cmbSensorType = new System.Windows.Forms.ComboBox();
+            this.err = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.numNumber)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.err)).BeginInit();
             this.SuspendLayout();
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(12, 33);
+            this.lblName.Location = new System.Drawing.Point(12, 23);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(39, 13);
             this.lblName.TabIndex = 0;
@@ -56,7 +57,7 @@
             // lblDescription
             // 
             this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(12, 83);
+            this.lblDescription.Location = new System.Drawing.Point(12, 63);
             this.lblDescription.Name = "lblDescription";
             this.lblDescription.Size = new System.Drawing.Size(33, 13);
             this.lblDescription.TabIndex = 1;
@@ -65,7 +66,7 @@
             // lblNumber
             // 
             this.lblNumber.AutoSize = true;
-            this.lblNumber.Location = new System.Drawing.Point(12, 132);
+            this.lblNumber.Location = new System.Drawing.Point(12, 102);
             this.lblNumber.Name = "lblNumber";
             this.lblNumber.Size = new System.Drawing.Size(41, 13);
             this.lblNumber.TabIndex = 2;
@@ -74,7 +75,7 @@
             // lblSensorType
             // 
             this.lblSensorType.AutoSize = true;
-            this.lblSensorType.Location = new System.Drawing.Point(185, 132);
+            this.lblSensorType.Location = new System.Drawing.Point(193, 103);
             this.lblSensorType.Name = "lblSensorType";
             this.lblSensorType.Size = new System.Drawing.Size(71, 13);
             this.lblSensorType.TabIndex = 3;
@@ -82,25 +83,25 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(59, 30);
+            this.txtName.Location = new System.Drawing.Point(59, 20);
             this.txtName.MaxLength = 50;
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(333, 20);
+            this.txtName.Size = new System.Drawing.Size(311, 20);
             this.txtName.TabIndex = 4;
             this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(59, 80);
+            this.txtDescription.Location = new System.Drawing.Point(59, 60);
             this.txtDescription.MaxLength = 200;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(333, 20);
+            this.txtDescription.Size = new System.Drawing.Size(311, 20);
             this.txtDescription.TabIndex = 5;
             this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
             // 
             // numNumber
             // 
-            this.numNumber.Location = new System.Drawing.Point(59, 130);
+            this.numNumber.Location = new System.Drawing.Point(59, 100);
             this.numNumber.Maximum = new decimal(new int[] {
             3,
             0,
@@ -112,7 +113,7 @@
             0,
             0});
             this.numNumber.Name = "numNumber";
-            this.numNumber.Size = new System.Drawing.Size(120, 20);
+            this.numNumber.Size = new System.Drawing.Size(100, 20);
             this.numNumber.TabIndex = 6;
             this.numNumber.Value = new decimal(new int[] {
             1,
@@ -123,7 +124,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(236, 176);
+            this.btnSave.Location = new System.Drawing.Point(214, 146);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 8;
@@ -133,7 +134,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(317, 176);
+            this.btnCancel.Location = new System.Drawing.Point(295, 146);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 9;
@@ -141,45 +142,26 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // lblNameError
-            // 
-            this.lblNameError.AutoSize = true;
-            this.lblNameError.ForeColor = System.Drawing.Color.Red;
-            this.lblNameError.Location = new System.Drawing.Point(56, 14);
-            this.lblNameError.Name = "lblNameError";
-            this.lblNameError.Size = new System.Drawing.Size(111, 13);
-            this.lblNameError.TabIndex = 10;
-            this.lblNameError.Text = "Вкажіть назву нитки";
-            this.lblNameError.Visible = false;
-            // 
-            // lblNumberError
-            // 
-            this.lblNumberError.AutoSize = true;
-            this.lblNumberError.ForeColor = System.Drawing.Color.Red;
-            this.lblNumberError.Location = new System.Drawing.Point(56, 114);
-            this.lblNumberError.Name = "lblNumberError";
-            this.lblNumberError.Size = new System.Drawing.Size(181, 13);
-            this.lblNumberError.TabIndex = 11;
-            this.lblNumberError.Text = "Номер нитки має бути унікальним";
-            this.lblNumberError.Visible = false;
-            // 
             // cmbSensorType
             // 
             this.cmbSensorType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSensorType.Location = new System.Drawing.Point(262, 129);
+            this.cmbSensorType.Location = new System.Drawing.Point(270, 100);
             this.cmbSensorType.Name = "cmbSensorType";
-            this.cmbSensorType.Size = new System.Drawing.Size(130, 21);
+            this.cmbSensorType.Size = new System.Drawing.Size(100, 21);
             this.cmbSensorType.TabIndex = 7;
             this.cmbSensorType.SelectedIndexChanged += new System.EventHandler(this.cmbSensorType_SelectedIndexChanged);
+            // 
+            // err
+            // 
+            this.err.ContainerControl = this;
+            this.err.Icon = ((System.Drawing.Icon)(resources.GetObject("err.Icon")));
             // 
             // EditFloutecLineForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 211);
+            this.ClientSize = new System.Drawing.Size(404, 181);
             this.Controls.Add(this.cmbSensorType);
-            this.Controls.Add(this.lblNumberError);
-            this.Controls.Add(this.lblNameError);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.numNumber);
@@ -192,12 +174,13 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 250);
+            this.MaximumSize = new System.Drawing.Size(420, 220);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(420, 250);
+            this.MinimumSize = new System.Drawing.Size(420, 220);
             this.Name = "EditFloutecLineForm";
             this.Text = "Додати вимірювальну нитку";
             ((System.ComponentModel.ISupportInitialize)(this.numNumber)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.err)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,8 +197,7 @@
         private System.Windows.Forms.NumericUpDown numNumber;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Label lblNameError;
-        private System.Windows.Forms.Label lblNumberError;
         private System.Windows.Forms.ComboBox cmbSensorType;
+        private System.Windows.Forms.ErrorProvider err;
     }
 }
