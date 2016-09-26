@@ -26,6 +26,12 @@ namespace DATASCAN.Model
         public string Description { get; set; }
 
         /// <summary>
+        /// Номер
+        /// </summary>
+        [Required]
+        public int Number { get; set; }
+
+        /// <summary>
         /// Первичный ключ вычислителя
         /// </summary>
         public int EstimatorId { get; set; }

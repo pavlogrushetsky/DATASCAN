@@ -638,9 +638,79 @@ namespace DATASCAN.View
             }
         }
 
-        private void EditPointMenu_Click(object sender, EventArgs e)
+        private async void EditPointMenu_Click(object sender, EventArgs e)
         {
 
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+
+            TreeNode node = trvEstimators.SelectedNode;
+
+            Roc809 roc = node?.Tag as Roc809;
+
+            Roc809MeasurePoint point = node?.Tag as Roc809MeasurePoint;
+
+            EditRocPointForm form = new EditRocPointForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                Point = point
+            };
+
+            if (point != null)
+            {
+                form.Numbers = _estimators
+                    .Where(est => est is Roc809)
+                    .Cast<Roc809>()
+                    .Single(r => r.Id == point.EstimatorId)
+                    .MeasurePoints.Cast<Roc809MeasurePoint>()
+                    .GroupBy(p => p.HistSegment)
+                    .Select(g => new KeyValuePair<int, List<int>>(g.Key, g.Select(p => p.Number).ToList()))
+                    .Except(new List<KeyValuePair<int, List<int>>>{new KeyValuePair<int, List<int>>(point.HistSegment, new List<int> {point.Number})})
+                    .ToDictionary(d => d.Key, d => d.Value);
+
+            }
+            else if (roc != null)
+            {
+                form.Numbers = roc.MeasurePoints.Cast<Roc809MeasurePoint>()
+                    .GroupBy(p => p.HistSegment)
+                    .Select(g => new KeyValuePair<int, List<int>>(g.Key, g.Select(p => p.Number).ToList()))
+                    .ToDictionary(d => d.Key, d => d.Value);
+            }
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK && form.Point != null)
+            {
+                point = form.Point;
+
+                if (form.IsEdit)
+                {
+                    await _pointsService.Update(point, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної точки обчислювача ROC809 з Id={point.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+                else
+                {
+                    if (roc != null)
+                    {
+                        point.EstimatorId = roc.Id;
+                    }
+
+                    await _pointsService.Insert(point, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну точку обчислювача ROC809 з Id={point.Id} та назвою '{point.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+
+                await UpdateData();
+            }
         }
 
         private async void EditLineMenu_Click(object sender, EventArgs e)

@@ -170,6 +170,12 @@
     <Compile Include="View\Forms\EditRocForm.Designer.cs">
       <DependentUpon>EditRocForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\EditRocPointForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditRocPointForm.Designer.cs">
+      <DependentUpon>EditRocPointForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\ServerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditRocForm.resx">
       <DependentUpon>EditRocForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditRocPointForm.resx">
+      <DependentUpon>EditRocPointForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\ServerSettingsForm.resx">
       <DependentUpon>ServerSettingsForm.cs</DependentUpon>

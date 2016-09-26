@@ -12,12 +12,6 @@ namespace DATASCAN.Model.Rocs
     public class Roc809MeasurePoint : MeasurePointBase
     {
         /// <summary>
-        /// Номер
-        /// </summary>
-        [Required]
-        public int Number { get; set; }
-
-        /// <summary>
         /// Исторический сегмент
         /// </summary>
         [Required]

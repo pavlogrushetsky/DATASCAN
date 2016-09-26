@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
-using DATASCAN.Model.Floutecs;
+using DATASCAN.Model.Rocs;
 using DATASCAN.Properties;
 
 namespace DATASCAN.View.Forms
 {
-    public partial class EditFloutecLineForm : Form
+    public partial class EditRocPointForm : Form
     {
-        public FloutecMeasureLine Line { get; set; }
+        public Roc809MeasurePoint Point { get; set; }
 
         public bool IsEdit { get; set; }
 
-        public List<int> Numbers { get; set; }
+        public Dictionary<int, List<int>> Numbers { get; set; }
 
         private bool _nameChanged;
 
@@ -20,36 +21,33 @@ namespace DATASCAN.View.Forms
 
         private bool _numberChanged;
 
-        private bool _sensorTypeChanged;
+        private bool _histSegmentChanged;
 
         private bool _changed;
 
-        private const string TITLE_CREATE = "Додати вимірювальну нитку";
+        private const string TITLE_CREATE = "Додати вимірювальну точку";
 
-        private const string TITLE_EDIT = "Налаштування вимірювальної нитки";
+        private const string TITLE_EDIT = "Налаштування вимірювальної точки";
 
-        public EditFloutecLineForm()
+        public EditRocPointForm()
         {
             InitializeComponent();
-
-            cmbSensorType.Items.AddRange(new object[]{ "Діафрагма", "Лічильник", "Масовий витратомір" });
 
             Load += (sender, args) =>
             {
                 if (!IsEdit)
                 {
-                    Line = new FloutecMeasureLine();
+                    Point = new Roc809MeasurePoint();
                     Text = TITLE_CREATE;
-                    cmbSensorType.SelectedIndex = 0;
                     Icon = Resources.Add;
                 }
                 else
                 {
                     Text = TITLE_EDIT;
-                    txtName.Text = Line.Name;
-                    txtDescription.Text = Line.Description;
-                    numNumber.Value = Line.Number;
-                    cmbSensorType.SelectedIndex = Line.SensorType;
+                    txtName.Text = Point.Name;
+                    txtDescription.Text = Point.Description;
+                    numNumber.Value = Point.Number;
+                    numHistSegment.Value = Point.HistSegment;
                     Icon = Resources.Sensor1;
                 }
             };
@@ -59,20 +57,27 @@ namespace DATASCAN.View.Forms
 
         private void txtName_TextChanged(object sender, EventArgs e)
         {
-            _nameChanged = !txtName.Text.Equals(Line.Name);
+            _nameChanged = !txtName.Text.Equals(Point.Name);
             SetChanged();
             lblNameError.Visible = false;
         }
 
         private void txtDescription_TextChanged(object sender, EventArgs e)
         {
-            _descriptionChanged = !txtDescription.Text.Equals(Line.Description);
+            _descriptionChanged = !txtDescription.Text.Equals(Point.Description);
             SetChanged();
         }
 
         private void numNumber_ValueChanged(object sender, EventArgs e)
         {
-            _numberChanged = !numNumber.Value.Equals(Line.Number);
+            _numberChanged = !numNumber.Value.Equals(Point.Number);
+            SetChanged();
+            lblNumberError.Visible = false;
+        }
+
+        private void numHistSegment_ValueChanged(object sender, EventArgs e)
+        {
+            _histSegmentChanged = !numHistSegment.Value.Equals(Point.HistSegment);
             SetChanged();
             lblNumberError.Visible = false;
         }
@@ -83,10 +88,10 @@ namespace DATASCAN.View.Forms
 
             if (valid)
             {
-                Line.Name = txtName.Text;
-                Line.Description = txtDescription.Text;
-                Line.Number = (int)numNumber.Value;
-                Line.SensorType = cmbSensorType.SelectedIndex;
+                Point.Name = txtName.Text;
+                Point.Description = txtDescription.Text;
+                Point.Number = (int)numNumber.Value;
+                Point.HistSegment = (int)numHistSegment.Value;
 
                 if (IsEdit && !_changed)
                 {
@@ -107,15 +112,9 @@ namespace DATASCAN.View.Forms
             Close();
         }
 
-        private void cmbSensorType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _sensorTypeChanged = !cmbSensorType.SelectedIndex.Equals(Line.SensorType);
-            SetChanged();
-        }
-
         private void SetChanged()
         {
-            _changed = _nameChanged || _descriptionChanged || _numberChanged || _sensorTypeChanged;
+            _changed = _nameChanged || _descriptionChanged || _numberChanged || _histSegmentChanged;
 
             if (IsEdit)
             {
@@ -126,7 +125,7 @@ namespace DATASCAN.View.Forms
         private bool ValidateFields()
         {
             bool nameIsValid = !string.IsNullOrEmpty(txtName.Text);
-            bool numberIsValid = !Numbers.Contains((int)numNumber.Value);
+            bool numberIsValid = !Numbers.Any(n => n.Key.Equals((int)numHistSegment.Value) && n.Value.Contains((int)numNumber.Value) );
 
             lblNameError.Visible = !nameIsValid;
             lblNumberError.Visible = !numberIsValid;

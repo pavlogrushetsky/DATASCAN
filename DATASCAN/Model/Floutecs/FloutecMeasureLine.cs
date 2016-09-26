@@ -10,13 +10,7 @@ namespace DATASCAN.Model.Floutecs
     /// </summary>
     [Table("MeasureLines", Schema = "Floutec")]
     public class FloutecMeasureLine : MeasurePointBase
-    {
-        /// <summary>
-        /// Номер
-        /// </summary>
-        [Required]
-        public int Number { get; set; }
-
+    {        
         /// <summary>
         /// Тип датчика
         /// </summary>
