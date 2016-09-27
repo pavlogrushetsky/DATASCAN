@@ -76,7 +76,7 @@ namespace DATASCAN.View.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            bool valid = ValidateFields();
+            bool valid = ValidateName() & ValidatePhone() & ValidateAddress();
 
             if (valid)
             {
@@ -114,7 +114,7 @@ namespace DATASCAN.View.Forms
         {
             _nameChanged = !txtName.Text.Equals(Roc.Name);
             SetChanged();
-            lblNameError.Visible = false;
+            err.SetError(txtName, "");
         }
 
         private void txtDescription_TextChanged(object sender, EventArgs e)
@@ -163,7 +163,8 @@ namespace DATASCAN.View.Forms
             txtAddress.Enabled = rbTCPIP.Checked;
             numPort.Enabled = rbTCPIP.Checked;
             txtPhone.Enabled = rbGPRS.Checked;
-            lblParameterError.Visible = false;
+            err.SetError(txtAddress, "");
+            err.SetError(txtPhone, "");
             if (!rbGPRS.Checked)
             {                
                 txtPhone.Text = Roc.Phone;
@@ -179,32 +180,20 @@ namespace DATASCAN.View.Forms
         {
             _addressChanged = !txtAddress.Text.Replace(" ", string.Empty).Equals(Roc.Address);
             SetChanged();
-            lblParameterError.Visible = false;
+            err.SetError(txtAddress, "");
         }
 
         private void txtPhone_TextChanged(object sender, EventArgs e)
         {
             _phoneChanged = !txtPhone.Text.Equals(Roc.Phone);
             SetChanged();
+            err.SetError(txtPhone, "");
         }
 
         private void numPort_ValueChanged(object sender, EventArgs e)
         {
             _portChanged = !numPort.Value.Equals(Roc.Port);
             SetChanged();
-            lblParameterError.Visible = false;
-        }
-
-        private bool ValidateFields()
-        {
-            bool nameIsValid = !string.IsNullOrEmpty(txtName.Text);
-            bool paramIsValid = (rbGPRS.Checked && !string.IsNullOrEmpty(txtPhone.Text) && txtPhone.MaskCompleted) ||
-                (rbTCPIP.Checked && !string.IsNullOrEmpty(txtAddress.Text) && txtAddress.MaskCompleted);
-
-            lblNameError.Visible = !nameIsValid;
-            lblParameterError.Visible = !paramIsValid;
-
-            return nameIsValid && paramIsValid;
         }
 
         private void SetChanged()
@@ -226,6 +215,24 @@ namespace DATASCAN.View.Forms
                 ips[i] = ips[i].PadRight(3, ' ');
             }
             return $"{ips[0]}.{ips[1]}.{ips[2]}.{ips[3]}";
+        }
+
+        private bool ValidateName()
+        {
+            err.SetError(txtName, string.IsNullOrEmpty(txtName.Text) ? "Вкажіть назву обчислювача" : "");
+            return string.IsNullOrEmpty(err.GetError(txtName));
+        }
+
+        private bool ValidateAddress()
+        {
+            err.SetError(txtAddress, !rbTCPIP.Checked || rbTCPIP.Checked & !string.IsNullOrEmpty(txtAddress.Text) & txtAddress.MaskCompleted ? "" : "IP-адресу вказано невірно");
+            return string.IsNullOrEmpty(err.GetError(txtAddress));
+        }
+
+        private bool ValidatePhone()
+        {
+            err.SetError(txtPhone, !rbGPRS.Checked || rbGPRS.Checked & !string.IsNullOrEmpty(txtPhone.Text) & txtPhone.MaskCompleted ? "" : "Номер телефону вказано невірно");
+            return string.IsNullOrEmpty(err.GetError(txtPhone));
         }
     }
 }

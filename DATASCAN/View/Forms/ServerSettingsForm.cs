@@ -170,21 +170,40 @@ namespace DATASCAN.View.Forms
 
         private void ValidateSettings()
         {
-            _serverNameValid = !string.IsNullOrEmpty(txtServerName.Text);
-            _databaseNameValid = !string.IsNullOrEmpty(txtDatabaseName.Text);
-            _userNameValid = !(string.IsNullOrEmpty(txtUserName.Text) & !string.IsNullOrEmpty(txtUserPassword.Text));
-            _userPasswordValid = !(string.IsNullOrEmpty(txtUserPassword.Text) & !string.IsNullOrEmpty(txtUserName.Text));
+            _serverNameValid = ValidateServerName();
+            _databaseNameValid = ValidateDatabaseName();
+            _userNameValid = ValidateUserName();
+            _userPasswordValid = ValidateUserPassword();
             _timeoutValid = true;
-
-            lblServerNameError.Visible = !_serverNameValid;
-            lblDatabaseNameError.Visible = !_databaseNameValid;
-            lblUserNameError.Visible = !_userNameValid;
-            lblUserPasswordError.Visible = !_userPasswordValid;
 
             _settingsValid = _serverNameValid && _databaseNameValid && _userNameValid && _userPasswordValid && _timeoutValid;
 
             btnTestConnection.Enabled = _settingsValid;
             btnSave.Enabled = _settingsValid;
+        }
+
+        private bool ValidateServerName()
+        {
+            err.SetError(txtServerName, string.IsNullOrEmpty(txtServerName.Text) ? "Вкажіть назву сервера" : "");
+            return string.IsNullOrEmpty(err.GetError(txtServerName));
+        }
+
+        private bool ValidateDatabaseName()
+        {
+            err.SetError(txtDatabaseName, string.IsNullOrEmpty(txtDatabaseName.Text) ? "Вкажіть назву бази даних" : "");
+            return string.IsNullOrEmpty(err.GetError(txtDatabaseName));
+        }
+
+        private bool ValidateUserName()
+        {
+            err.SetError(txtUserName, !(string.IsNullOrEmpty(txtUserName.Text) & !string.IsNullOrEmpty(txtUserPassword.Text)) ? "" : "Вкажіть ім'я користувача");
+            return string.IsNullOrEmpty(err.GetError(txtUserName));
+        }
+
+        private bool ValidateUserPassword()
+        {
+            err.SetError(txtUserPassword, !(string.IsNullOrEmpty(txtUserPassword.Text) & !string.IsNullOrEmpty(txtUserName.Text)) ? "" : "Вкажіть пароль користувача");
+            return string.IsNullOrEmpty(err.GetError(txtUserPassword));
         }
 
         private void AllowEditing(bool allow)

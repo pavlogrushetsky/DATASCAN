@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditRocForm));
             this.lblName = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
@@ -51,13 +52,12 @@
             this.numPort = new System.Windows.Forms.NumericUpDown();
             this.gpTcpIp = new System.Windows.Forms.GroupBox();
             this.gbGPRS = new System.Windows.Forms.GroupBox();
-            this.lblParameterError = new System.Windows.Forms.Label();
-            this.lblNameError = new System.Windows.Forms.Label();
             this.rbGPRS = new System.Windows.Forms.RadioButton();
             this.rbTCPIP = new System.Windows.Forms.RadioButton();
             this.lblScanType = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.err = new System.Windows.Forms.ErrorProvider(this.components);
             this.gbDeviceAddress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRocGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRocUnit)).BeginInit();
@@ -67,12 +67,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             this.gpTcpIp.SuspendLayout();
             this.gbGPRS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.err)).BeginInit();
             this.SuspendLayout();
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(12, 33);
+            this.lblName.Location = new System.Drawing.Point(12, 23);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(39, 13);
             this.lblName.TabIndex = 0;
@@ -81,7 +82,7 @@
             // lblDescription
             // 
             this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(12, 82);
+            this.lblDescription.Location = new System.Drawing.Point(12, 62);
             this.lblDescription.Name = "lblDescription";
             this.lblDescription.Size = new System.Drawing.Size(33, 13);
             this.lblDescription.TabIndex = 1;
@@ -93,9 +94,9 @@
             this.gbDeviceAddress.Controls.Add(this.numRocUnit);
             this.gbDeviceAddress.Controls.Add(this.lblRocGroup);
             this.gbDeviceAddress.Controls.Add(this.lblRocUnit);
-            this.gbDeviceAddress.Location = new System.Drawing.Point(15, 130);
+            this.gbDeviceAddress.Location = new System.Drawing.Point(15, 100);
             this.gbDeviceAddress.Name = "gbDeviceAddress";
-            this.gbDeviceAddress.Size = new System.Drawing.Size(182, 75);
+            this.gbDeviceAddress.Size = new System.Drawing.Size(196, 75);
             this.gbDeviceAddress.TabIndex = 2;
             this.gbDeviceAddress.TabStop = false;
             this.gbDeviceAddress.Text = "Адреса обчислювача";
@@ -114,7 +115,7 @@
             0,
             0});
             this.numRocGroup.Name = "numRocGroup";
-            this.numRocGroup.Size = new System.Drawing.Size(108, 20);
+            this.numRocGroup.Size = new System.Drawing.Size(105, 20);
             this.numRocGroup.TabIndex = 3;
             this.numRocGroup.Value = new decimal(new int[] {
             2,
@@ -137,7 +138,7 @@
             0,
             0});
             this.numRocUnit.Name = "numRocUnit";
-            this.numRocUnit.Size = new System.Drawing.Size(108, 20);
+            this.numRocUnit.Size = new System.Drawing.Size(105, 20);
             this.numRocUnit.TabIndex = 2;
             this.numRocUnit.Value = new decimal(new int[] {
             1,
@@ -170,16 +171,16 @@
             this.gbHostAddress.Controls.Add(this.numHostUnit);
             this.gbHostAddress.Controls.Add(this.lblHostGroup);
             this.gbHostAddress.Controls.Add(this.lblHostUnit);
-            this.gbHostAddress.Location = new System.Drawing.Point(207, 130);
+            this.gbHostAddress.Location = new System.Drawing.Point(217, 100);
             this.gbHostAddress.Name = "gbHostAddress";
-            this.gbHostAddress.Size = new System.Drawing.Size(185, 75);
+            this.gbHostAddress.Size = new System.Drawing.Size(195, 75);
             this.gbHostAddress.TabIndex = 3;
             this.gbHostAddress.TabStop = false;
             this.gbHostAddress.Text = "Адреса хоста";
             // 
             // numHostGroup
             // 
-            this.numHostGroup.Location = new System.Drawing.Point(71, 45);
+            this.numHostGroup.Location = new System.Drawing.Point(64, 45);
             this.numHostGroup.Maximum = new decimal(new int[] {
             239,
             0,
@@ -191,7 +192,7 @@
             0,
             0});
             this.numHostGroup.Name = "numHostGroup";
-            this.numHostGroup.Size = new System.Drawing.Size(108, 20);
+            this.numHostGroup.Size = new System.Drawing.Size(111, 20);
             this.numHostGroup.TabIndex = 3;
             this.numHostGroup.Value = new decimal(new int[] {
             1,
@@ -202,7 +203,7 @@
             // 
             // numHostUnit
             // 
-            this.numHostUnit.Location = new System.Drawing.Point(71, 19);
+            this.numHostUnit.Location = new System.Drawing.Point(64, 19);
             this.numHostUnit.Maximum = new decimal(new int[] {
             239,
             0,
@@ -214,7 +215,7 @@
             0,
             0});
             this.numHostUnit.Name = "numHostUnit";
-            this.numHostUnit.Size = new System.Drawing.Size(108, 20);
+            this.numHostUnit.Size = new System.Drawing.Size(111, 20);
             this.numHostUnit.TabIndex = 2;
             this.numHostUnit.Value = new decimal(new int[] {
             3,
@@ -243,7 +244,7 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(83, 30);
+            this.txtName.Location = new System.Drawing.Point(83, 20);
             this.txtName.MaxLength = 50;
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(309, 20);
@@ -252,7 +253,7 @@
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(83, 79);
+            this.txtDescription.Location = new System.Drawing.Point(83, 59);
             this.txtDescription.MaxLength = 200;
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.Size = new System.Drawing.Size(309, 20);
@@ -275,7 +276,7 @@
             this.txtAddress.Mask = "099.099.099.099";
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.RejectInputOnFirstFailure = true;
-            this.txtAddress.Size = new System.Drawing.Size(108, 20);
+            this.txtAddress.Size = new System.Drawing.Size(105, 20);
             this.txtAddress.TabIndex = 7;
             this.txtAddress.TextChanged += new System.EventHandler(this.txtAddress_TextChanged);
             // 
@@ -290,11 +291,11 @@
             // 
             // txtPhone
             // 
-            this.txtPhone.Location = new System.Drawing.Point(71, 19);
+            this.txtPhone.Location = new System.Drawing.Point(64, 19);
             this.txtPhone.Mask = "+38 (000) 000-0000";
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.RejectInputOnFirstFailure = true;
-            this.txtPhone.Size = new System.Drawing.Size(108, 20);
+            this.txtPhone.Size = new System.Drawing.Size(111, 20);
             this.txtPhone.TabIndex = 9;
             this.txtPhone.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
             this.txtPhone.TextChanged += new System.EventHandler(this.txtPhone_TextChanged);
@@ -322,7 +323,7 @@
             0,
             0});
             this.numPort.Name = "numPort";
-            this.numPort.Size = new System.Drawing.Size(108, 20);
+            this.numPort.Size = new System.Drawing.Size(105, 20);
             this.numPort.TabIndex = 11;
             this.numPort.Value = new decimal(new int[] {
             4000,
@@ -337,9 +338,9 @@
             this.gpTcpIp.Controls.Add(this.numPort);
             this.gpTcpIp.Controls.Add(this.lblAddress);
             this.gpTcpIp.Controls.Add(this.lblPort);
-            this.gpTcpIp.Location = new System.Drawing.Point(15, 271);
+            this.gpTcpIp.Location = new System.Drawing.Point(15, 231);
             this.gpTcpIp.Name = "gpTcpIp";
-            this.gpTcpIp.Size = new System.Drawing.Size(182, 75);
+            this.gpTcpIp.Size = new System.Drawing.Size(196, 75);
             this.gpTcpIp.TabIndex = 12;
             this.gpTcpIp.TabStop = false;
             this.gpTcpIp.Text = "TCP/IP";
@@ -348,39 +349,17 @@
             // 
             this.gbGPRS.Controls.Add(this.txtPhone);
             this.gbGPRS.Controls.Add(this.lblPhone);
-            this.gbGPRS.Location = new System.Drawing.Point(207, 271);
+            this.gbGPRS.Location = new System.Drawing.Point(217, 231);
             this.gbGPRS.Name = "gbGPRS";
-            this.gbGPRS.Size = new System.Drawing.Size(185, 75);
+            this.gbGPRS.Size = new System.Drawing.Size(195, 75);
             this.gbGPRS.TabIndex = 13;
             this.gbGPRS.TabStop = false;
             this.gbGPRS.Text = "GPRS";
             // 
-            // lblParameterError
-            // 
-            this.lblParameterError.AutoSize = true;
-            this.lblParameterError.ForeColor = System.Drawing.Color.Red;
-            this.lblParameterError.Location = new System.Drawing.Point(12, 255);
-            this.lblParameterError.Name = "lblParameterError";
-            this.lblParameterError.Size = new System.Drawing.Size(277, 13);
-            this.lblParameterError.TabIndex = 15;
-            this.lblParameterError.Text = "Вказаний параметр з\'єднання не відповідає шаблону";
-            this.lblParameterError.Visible = false;
-            // 
-            // lblNameError
-            // 
-            this.lblNameError.AutoSize = true;
-            this.lblNameError.ForeColor = System.Drawing.Color.Red;
-            this.lblNameError.Location = new System.Drawing.Point(80, 14);
-            this.lblNameError.Name = "lblNameError";
-            this.lblNameError.Size = new System.Drawing.Size(148, 13);
-            this.lblNameError.TabIndex = 16;
-            this.lblNameError.Text = "Вкажіть назву обчислювача";
-            this.lblNameError.Visible = false;
-            // 
             // rbGPRS
             // 
             this.rbGPRS.AutoSize = true;
-            this.rbGPRS.Location = new System.Drawing.Point(278, 227);
+            this.rbGPRS.Location = new System.Drawing.Point(281, 197);
             this.rbGPRS.Name = "rbGPRS";
             this.rbGPRS.Size = new System.Drawing.Size(72, 17);
             this.rbGPRS.TabIndex = 18;
@@ -392,7 +371,7 @@
             // 
             this.rbTCPIP.AutoSize = true;
             this.rbTCPIP.Checked = true;
-            this.rbTCPIP.Location = new System.Drawing.Point(83, 227);
+            this.rbTCPIP.Location = new System.Drawing.Point(83, 197);
             this.rbTCPIP.Name = "rbTCPIP";
             this.rbTCPIP.Size = new System.Drawing.Size(78, 17);
             this.rbTCPIP.TabIndex = 19;
@@ -404,7 +383,7 @@
             // lblScanType
             // 
             this.lblScanType.AutoSize = true;
-            this.lblScanType.Location = new System.Drawing.Point(12, 229);
+            this.lblScanType.Location = new System.Drawing.Point(12, 199);
             this.lblScanType.Name = "lblScanType";
             this.lblScanType.Size = new System.Drawing.Size(67, 13);
             this.lblScanType.TabIndex = 20;
@@ -412,7 +391,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(317, 376);
+            this.btnCancel.Location = new System.Drawing.Point(317, 326);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 21;
@@ -422,7 +401,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(236, 376);
+            this.btnSave.Location = new System.Drawing.Point(236, 326);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 22;
@@ -430,18 +409,21 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // err
+            // 
+            this.err.ContainerControl = this;
+            this.err.Icon = ((System.Drawing.Icon)(resources.GetObject("err.Icon")));
+            // 
             // EditRocForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 411);
+            this.ClientSize = new System.Drawing.Size(424, 361);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblScanType);
             this.Controls.Add(this.rbTCPIP);
             this.Controls.Add(this.rbGPRS);
-            this.Controls.Add(this.lblNameError);
-            this.Controls.Add(this.lblParameterError);
             this.Controls.Add(this.gbGPRS);
             this.Controls.Add(this.gpTcpIp);
             this.Controls.Add(this.txtDescription);
@@ -453,9 +435,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 450);
+            this.MaximumSize = new System.Drawing.Size(440, 400);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(420, 450);
+            this.MinimumSize = new System.Drawing.Size(440, 400);
             this.Name = "EditRocForm";
             this.Text = "Додати обчислювач ROC809";
             this.gbDeviceAddress.ResumeLayout(false);
@@ -471,6 +453,7 @@
             this.gpTcpIp.PerformLayout();
             this.gbGPRS.ResumeLayout(false);
             this.gbGPRS.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.err)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -500,12 +483,11 @@
         private System.Windows.Forms.NumericUpDown numPort;
         private System.Windows.Forms.GroupBox gpTcpIp;
         private System.Windows.Forms.GroupBox gbGPRS;
-        private System.Windows.Forms.Label lblParameterError;
-        private System.Windows.Forms.Label lblNameError;
         private System.Windows.Forms.RadioButton rbGPRS;
         private System.Windows.Forms.RadioButton rbTCPIP;
         private System.Windows.Forms.Label lblScanType;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.ErrorProvider err;
     }
 }

@@ -61,7 +61,7 @@ namespace DATASCAN.View.Forms
         {
             _nameChanged = !txtName.Text.Equals(Floutec.Name);
             SetChanged();
-            lblNameError.Visible = false;
+            err.SetError(txtName, "");
         }
 
         private void txtDescription_TextChanged(object sender, EventArgs e)
@@ -74,7 +74,7 @@ namespace DATASCAN.View.Forms
         {
             _phoneChanged = !txtPhone.Text.Equals(Floutec.Phone);
             SetChanged();
-            lblPhoneError.Visible = false;
+            err.SetError(txtPhone, "");
         }
 
         private void numAddress_ValueChanged(object sender, EventArgs e)
@@ -97,7 +97,7 @@ namespace DATASCAN.View.Forms
             txtPhone.Enabled = rbGPRS.Checked;
             if (!rbGPRS.Checked)
             {
-                lblPhoneError.Visible = false;
+                err.SetError(txtPhone, "");
                 txtPhone.Text = Floutec.Phone;
             }
         }
@@ -110,7 +110,7 @@ namespace DATASCAN.View.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {           
-            bool valid = ValidateFields();
+            bool valid = ValidateName() & ValidatePhone();
 
             if (valid)
             {
@@ -133,17 +133,6 @@ namespace DATASCAN.View.Forms
             }
         }
 
-        private bool ValidateFields()
-        {
-            bool nameIsValid = !string.IsNullOrEmpty(txtName.Text);
-            bool phoneIsValid = !rbGPRS.Checked || (rbGPRS.Checked && !string.IsNullOrEmpty(txtPhone.Text) && txtPhone.MaskCompleted);
-
-            lblNameError.Visible = !nameIsValid;
-            lblPhoneError.Visible = !phoneIsValid;
-
-            return nameIsValid && phoneIsValid;
-        }
-
         private void SetChanged()
         {
             _changed = _nameChanged || _descriptionChanged || _phoneChanged || _addressChanged || _scanTypeChanged;
@@ -152,6 +141,18 @@ namespace DATASCAN.View.Forms
             {
                 Text = _changed ? TITLE_EDIT + " *" : TITLE_EDIT;
             }
+        }
+
+        private bool ValidateName()
+        {
+            err.SetError(txtName, string.IsNullOrEmpty(txtName.Text) ? "Вкажіть назву обчислювача" : "");
+            return string.IsNullOrEmpty(err.GetError(txtName));
+        }
+
+        private bool ValidatePhone()
+        {
+            err.SetError(txtPhone, !rbGPRS.Checked || (rbGPRS.Checked && !string.IsNullOrEmpty(txtPhone.Text) && txtPhone.MaskCompleted) ? "" : "Номер телефону вказано невірно");
+            return string.IsNullOrEmpty(err.GetError(txtPhone));
         }
     }
 }
