@@ -66,6 +66,6 @@ namespace DATASCAN.Model.Rocs
         /// <summary>
         /// Коллекция данных событий
         /// </summary>
-        public virtual ICollection<Roc809EventData> DailyData { get; private set; } = new HashSet<Roc809EventData>();
+        public virtual ICollection<Roc809EventData> EventData { get; private set; } = new HashSet<Roc809EventData>();
     }
 }

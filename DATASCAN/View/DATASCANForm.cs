@@ -25,10 +25,10 @@ namespace DATASCAN.View
 
         private readonly DataContextService _contextService;
         private readonly EntitiesService<EntityBase> _entitiesService; 
-        private readonly EntitiesService<EstimatorBase> _estimatorsService;
-        private readonly EntitiesService<Customer> _customersService;
-        private readonly EntitiesService<EstimatorsGroup> _groupsService;
-        private readonly EntitiesService<MeasurePointBase> _pointsService;
+        private readonly EstimatorsService _estimatorsService;
+        private readonly CustomersService _customersService;
+        private readonly GroupsService _groupsService;
+        private readonly MeasurePointsService _pointsService;
         private readonly EntitiesService<ScanBase> _scansService;
 
         #endregion
@@ -57,10 +57,10 @@ namespace DATASCAN.View
 
             _contextService = new DataContextService(_sqlConnection);
             _entitiesService = new EntitiesService<EntityBase>(_sqlConnection);
-            _estimatorsService = new EntitiesService<EstimatorBase>(_sqlConnection);
-            _customersService = new EntitiesService<Customer>(_sqlConnection);
-            _groupsService = new EntitiesService<EstimatorsGroup>(_sqlConnection);
-            _pointsService = new EntitiesService<MeasurePointBase>(_sqlConnection);
+            _estimatorsService = new EstimatorsService(_sqlConnection);
+            _customersService = new CustomersService(_sqlConnection);
+            _groupsService = new GroupsService(_sqlConnection);
+            _pointsService = new MeasurePointsService(_sqlConnection);
             _scansService = new EntitiesService<ScanBase>(_sqlConnection);
 
             UpdateData().ConfigureAwait(false);
@@ -212,7 +212,7 @@ namespace DATASCAN.View
                     new ToolStripMenuItem("Інформація", Resources.Information, EditCustomerMenu_Click),
                     new ToolStripSeparator(), 
                     customer.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
+                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteCustomerMenu_Click)
                 });
 
                 customerMenu.Opening += ContextMenu_Opening;
@@ -258,7 +258,7 @@ namespace DATASCAN.View
                     new ToolStripMenuItem("Інформація", Resources.Information, EditGroupMenu_Click),
                     new ToolStripSeparator(),
                     group.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
+                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteGroupMenu_Click)
                 });
 
                 groupMenu.Opening += ContextMenu_Opening;
@@ -323,7 +323,7 @@ namespace DATASCAN.View
                     estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, EditFloutecMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, EditRocMenu_Click),
                     new ToolStripSeparator(),
                     estimator.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
+                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteEstimatorMenu_Click)
                 });
 
                 estimatorMenu.Opening += ContextMenu_Opening;
@@ -369,7 +369,7 @@ namespace DATASCAN.View
                             estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, EditLineMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, EditPointMenu_Click),
                             new ToolStripSeparator(),
                             point.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                            new ToolStripMenuItem("Видалити", Resources.Delete, DeleteMenu_Click)
+                            new ToolStripMenuItem("Видалити", Resources.Delete, DeletePointMenu_Click)
                         });
 
                         pointMenu.Opening += ContextMenu_Opening;
@@ -819,9 +819,104 @@ namespace DATASCAN.View
             }
         }
 
-        private void DeleteMenu_Click(object sender, EventArgs e)
+        private async void DeletePointMenu_Click(object sender, EventArgs e)
         {
+            TreeNode node = trvEstimators.SelectedNode;
 
+            MeasurePointBase point = node?.Tag as MeasurePointBase;
+
+            if (point != null)
+            {
+                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити вимірювальну точку {point} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    await _pointsService.Delete(point, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Вимірювальну точку {point} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+
+                    await UpdateData();
+                }
+            }
+        }
+
+        private async void DeleteCustomerMenu_Click(object sender, EventArgs e)
+        {
+            TreeNode node = trvEstimators.SelectedNode;
+
+            Customer customer = node?.Tag as Customer;
+
+            if (customer != null)
+            {
+                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити замовника {customer} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    await _customersService.Delete(customer.Id, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Замовника {customer} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+
+                    await UpdateData();
+                }
+            }
+        }
+
+        private async void DeleteGroupMenu_Click(object sender, EventArgs e)
+        {
+            TreeNode node = trvEstimators.SelectedNode;
+
+            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+
+            if (group != null)
+            {
+                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити групу обчислювачів {group} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    await _groupsService.Delete(group.Id, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів {group} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+
+                    await UpdateData();
+                }
+            }
+        }
+
+        private async void DeleteEstimatorMenu_Click(object sender, EventArgs e)
+        {
+            TreeNode node = trvEstimators.SelectedNode;
+
+            EstimatorBase estimator = node?.Tag as EstimatorBase;
+
+            if (estimator != null)
+            {
+                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити обчислювач {estimator} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    await _estimatorsService.Delete(estimator, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач {estimator} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+
+                    await UpdateData();
+                }
+            }
         }
 
         #region Drag and Drop

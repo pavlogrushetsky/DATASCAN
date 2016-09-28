@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
+using System.Linq;
 using DATASCAN.Migrations;
 using DATASCAN.Model;
 using DATASCAN.Model.Floutecs;
@@ -186,6 +187,6 @@ namespace DATASCAN.Context
         /// <summary>
         /// Периоды опросов данных
         /// </summary>
-        public DbSet<ScanPeriod> ScanPeriods { get; set; }       
+        public DbSet<ScanPeriod> ScanPeriods { get; set; }
     }
 }

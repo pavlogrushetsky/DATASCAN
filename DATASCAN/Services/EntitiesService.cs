@@ -14,7 +14,7 @@ namespace DATASCAN.Services
     /// </summary>
     public class EntitiesService<T> where T : EntityBase
     {
-        private readonly string _connection;
+        protected readonly string _connection;
 
         /// <summary>
         /// Сервис для доступа к данным сущностей
