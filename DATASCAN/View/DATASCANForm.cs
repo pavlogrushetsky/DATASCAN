@@ -15,6 +15,7 @@ using DATASCAN.Model.Rocs;
 using DATASCAN.Model.Scanning;
 using DATASCAN.Properties;
 using DATASCAN.Services;
+using DATASCAN.View.Extensions;
 using DATASCAN.View.Forms;
 
 namespace DATASCAN.View
@@ -180,15 +181,21 @@ namespace DATASCAN.View
 
         private void FillEstimatorsTree()
         {
+            var savedExpansionState = trvEstimators.Nodes.GetExpansionState();
+
+            trvEstimators.BeginUpdate();
+
             trvEstimators.Nodes.Clear();
 
             FillCustomers();
 
             FillGroups();
 
-            FillEstimators();  
-            
-            trvEstimators.ExpandAll();          
+            FillEstimators();
+
+            trvEstimators.Nodes.SetExpansionState(savedExpansionState);
+
+            trvEstimators.EndUpdate();                     
         }
 
         private void FillCustomers()
@@ -958,70 +965,73 @@ namespace DATASCAN.View
                     EstimatorBase estimator = newNode.Tag as EstimatorBase;
                     if (estimatorsGroup != null)
                     {
-                        if (destNode == null)
+                        if (destNode == null || destNode.Tag is Customer)
                         {
-                            estimatorsGroup.CustomerId = null;
-                            estimatorsGroup.Customer = null;
-                        }
-                        else
-                        {
-                            Customer customer = destNode.Tag as Customer;
-                            if (customer != null)
+                            if (destNode == null)
                             {
+                                estimatorsGroup.CustomerId = null;
+                                estimatorsGroup.Customer = null;
+                            }
+                            else
+                            {
+                                Customer customer = destNode.Tag as Customer;
                                 estimatorsGroup.CustomerId = customer.Id;
                                 estimatorsGroup.Customer = customer;
                             }
-                        }
 
-                        await _groupsService.Update(estimatorsGroup, () =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = destNode == null ? $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' відкріплено від замовника" : $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' закріплено за замовником з Id={estimatorsGroup.Customer.Id} та назвою '{estimatorsGroup.Customer.Title}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                        }, ex =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                        });
+                            await _groupsService.Update(estimatorsGroup, () =>
+                            {
+                                Logger.Log(lstMessages, new LogEntry { Message = destNode == null ? $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' відкріплено від замовника" : $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' закріплено за замовником з Id={estimatorsGroup.Customer.Id} та назвою '{estimatorsGroup.Customer.Title}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                            }, ex =>
+                            {
+                                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                            });
+                        }
                     }
-                    else if (newNode.Tag is EstimatorBase)
+                    else if (estimator != null)
                     {
-                        string message = string.Empty;
+                        string message;
 
-                        if (destNode == null)
+                        if (destNode == null || destNode.Tag is EstimatorsGroup || destNode.Tag is Customer)
                         {
-                            estimator.CustomerId = null;
-                            estimator.Customer = null;
-                            estimator.GroupId = null;
-                            estimator.Group = null;
-                            message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' відкріплено від замовників та груп";
-                        }
-                        else
-                        {
-                            EstimatorsGroup group = destNode.Tag as EstimatorsGroup;
-                            Customer customer = destNode.Tag as Customer;
-                            if (group != null)
+                            if (destNode == null)
                             {
-                                estimator.GroupId = group.Id;
-                                estimator.Group = group;
-                                estimator.CustomerId = group.CustomerId;
-                                estimator.Customer = _customers.SingleOrDefault(c => c.Id == group.CustomerId);
-                                message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' закріплено за групою з Id={group.Id} та назвою '{group.Name}'";
-                            }
-                            else if (customer != null)
-                            {
+                                estimator.CustomerId = null;
+                                estimator.Customer = null;
                                 estimator.GroupId = null;
                                 estimator.Group = null;
-                                estimator.CustomerId = customer.Id;
-                                estimator.Customer = customer;
-                                message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' закріплено за замовником з Id={customer.Id} та назвою '{customer.Title}'";
+                                message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' відкріплено від замовників та груп";
                             }
-                        }
+                            else
+                            {
+                                EstimatorsGroup group = destNode.Tag as EstimatorsGroup;
+                                Customer customer = destNode.Tag as Customer;
+                                if (group != null)
+                                {
+                                    estimator.GroupId = group.Id;
+                                    estimator.Group = group;
+                                    estimator.CustomerId = group.CustomerId;
+                                    estimator.Customer = _customers.SingleOrDefault(c => c.Id == group.CustomerId);
+                                    message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' закріплено за групою з Id={group.Id} та назвою '{group.Name}'";
+                                }
+                                else
+                                {
+                                    estimator.GroupId = null;
+                                    estimator.Group = null;
+                                    estimator.CustomerId = customer.Id;
+                                    estimator.Customer = customer;
+                                    message = $"Обчислювач з Id={estimator.Id} та назвою '{estimator.Name}' закріплено за замовником з Id={customer.Id} та назвою '{customer.Title}'";
+                                }
+                            }
 
-                        await _estimatorsService.Update(estimator, () =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                        }, ex =>
-                        {
-                            Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                        });
+                            await _estimatorsService.Update(estimator, () =>
+                            {
+                                Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                            }, ex =>
+                            {
+                                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                            });
+                        }
                     }
 
                     await UpdateData();

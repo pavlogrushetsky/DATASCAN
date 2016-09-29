@@ -45,12 +45,12 @@ namespace DATASCAN.View
             this.grpScans = new System.Windows.Forms.GroupBox();
             this.trvScans = new System.Windows.Forms.TreeView();
             this.grpMessages = new System.Windows.Forms.GroupBox();
-            this.imgMessages = new System.Windows.Forms.ImageList(this.components);
             this.lstMessages = new DATASCAN.View.Controls.LogListView();
             this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colTimestamp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imgMessages = new System.Windows.Forms.ImageList(this.components);
             this.mnuDATASCAN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splHorizontal)).BeginInit();
             this.splHorizontal.Panel1.SuspendLayout();
@@ -210,15 +210,6 @@ namespace DATASCAN.View
             this.grpMessages.TabStop = false;
             this.grpMessages.Text = "Повідомлення";
             // 
-            // imgMessages
-            // 
-            this.imgMessages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgMessages.ImageStream")));
-            this.imgMessages.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgMessages.Images.SetKeyName(0, "Info.png");
-            this.imgMessages.Images.SetKeyName(1, "Ok.png");
-            this.imgMessages.Images.SetKeyName(2, "Attention.png");
-            this.imgMessages.Images.SetKeyName(3, "HighPriority.png");
-            // 
             // lstMessages
             // 
             this.lstMessages.BackColor = System.Drawing.SystemColors.Control;
@@ -254,6 +245,15 @@ namespace DATASCAN.View
             // colMessage
             // 
             this.colMessage.Text = "Повідомлення";
+            // 
+            // imgMessages
+            // 
+            this.imgMessages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgMessages.ImageStream")));
+            this.imgMessages.TransparentColor = System.Drawing.Color.Transparent;
+            this.imgMessages.Images.SetKeyName(0, "Info.png");
+            this.imgMessages.Images.SetKeyName(1, "Ok.png");
+            this.imgMessages.Images.SetKeyName(2, "Attention.png");
+            this.imgMessages.Images.SetKeyName(3, "HighPriority.png");
             // 
             // DATASCANForm
             // 
