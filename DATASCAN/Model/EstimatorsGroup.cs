@@ -32,6 +32,14 @@ namespace DATASCAN.Model
         /// <summary>
         /// Коллекция вычислителей
         /// </summary>
-        public virtual ICollection<EstimatorBase> Estimators { get; set; } = new HashSet<EstimatorBase>(); 
+        public virtual ICollection<EstimatorBase> Estimators { get; set; } = new HashSet<EstimatorBase>();
+
+        /// <summary>
+        /// Возвращает текстовое описание группы вычислителей
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Name}, Id = {Id}";
+        }
     }
 }

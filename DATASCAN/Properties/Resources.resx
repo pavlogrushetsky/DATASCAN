@@ -196,4 +196,40 @@
   <data name="Error" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\icons\error.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ActivateMsg" xml:space="preserve">
+    <value>Активувати</value>
+  </data>
+  <data name="AddCustomerMsg" xml:space="preserve">
+    <value>Додати замовника</value>
+  </data>
+  <data name="AddEstimatorsGroupMsg" xml:space="preserve">
+    <value>Додати групу обчислювачів</value>
+  </data>
+  <data name="AddFloutecMsg" xml:space="preserve">
+    <value>Додати обчислювач ФЛОУТЕК</value>
+  </data>
+  <data name="AddMeasureLineMsg" xml:space="preserve">
+    <value>Додати вимірювальну нитку</value>
+  </data>
+  <data name="AddMeasurePointMsg" xml:space="preserve">
+    <value>Додати вимірювальну точку</value>
+  </data>
+  <data name="AddRocMsg" xml:space="preserve">
+    <value>Додати обчислювач ROC809</value>
+  </data>
+  <data name="DeactivateMsg" xml:space="preserve">
+    <value>Деактивувати</value>
+  </data>
+  <data name="DeleteMsg" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="InformationMsg" xml:space="preserve">
+    <value>Інформація</value>
+  </data>
+  <data name="SettingsMsg" xml:space="preserve">
+    <value>Налаштування</value>
+  </data>
+  <data name="UpdateMsg" xml:space="preserve">
+    <value>Оновити</value>
+  </data>
 </root>

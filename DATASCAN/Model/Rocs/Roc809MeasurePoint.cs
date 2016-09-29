@@ -49,5 +49,13 @@ namespace DATASCAN.Model.Rocs
         /// Коллекция суточных данных
         /// </summary>
         public virtual ICollection<Roc809DailyData> DailyData { get; private set; } = new HashSet<Roc809DailyData>();
+
+        /// <summary>
+        /// Возвращает текстовое описание точки измерения
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Name}, Id = {Id}";
+        }
     }
 }

@@ -69,12 +69,12 @@ namespace DATASCAN.View
 
             estimatorsMenu.Items.AddRange(new ToolStripItem[]
             {
-                new ToolStripMenuItem("Додати замовника", null, EditCustomerMenu_Click),
-                new ToolStripMenuItem("Додати групу обчислювачів", null, EditGroupMenu_Click),
-                new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, EditFloutecMenu_Click),
-                new ToolStripMenuItem("Додати обчислювач ROC809", null, EditRocMenu_Click),
+                new ToolStripMenuItem(Resources.AddCustomerMsg, null, EditCustomerMenu_Click),
+                new ToolStripMenuItem(Resources.AddEstimatorsGroupMsg, null, EditGroupMenu_Click),
+                new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
+                new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
                 new ToolStripSeparator(), 
-                new ToolStripMenuItem("Оновити", Resources.Refresh, RefreshMenu_Click)
+                new ToolStripMenuItem(Resources.UpdateMsg, Resources.Refresh, RefreshMenu_Click)
             });
 
             estimatorsMenu.Opening += ContextMenu_Opening;
@@ -205,14 +205,14 @@ namespace DATASCAN.View
 
                 customerMenu.Items.AddRange(new ToolStripItem[]
                 {
-                    new ToolStripMenuItem("Додати групу обчислювачів", null, EditGroupMenu_Click),
-                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, EditFloutecMenu_Click),
-                    new ToolStripMenuItem("Додати обчислювач ROC809", null, EditRocMenu_Click),
+                    new ToolStripMenuItem(Resources.AddEstimatorsGroupMsg, null, EditGroupMenu_Click),
+                    new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
+                    new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
                     new ToolStripSeparator(),
-                    new ToolStripMenuItem("Інформація", Resources.Information, EditCustomerMenu_Click),
+                    new ToolStripMenuItem(Resources.InformationMsg, Resources.Information, EditCustomerMenu_Click),
                     new ToolStripSeparator(), 
-                    customer.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteCustomerMenu_Click)
+                    customer.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteCustomerMenu_Click)
                 });
 
                 customerMenu.Opening += ContextMenu_Opening;
@@ -252,13 +252,13 @@ namespace DATASCAN.View
 
                 groupMenu.Items.AddRange(new ToolStripItem[]
                 {
-                    new ToolStripMenuItem("Додати обчислювач ФЛОУТЕК", null, EditFloutecMenu_Click),
-                    new ToolStripMenuItem("Додати обчислювач ROC809", null, EditRocMenu_Click),
+                    new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
+                    new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
                     new ToolStripSeparator(),
-                    new ToolStripMenuItem("Інформація", Resources.Information, EditGroupMenu_Click),
+                    new ToolStripMenuItem(Resources.InformationMsg, Resources.Information, EditGroupMenu_Click),
                     new ToolStripSeparator(),
-                    group.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteGroupMenu_Click)
+                    group.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteGroupMenu_Click)
                 });
 
                 groupMenu.Opening += ContextMenu_Opening;
@@ -318,12 +318,12 @@ namespace DATASCAN.View
 
                 estimatorMenu.Items.AddRange(new ToolStripItem[]
                 {
-                    estimator is Floutec ? new ToolStripMenuItem("Додати нитку вимірювання", null, EditLineMenu_Click) : new ToolStripMenuItem("Додати точку вимірювання", null, EditPointMenu_Click),
+                    estimator is Floutec ? new ToolStripMenuItem(Resources.AddMeasureLineMsg, null, EditLineMenu_Click) : new ToolStripMenuItem(Resources.AddMeasurePointMsg, null, EditPointMenu_Click),
                     new ToolStripSeparator(),
-                    estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, EditFloutecMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, EditRocMenu_Click),
+                    estimator is Floutec ? new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditFloutecMenu_Click) : new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditRocMenu_Click),
                     new ToolStripSeparator(),
-                    estimator.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem("Видалити", Resources.Delete, DeleteEstimatorMenu_Click)
+                    estimator.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteEstimatorMenu_Click)
                 });
 
                 estimatorMenu.Opening += ContextMenu_Opening;
@@ -366,10 +366,10 @@ namespace DATASCAN.View
 
                         pointMenu.Items.AddRange(new ToolStripItem[]
                         {
-                            estimator is Floutec ? new ToolStripMenuItem("Налаштування", Resources.Settings, EditLineMenu_Click) : new ToolStripMenuItem("Налаштування", Resources.Settings, EditPointMenu_Click),
+                            estimator is Floutec ? new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditLineMenu_Click) : new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditPointMenu_Click),
                             new ToolStripSeparator(),
-                            point.IsActive ? new ToolStripMenuItem("Деактивувати", Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem("Активувати", Resources.Activate, ActivateMenu_Click),
-                            new ToolStripMenuItem("Видалити", Resources.Delete, DeletePointMenu_Click)
+                            point.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                            new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeletePointMenu_Click)
                         });
 
                         pointMenu.Opening += ContextMenu_Opening;
@@ -407,7 +407,7 @@ namespace DATASCAN.View
 
             if (result == DialogResult.OK)
             {
-                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних були змінені", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
 
                 InitializeConnection();
                 await UpdateData();
@@ -425,7 +425,7 @@ namespace DATASCAN.View
             EditCustomerForm form = new EditCustomerForm
             {
                 StartPosition = FormStartPosition.CenterParent,
-                IsEdit = menuItem != null && menuItem.Text.Equals("Інформація"),
+                IsEdit = menuItem != null && menuItem.Text.Equals(Resources.InformationMsg),
                 Customer = customer
             };
 
@@ -439,7 +439,7 @@ namespace DATASCAN.View
                 {                        
                     await _customersService.Update(customer, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані замовника з Id={customer.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані замовника змінено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -449,7 +449,7 @@ namespace DATASCAN.View
                 {
                     await _customersService.Insert(customer, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано замовника з Id={customer.Id} та назвою '{customer.Title}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано замовника: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -473,7 +473,7 @@ namespace DATASCAN.View
             EditEstimatorsGroupForm form = new EditEstimatorsGroupForm
             {
                 StartPosition = FormStartPosition.CenterParent,
-                IsEdit = menuItem != null && menuItem.Text.Equals("Інформація"),
+                IsEdit = menuItem != null && menuItem.Text.Equals(Resources.InformationMsg),
                 Group = group
             };
 
@@ -487,7 +487,7 @@ namespace DATASCAN.View
                 {
                     await _groupsService.Update(group, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані групи обчислювачів з Id={group.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані групи обчислювачів змінено: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -502,7 +502,7 @@ namespace DATASCAN.View
 
                     await _groupsService.Insert(group, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано групу обчислювачів з Id={group.Id} та назвою '{group.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано групу обчислювачів: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -533,7 +533,7 @@ namespace DATASCAN.View
             EditFloutecForm form = new EditFloutecForm
             {
                 StartPosition = FormStartPosition.CenterParent,
-                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Floutec = floutec
             };
 
@@ -547,7 +547,7 @@ namespace DATASCAN.View
                 {
                     await _estimatorsService.Update(floutec, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ФЛОУТЕК з Id={floutec.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ФЛОУТЕК змінено: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -567,7 +567,7 @@ namespace DATASCAN.View
 
                     await _estimatorsService.Insert(floutec, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ФЛОУТЕК з Id={floutec.Id} та назвою '{floutec.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ФЛОУТЕК: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -593,7 +593,7 @@ namespace DATASCAN.View
             EditRocForm form = new EditRocForm
             {
                 StartPosition = FormStartPosition.CenterParent,
-                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Roc = roc
             };
 
@@ -607,7 +607,7 @@ namespace DATASCAN.View
                 {
                     await _estimatorsService.Update(roc, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ROC809 з Id={roc.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ROC809 змінено: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -627,7 +627,7 @@ namespace DATASCAN.View
 
                     await _estimatorsService.Insert(roc, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ROC809 з Id={roc.Id} та назвою '{roc.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ROC809: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -652,7 +652,7 @@ namespace DATASCAN.View
             EditRocPointForm form = new EditRocPointForm
             {
                 StartPosition = FormStartPosition.CenterParent,
-                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Point = point
             };
 
@@ -686,7 +686,7 @@ namespace DATASCAN.View
                 {
                     await _pointsService.Update(point, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної точки обчислювача ROC809 з Id={point.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної точки обчислювача ROC809 змінено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -701,7 +701,7 @@ namespace DATASCAN.View
 
                     await _pointsService.Insert(point, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну точку обчислювача ROC809 з Id={point.Id} та назвою '{point.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну точку обчислювача ROC809: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -725,7 +725,7 @@ namespace DATASCAN.View
             EditFloutecLineForm form = new EditFloutecLineForm
             {
                 StartPosition = FormStartPosition.CenterParent,
-                IsEdit = menuItem != null && menuItem.Text.Equals("Налаштування"),
+                IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Line = line
             };
 
@@ -757,7 +757,7 @@ namespace DATASCAN.View
                 {
                     await _pointsService.Update(line, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної нитки обчислювача ФЛОУТЕК з Id={line.Id} змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної нитки обчислювача ФЛОУТЕК змінено: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -772,7 +772,7 @@ namespace DATASCAN.View
 
                     await _pointsService.Insert(line, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну нитку обчислювача ФЛОУТЕК з Id={line.Id} та назвою '{line.Name}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну нитку обчислювача ФЛОУТЕК: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -833,7 +833,7 @@ namespace DATASCAN.View
                 {
                     await _pointsService.Delete(point, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Вимірювальну точку {point} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Вимірювальну точку видалено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -858,7 +858,7 @@ namespace DATASCAN.View
                 {
                     await _customersService.Delete(customer.Id, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Замовника {customer} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Замовника видалено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -883,7 +883,7 @@ namespace DATASCAN.View
                 {
                     await _groupsService.Delete(group.Id, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів {group} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -908,7 +908,7 @@ namespace DATASCAN.View
                 {
                     await _estimatorsService.Delete(estimator, () =>
                     {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач {estimator} видалено з бази даних", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач видалено: {estimator}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });

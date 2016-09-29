@@ -44,6 +44,14 @@ namespace DATASCAN.Model
         /// <summary>
         /// Коллекция групп вычислителей
         /// </summary>
-        public virtual ICollection<EstimatorsGroup> Groups { get; set; } = new HashSet<EstimatorsGroup>(); 
+        public virtual ICollection<EstimatorsGroup> Groups { get; set; } = new HashSet<EstimatorsGroup>();
+
+        /// <summary>
+        /// Возвращает текстовое описание заказчика
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Title}, Id = {Id}";
+        }
     }
 }

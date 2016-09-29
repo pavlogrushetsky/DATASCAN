@@ -71,5 +71,13 @@ namespace DATASCAN.Model.Floutecs
         /// Коллекция данных аварий
         /// </summary>
         public virtual ICollection<FloutecAlarmData> AlarmData { get; private set; } = new HashSet<FloutecAlarmData>();
+
+        /// <summary>
+        /// Возвращает текстовое описание нитки измерения
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Name}, Id = {Id}";
+        }
     }
 }

@@ -67,5 +67,13 @@ namespace DATASCAN.Model.Rocs
         /// Коллекция данных событий
         /// </summary>
         public virtual ICollection<Roc809EventData> EventData { get; private set; } = new HashSet<Roc809EventData>();
+
+        /// <summary>
+        /// Возвращает текстовое описание группы вычислителей
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Name}, Id = {Id}";
+        }
     }
 }

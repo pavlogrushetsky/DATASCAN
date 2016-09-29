@@ -14,5 +14,13 @@ namespace DATASCAN.Model.Floutecs
         /// </summary>
         [Required]
         public int Address { get; set; }
+
+        /// <summary>
+        /// Возвращает текстовое описание вычислителя
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Name}, Id = {Id}";
+        }
     }
 }

@@ -71,12 +71,75 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Активувати.
+        /// </summary>
+        internal static string ActivateMsg {
+            get {
+                return ResourceManager.GetString("ActivateMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Add {
             get {
                 object obj = ResourceManager.GetObject("Add", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Додати замовника.
+        /// </summary>
+        internal static string AddCustomerMsg {
+            get {
+                return ResourceManager.GetString("AddCustomerMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Додати групу обчислювачів.
+        /// </summary>
+        internal static string AddEstimatorsGroupMsg {
+            get {
+                return ResourceManager.GetString("AddEstimatorsGroupMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Додати обчислювач ФЛОУТЕК.
+        /// </summary>
+        internal static string AddFloutecMsg {
+            get {
+                return ResourceManager.GetString("AddFloutecMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Додати вимірювальну нитку.
+        /// </summary>
+        internal static string AddMeasureLineMsg {
+            get {
+                return ResourceManager.GetString("AddMeasureLineMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Додати вимірювальну точку.
+        /// </summary>
+        internal static string AddMeasurePointMsg {
+            get {
+                return ResourceManager.GetString("AddMeasurePointMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Додати обчислювач ROC809.
+        /// </summary>
+        internal static string AddRocMsg {
+            get {
+                return ResourceManager.GetString("AddRocMsg", resourceCulture);
             }
         }
         
@@ -171,12 +234,30 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Деактивувати.
+        /// </summary>
+        internal static string DeactivateMsg {
+            get {
+                return ResourceManager.GetString("DeactivateMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Delete {
             get {
                 object obj = ResourceManager.GetObject("Delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Видалити.
+        /// </summary>
+        internal static string DeleteMsg {
+            get {
+                return ResourceManager.GetString("DeleteMsg", resourceCulture);
             }
         }
         
@@ -271,6 +352,15 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Інформація.
+        /// </summary>
+        internal static string InformationMsg {
+            get {
+                return ResourceManager.GetString("InformationMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Ok {
@@ -317,6 +407,24 @@ namespace DATASCAN.Properties {
             get {
                 object obj = ResourceManager.GetObject("Settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Налаштування.
+        /// </summary>
+        internal static string SettingsMsg {
+            get {
+                return ResourceManager.GetString("SettingsMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Оновити.
+        /// </summary>
+        internal static string UpdateMsg {
+            get {
+                return ResourceManager.GetString("UpdateMsg", resourceCulture);
             }
         }
     }
