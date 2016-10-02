@@ -191,6 +191,12 @@
     <Compile Include="View\Forms\EditRocPointForm.Designer.cs">
       <DependentUpon>EditRocPointForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\EditScheduledScanForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditScheduledScanForm.Designer.cs">
+      <DependentUpon>EditScheduledScanForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\ServerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -249,6 +255,9 @@
     <EmbeddedResource Include="View\Forms\EditRocPointForm.resx">
       <DependentUpon>EditRocPointForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditScheduledScanForm.resx">
+      <DependentUpon>EditScheduledScanForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\ServerSettingsForm.resx">
       <DependentUpon>ServerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -270,6 +279,7 @@
     <Folder Include="Resources\Cursors\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Icons\Scan.ico" />
     <Content Include="Resources\Icons\Customer.ico" />
     <Content Include="Resources\Icons\DatabaseSettings.ico" />
     <Content Include="Resources\Icons\DATASCAN.ico" />
@@ -283,6 +293,7 @@
     <Content Include="Resources\Icons\ScheduledScan.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
+    <Content Include="Resources\Images\Scan.png" />
     <Content Include="Resources\Images\Customer.png" />
     <Content Include="Resources\Images\ConnectionSettings.png" />
     <Content Include="Resources\Images\DatabaseSettings.png" />

@@ -44,14 +44,16 @@ namespace DATASCAN.View
             this.imgEstimators = new System.Windows.Forms.ImageList(this.components);
             this.grpScans = new System.Windows.Forms.GroupBox();
             this.trvScans = new System.Windows.Forms.TreeView();
+            this.imageScans = new System.Windows.Forms.ImageList(this.components);
             this.grpMessages = new System.Windows.Forms.GroupBox();
+            this.imgMessages = new System.Windows.Forms.ImageList(this.components);
+            this.status = new System.Windows.Forms.StatusStrip();
+            this.progress = new System.Windows.Forms.ToolStripProgressBar();
             this.lstMessages = new DATASCAN.View.Controls.LogListView();
             this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colTimestamp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.imgMessages = new System.Windows.Forms.ImageList(this.components);
-            this.imageScans = new System.Windows.Forms.ImageList(this.components);
             this.mnuDATASCAN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splHorizontal)).BeginInit();
             this.splHorizontal.Panel1.SuspendLayout();
@@ -64,6 +66,7 @@ namespace DATASCAN.View
             this.grpEstimators.SuspendLayout();
             this.grpScans.SuspendLayout();
             this.grpMessages.SuspendLayout();
+            this.status.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnuDATASCAN
@@ -195,6 +198,7 @@ namespace DATASCAN.View
             this.trvScans.BackColor = System.Drawing.SystemColors.Control;
             this.trvScans.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.trvScans.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trvScans.FullRowSelect = true;
             this.trvScans.ImageIndex = 0;
             this.trvScans.ImageList = this.imageScans;
             this.trvScans.Location = new System.Drawing.Point(3, 16);
@@ -202,6 +206,14 @@ namespace DATASCAN.View
             this.trvScans.SelectedImageIndex = 0;
             this.trvScans.Size = new System.Drawing.Size(580, 275);
             this.trvScans.TabIndex = 0;
+            // 
+            // imageScans
+            // 
+            this.imageScans.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageScans.ImageStream")));
+            this.imageScans.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageScans.Images.SetKeyName(0, "PeriodicScan.ico");
+            this.imageScans.Images.SetKeyName(1, "ScheduledScan.ico");
+            this.imageScans.Images.SetKeyName(2, "Scan.ico");
             // 
             // grpMessages
             // 
@@ -213,6 +225,33 @@ namespace DATASCAN.View
             this.grpMessages.TabIndex = 0;
             this.grpMessages.TabStop = false;
             this.grpMessages.Text = "Повідомлення";
+            // 
+            // imgMessages
+            // 
+            this.imgMessages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgMessages.ImageStream")));
+            this.imgMessages.TransparentColor = System.Drawing.Color.Transparent;
+            this.imgMessages.Images.SetKeyName(0, "Info.png");
+            this.imgMessages.Images.SetKeyName(1, "Ok.png");
+            this.imgMessages.Images.SetKeyName(2, "Attention.png");
+            this.imgMessages.Images.SetKeyName(3, "HighPriority.png");
+            // 
+            // status
+            // 
+            this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.progress});
+            this.status.Location = new System.Drawing.Point(0, 539);
+            this.status.Name = "status";
+            this.status.Size = new System.Drawing.Size(884, 22);
+            this.status.TabIndex = 2;
+            this.status.Text = "statusStrip1";
+            // 
+            // progress
+            // 
+            this.progress.Name = "progress";
+            this.progress.Size = new System.Drawing.Size(100, 16);
+            this.progress.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progress.Value = 50;
+            this.progress.Visible = false;
             // 
             // lstMessages
             // 
@@ -250,27 +289,12 @@ namespace DATASCAN.View
             // 
             this.colMessage.Text = "Повідомлення";
             // 
-            // imgMessages
-            // 
-            this.imgMessages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgMessages.ImageStream")));
-            this.imgMessages.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgMessages.Images.SetKeyName(0, "Info.png");
-            this.imgMessages.Images.SetKeyName(1, "Ok.png");
-            this.imgMessages.Images.SetKeyName(2, "Attention.png");
-            this.imgMessages.Images.SetKeyName(3, "HighPriority.png");
-            // 
-            // imageScans
-            // 
-            this.imageScans.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageScans.ImageStream")));
-            this.imageScans.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageScans.Images.SetKeyName(0, "PeriodicScan.ico");
-            this.imageScans.Images.SetKeyName(1, "ScheduledScan.ico");
-            // 
             // DATASCANForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 561);
+            this.Controls.Add(this.status);
             this.Controls.Add(this.splHorizontal);
             this.Controls.Add(this.mnuDATASCAN);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -291,6 +315,8 @@ namespace DATASCAN.View
             this.grpEstimators.ResumeLayout(false);
             this.grpScans.ResumeLayout(false);
             this.grpMessages.ResumeLayout(false);
+            this.status.ResumeLayout(false);
+            this.status.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -318,6 +344,8 @@ namespace DATASCAN.View
         private System.Windows.Forms.ImageList imgMessages;
         private System.Windows.Forms.ImageList imgEstimators;
         private System.Windows.Forms.ImageList imageScans;
+        private System.Windows.Forms.StatusStrip status;
+        private System.Windows.Forms.ToolStripProgressBar progress;
     }
 }
 

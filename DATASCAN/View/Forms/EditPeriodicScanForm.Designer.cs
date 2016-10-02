@@ -54,9 +54,10 @@
             // 
             // txtTitle
             // 
-            this.txtTitle.Location = new System.Drawing.Point(79, 20);
+            this.txtTitle.Location = new System.Drawing.Point(59, 20);
+            this.txtTitle.MaxLength = 200;
             this.txtTitle.Name = "txtTitle";
-            this.txtTitle.Size = new System.Drawing.Size(292, 20);
+            this.txtTitle.Size = new System.Drawing.Size(312, 20);
             this.txtTitle.TabIndex = 2;
             this.txtTitle.TextChanged += new System.EventHandler(this.txtTitle_TextChanged);
             // 
@@ -76,7 +77,7 @@
             // 
             // numPeriod
             // 
-            this.numPeriod.Location = new System.Drawing.Point(79, 60);
+            this.numPeriod.Location = new System.Drawing.Point(59, 60);
             this.numPeriod.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -88,7 +89,7 @@
             0,
             0});
             this.numPeriod.Name = "numPeriod";
-            this.numPeriod.Size = new System.Drawing.Size(99, 20);
+            this.numPeriod.Size = new System.Drawing.Size(119, 20);
             this.numPeriod.TabIndex = 3;
             this.numPeriod.Value = new decimal(new int[] {
             1,

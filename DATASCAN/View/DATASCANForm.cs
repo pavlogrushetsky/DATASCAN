@@ -97,6 +97,8 @@ namespace DATASCAN.View
                 new ToolStripMenuItem(Resources.UpdateMsg, Resources.Refresh, RefreshMenu_Click)
             });
 
+            scansMenu.Opening += ScansContextMenu_Opening;
+
             trvScans.ContextMenuStrip = scansMenu;
         }
 
@@ -149,6 +151,8 @@ namespace DATASCAN.View
 
             if (connected)
             {
+                progress.Visible = true;
+
                 _estimators = await _estimatorsService.GetAll(null, ex =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
@@ -177,6 +181,8 @@ namespace DATASCAN.View
                 FillEstimatorsTree();
 
                 FillScansTree();
+
+                progress.Visible = false;
             }
             else
             {
@@ -224,13 +230,39 @@ namespace DATASCAN.View
 
             trvScans.Nodes.Clear();
 
+            TreeNode periodicScansNode = trvScans.Nodes.Add("Періодичні опитування");
+            periodicScansNode.ImageIndex = 0;
+            periodicScansNode.SelectedImageIndex = 0;
+
+            ContextMenuStrip periodicScansMenu = new ContextMenuStrip();
+
+            periodicScansMenu.Items.AddRange(new ToolStripItem[]
+            {
+                new ToolStripMenuItem(Resources.AddPeriodicScan, null, EditPeriodicScan_Click),
+            });
+
+            periodicScansNode.ContextMenuStrip = periodicScansMenu;
+
+            TreeNode scheduledScansNode = trvScans.Nodes.Add("Опитування за графіком");
+            scheduledScansNode.ImageIndex = 1;
+            scheduledScansNode.SelectedImageIndex = 1;
+
+            ContextMenuStrip scheduledScansMenu = new ContextMenuStrip();
+
+            scheduledScansMenu.Items.AddRange(new ToolStripItem[]
+            {
+                new ToolStripMenuItem(Resources.AddScheduledScan, null, EditScheduledScan_Click),
+            });
+
+            scheduledScansNode.ContextMenuStrip = scheduledScansMenu;
+
             _scans.ForEach(scan =>
             {
-                TreeNode scanNode = trvScans.Nodes.Add(scan.Title);
+                TreeNode scanNode = scan is PeriodicScan ? periodicScansNode.Nodes.Add(scan.Title) : scheduledScansNode.Nodes.Add(scan.Title);
                 scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
                 scanNode.Tag = scan;
-                scanNode.ImageIndex = scan is PeriodicScan ? 0 : 1;
-                scanNode.SelectedImageIndex = scan is PeriodicScan ? 0 : 1;
+                scanNode.ImageIndex = 2;
+                scanNode.SelectedImageIndex = 2;
 
                 ContextMenuStrip scanMenu = new ContextMenuStrip();
 
