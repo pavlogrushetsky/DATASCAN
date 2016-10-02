@@ -85,6 +85,10 @@
     <Compile Include="Migrations\201609211725242_RemovedRequiredForRocAddress.Designer.cs">
       <DependentUpon>201609211725242_RemovedRequiredForRocAddress.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610021643516_EditedScansModel.cs" />
+    <Compile Include="Migrations\201610021643516_EditedScansModel.Designer.cs">
+      <DependentUpon>201610021643516_EditedScansModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
     <Compile Include="Model\Common\DataRecordBase.cs" />
@@ -169,6 +173,12 @@
     <Compile Include="View\Forms\EditFloutecLineForm.Designer.cs">
       <DependentUpon>EditFloutecLineForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\EditPeriodicScanForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditPeriodicScanForm.Designer.cs">
+      <DependentUpon>EditPeriodicScanForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\EditRocForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +212,9 @@
     <EmbeddedResource Include="Migrations\201609211725242_RemovedRequiredForRocAddress.resx">
       <DependentUpon>201609211725242_RemovedRequiredForRocAddress.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610021643516_EditedScansModel.resx">
+      <DependentUpon>201610021643516_EditedScansModel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -226,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditFloutecLineForm.resx">
       <DependentUpon>EditFloutecLineForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditPeriodicScanForm.resx">
+      <DependentUpon>EditPeriodicScanForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditRocForm.resx">
       <DependentUpon>EditRocForm.cs</DependentUpon>
@@ -262,7 +278,9 @@
     <Content Include="Resources\Icons\Information.ico" />
     <Content Include="Resources\Icons\Group.ico" />
     <Content Include="Resources\Icons\Estimator.ico" />
+    <Content Include="Resources\Icons\PeriodicScan.ico" />
     <Content Include="Resources\Icons\Sensor.ico" />
+    <Content Include="Resources\Icons\ScheduledScan.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
     <Content Include="Resources\Images\Customer.png" />
@@ -277,9 +295,11 @@
     <Content Include="Resources\Images\Group.png" />
     <Content Include="Resources\Images\Deactivate.png" />
     <Content Include="Resources\Images\Activate.png" />
+    <Content Include="Resources\Images\PeriodicScan.png" />
     <Content Include="Resources\Images\Refresh.png" />
     <Content Include="Resources\Images\Sensor.png" />
     <Content Include="Resources\Images\Settings.png" />
+    <Content Include="Resources\Images\ScheduledScan.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

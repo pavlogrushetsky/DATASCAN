@@ -51,6 +51,7 @@ namespace DATASCAN.View
             this.colTimestamp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imgMessages = new System.Windows.Forms.ImageList(this.components);
+            this.imageScans = new System.Windows.Forms.ImageList(this.components);
             this.mnuDATASCAN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splHorizontal)).BeginInit();
             this.splHorizontal.Panel1.SuspendLayout();
@@ -194,8 +195,11 @@ namespace DATASCAN.View
             this.trvScans.BackColor = System.Drawing.SystemColors.Control;
             this.trvScans.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.trvScans.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trvScans.ImageIndex = 0;
+            this.trvScans.ImageList = this.imageScans;
             this.trvScans.Location = new System.Drawing.Point(3, 16);
             this.trvScans.Name = "trvScans";
+            this.trvScans.SelectedImageIndex = 0;
             this.trvScans.Size = new System.Drawing.Size(580, 275);
             this.trvScans.TabIndex = 0;
             // 
@@ -255,6 +259,13 @@ namespace DATASCAN.View
             this.imgMessages.Images.SetKeyName(2, "Attention.png");
             this.imgMessages.Images.SetKeyName(3, "HighPriority.png");
             // 
+            // imageScans
+            // 
+            this.imageScans.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageScans.ImageStream")));
+            this.imageScans.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageScans.Images.SetKeyName(0, "PeriodicScan.ico");
+            this.imageScans.Images.SetKeyName(1, "ScheduledScan.ico");
+            // 
             // DATASCANForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -306,6 +317,7 @@ namespace DATASCAN.View
         private System.Windows.Forms.ColumnHeader colMessage;
         private System.Windows.Forms.ImageList imgMessages;
         private System.Windows.Forms.ImageList imgEstimators;
+        private System.Windows.Forms.ImageList imageScans;
     }
 }
 

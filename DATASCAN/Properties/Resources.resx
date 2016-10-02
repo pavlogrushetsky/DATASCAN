@@ -232,4 +232,22 @@
   <data name="UpdateMsg" xml:space="preserve">
     <value>Оновити</value>
   </data>
+  <data name="AddPeriodicScan" xml:space="preserve">
+    <value>Додати періодичне опитування</value>
+  </data>
+  <data name="AddScheduledScan" xml:space="preserve">
+    <value>Додати опитування за графіком</value>
+  </data>
+  <data name="PeriodicScan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\periodicscan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PeriodicScan1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\icons\periodicscan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ScheduledScan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\scheduledscan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ScheduledScan1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\icons\scheduledscan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

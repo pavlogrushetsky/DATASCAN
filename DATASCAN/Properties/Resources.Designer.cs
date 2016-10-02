@@ -135,11 +135,29 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Додати періодичне опитування.
+        /// </summary>
+        internal static string AddPeriodicScan {
+            get {
+                return ResourceManager.GetString("AddPeriodicScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Додати обчислювач ROC809.
         /// </summary>
         internal static string AddRocMsg {
             get {
                 return ResourceManager.GetString("AddRocMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Додати опитування за графіком.
+        /// </summary>
+        internal static string AddScheduledScan {
+            get {
+                return ResourceManager.GetString("AddScheduledScan", resourceCulture);
             }
         }
         
@@ -373,10 +391,50 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PeriodicScan {
+            get {
+                object obj = ResourceManager.GetObject("PeriodicScan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon PeriodicScan1 {
+            get {
+                object obj = ResourceManager.GetObject("PeriodicScan1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Refresh {
             get {
                 object obj = ResourceManager.GetObject("Refresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ScheduledScan {
+            get {
+                object obj = ResourceManager.GetObject("ScheduledScan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon ScheduledScan1 {
+            get {
+                object obj = ResourceManager.GetObject("ScheduledScan1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

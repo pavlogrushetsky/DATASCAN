@@ -32,6 +32,6 @@ namespace DATASCAN.Model.Scanning
         /// Опрос данных
         /// </summary>
         [ForeignKey("ScanId")]
-        public virtual ScanBase Scan { get; set; }
+        public virtual ScheduledScan Scan { get; set; }
     }
 }
