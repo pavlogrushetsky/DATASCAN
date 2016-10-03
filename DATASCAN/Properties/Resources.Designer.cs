@@ -135,6 +135,16 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AddPeriod {
+            get {
+                object obj = ResourceManager.GetObject("AddPeriod", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Додати періодичне опитування.
         /// </summary>
         internal static string AddPeriodicScan {
@@ -414,6 +424,16 @@ namespace DATASCAN.Properties {
         internal static System.Drawing.Bitmap Refresh {
             get {
                 object obj = ResourceManager.GetObject("Refresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RemovePeriod {
+            get {
+                object obj = ResourceManager.GetObject("RemovePeriod", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

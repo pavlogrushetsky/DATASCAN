@@ -256,4 +256,10 @@
   <data name="Scan1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\icons\scan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AddPeriod" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\addperiod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RemovePeriod" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\removeperiod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

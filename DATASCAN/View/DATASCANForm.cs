@@ -30,7 +30,8 @@ namespace DATASCAN.View
         private readonly CustomersService _customersService;
         private readonly GroupsService _groupsService;
         private readonly MeasurePointsService _pointsService;
-        private readonly EntitiesService<ScanBase> _scansService;
+        private readonly PeriodicScansService _periodicScansService;
+        private readonly ScheduledScansService _scheduledScansService;
 
         #endregion
 
@@ -40,7 +41,8 @@ namespace DATASCAN.View
         private List<Customer> _customers = new List<Customer>();               
         private List<EstimatorsGroup> _groups = new List<EstimatorsGroup>();                
         private List<MeasurePointBase> _points = new List<MeasurePointBase>();        
-        private List<ScanBase> _scans = new List<ScanBase>();
+        private List<PeriodicScan> _periodicScans = new List<PeriodicScan>();
+        private List<ScheduledScan> _scheduledScans = new List<ScheduledScan>();
 
         #endregion
 
@@ -62,7 +64,8 @@ namespace DATASCAN.View
             _customersService = new CustomersService(_sqlConnection);
             _groupsService = new GroupsService(_sqlConnection);
             _pointsService = new MeasurePointsService(_sqlConnection);
-            _scansService = new EntitiesService<ScanBase>(_sqlConnection);
+            _periodicScansService = new PeriodicScansService(_sqlConnection);
+            _scheduledScansService = new ScheduledScansService(_sqlConnection);
 
             UpdateData().ConfigureAwait(false);
 
@@ -173,10 +176,15 @@ namespace DATASCAN.View
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
                 }, p => p.OrderBy(o => o.Id));
 
-                _scans = await _scansService.GetAll(null, ex =>
+                _periodicScans = await _periodicScansService.GetAll(null, ex =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
                 }, null, s => s.Members);
+
+                _scheduledScans = await _scheduledScansService.GetAll(null, ex =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                }, null, s => s.Members, s => s.Periods);
 
                 FillEstimatorsTree();
 
@@ -256,9 +264,9 @@ namespace DATASCAN.View
 
             scheduledScansNode.ContextMenuStrip = scheduledScansMenu;
 
-            _scans.ForEach(scan =>
+            _periodicScans.ForEach(scan =>
             {
-                TreeNode scanNode = scan is PeriodicScan ? periodicScansNode.Nodes.Add(scan.Title) : scheduledScansNode.Nodes.Add(scan.Title);
+                TreeNode scanNode = periodicScansNode.Nodes.Add(scan.Title);
                 scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
                 scanNode.Tag = scan;
                 scanNode.ImageIndex = 2;
@@ -269,6 +277,29 @@ namespace DATASCAN.View
                 scanMenu.Items.AddRange(new ToolStripItem[]
                 {
                     new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditPeriodicScan_Click),
+                    new ToolStripSeparator(),
+                    scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteScanMenu_Click)
+                });
+
+                scanMenu.Opening += ScansContextMenu_Opening;
+
+                scanNode.ContextMenuStrip = scanMenu;
+            });
+
+            _scheduledScans.ForEach(scan =>
+            {
+                TreeNode scanNode = scheduledScansNode.Nodes.Add(scan.Title);
+                scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
+                scanNode.Tag = scan;
+                scanNode.ImageIndex = 2;
+                scanNode.SelectedImageIndex = 2;
+
+                ContextMenuStrip scanMenu = new ContextMenuStrip();
+
+                scanMenu.Items.AddRange(new ToolStripItem[]
+                {
+                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditScheduledScan_Click),
                     new ToolStripSeparator(),
                     scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
                     new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteScanMenu_Click)
@@ -666,7 +697,7 @@ namespace DATASCAN.View
 
                 if (form.IsEdit)
                 {
-                    await _scansService.Update(scan, () =>
+                    await _periodicScansService.Update(scan, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
@@ -676,7 +707,7 @@ namespace DATASCAN.View
                 }
                 else
                 {
-                    await _scansService.Insert(scan, () =>
+                    await _periodicScansService.Insert(scan, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано періодичне опитування: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>
@@ -691,7 +722,48 @@ namespace DATASCAN.View
 
         private async void EditScheduledScan_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 
+            TreeNode node = trvScans.SelectedNode;
+
+            ScheduledScan scan = node?.Tag as ScheduledScan;
+
+            EditScheduledScanForm form = new EditScheduledScanForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
+                Scan = scan
+            };
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK && form.Scan != null)
+            {
+                scan = form.Scan;
+
+                if (form.IsEdit)
+                {
+                    await _scheduledScansService.Update(scan, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані опитування за графіком змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+                else
+                {
+                    await _scheduledScansService.Insert(scan, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано опитування за графіком: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+                }
+
+                await UpdateData();
+            }
         }
 
         private async void EditFloutecMenu_Click(object sender, EventArgs e)

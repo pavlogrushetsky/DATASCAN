@@ -131,6 +131,8 @@
     <Compile Include="Services\CustomersService.cs" />
     <Compile Include="Services\EntitiesService.cs" />
     <Compile Include="Services\DataContextService.cs" />
+    <Compile Include="Services\ScheduledScansService.cs" />
+    <Compile Include="Services\PeriodicScansService.cs" />
     <Compile Include="Services\EstimatorsService.cs" />
     <Compile Include="Services\GroupsService.cs" />
     <Compile Include="Services\MeasurePointsService.cs" />
@@ -293,6 +295,8 @@
     <Content Include="Resources\Icons\ScheduledScan.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
+    <Content Include="Resources\Images\RemovePeriod.png" />
+    <Content Include="Resources\Images\AddPeriod.png" />
     <Content Include="Resources\Images\Scan.png" />
     <Content Include="Resources\Images\Customer.png" />
     <Content Include="Resources\Images\ConnectionSettings.png" />

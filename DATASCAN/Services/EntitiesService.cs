@@ -78,7 +78,7 @@ namespace DATASCAN.Services
         /// <param name="entity">Сущность</param>
         /// <param name="onSuccess">Действие, выполняемое в случае успешного обновления</param>
         /// <param name="onException">Действие, выполняемое в случае исключения</param>
-        public async Task Update(T entity, Action onSuccess = null, Action<Exception> onException = null)
+        public virtual async Task Update(T entity, Action onSuccess = null, Action<Exception> onException = null)
         {
             await Task.Factory.StartNew(() =>
             {
