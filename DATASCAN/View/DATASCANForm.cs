@@ -294,6 +294,8 @@ namespace DATASCAN.View
                 scanMenu.Opening += ScansContextMenu_Opening;
 
                 scanNode.ContextMenuStrip = scanMenu;
+
+                FillMembers(scanNode);
             });
 
             _scheduledScans.ForEach(scan =>
@@ -317,6 +319,8 @@ namespace DATASCAN.View
                 scanMenu.Opening += ScansContextMenu_Opening;
 
                 scanNode.ContextMenuStrip = scanMenu;
+
+                FillMembers(scanNode);
             });
 
             trvScans.Nodes.SetExpansionState(savedExpansionState);
@@ -486,6 +490,58 @@ namespace DATASCAN.View
 
                 FillEstimators(groupNode);
             });
+        }
+
+        private void FillMembers(TreeNode scanNode)
+        {
+            ScanBase scan = scanNode.Tag as ScanBase;
+
+            scan?.Members.ToList().ForEach(member =>
+            {
+                TreeNode memberNode;
+
+                if (!member.MeasurePointId.HasValue)
+                {
+                    EstimatorBase estimator = _estimators.Find(e => e.Id == member.EstimatorId);
+
+                    memberNode = scanNode.Nodes.Add(estimator.ToString());
+                    memberNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
+                    memberNode.Tag = estimator;
+                    memberNode.ImageIndex = 3;
+                    memberNode.SelectedImageIndex = 3;
+                }
+                else
+                {
+                    MeasurePointBase point = _points.Find(e => e.Id == member.MeasurePointId.Value);
+
+                    memberNode = scanNode.Nodes.Add(point.ToString());
+                    memberNode.ForeColor = point.IsActive ? Color.Black : Color.Red;
+                    memberNode.Tag = point;
+                    memberNode.ImageIndex = 4;
+                    memberNode.SelectedImageIndex = 4;
+                }
+
+                ContextMenuStrip memberMenu = new ContextMenuStrip();
+
+                memberMenu.Items.AddRange(new ToolStripItem[]
+                {
+                    new ToolStripMenuItem(Resources.DeleteFromScanMsg, Resources.Delete, DeleteMemberMenu_Click)
+                });
+
+                memberMenu.Opening += MembersContextMenu_Opening;
+
+                memberNode.ContextMenuStrip = memberMenu;
+            });
+        }
+
+        private void MembersContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+            
+        }
+
+        private void DeleteMemberMenu_Click(object sender, EventArgs e)
+        {
+            
         }
 
         private void FillEstimators(TreeNode parentNode = null)

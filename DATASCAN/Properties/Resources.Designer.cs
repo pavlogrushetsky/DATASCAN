@@ -281,6 +281,15 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Видалити з опитування.
+        /// </summary>
+        internal static string DeleteFromScanMsg {
+            get {
+                return ResourceManager.GetString("DeleteFromScanMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Видалити.
         /// </summary>
         internal static string DeleteMsg {
