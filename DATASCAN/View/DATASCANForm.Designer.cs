@@ -48,7 +48,6 @@ namespace DATASCAN.View
             this.grpMessages = new System.Windows.Forms.GroupBox();
             this.imgMessages = new System.Windows.Forms.ImageList(this.components);
             this.status = new System.Windows.Forms.StatusStrip();
-            this.progress = new System.Windows.Forms.ToolStripProgressBar();
             this.lstMessages = new DATASCAN.View.Controls.LogListView();
             this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -66,7 +65,6 @@ namespace DATASCAN.View
             this.grpEstimators.SuspendLayout();
             this.grpScans.SuspendLayout();
             this.grpMessages.SuspendLayout();
-            this.status.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnuDATASCAN
@@ -237,21 +235,12 @@ namespace DATASCAN.View
             // 
             // status
             // 
-            this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.progress});
+            this.status.ImageScalingSize = new System.Drawing.Size(30, 10);
             this.status.Location = new System.Drawing.Point(0, 539);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(884, 22);
             this.status.TabIndex = 2;
             this.status.Text = "statusStrip1";
-            // 
-            // progress
-            // 
-            this.progress.Name = "progress";
-            this.progress.Size = new System.Drawing.Size(100, 16);
-            this.progress.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progress.Value = 50;
-            this.progress.Visible = false;
             // 
             // lstMessages
             // 
@@ -315,8 +304,6 @@ namespace DATASCAN.View
             this.grpEstimators.ResumeLayout(false);
             this.grpScans.ResumeLayout(false);
             this.grpMessages.ResumeLayout(false);
-            this.status.ResumeLayout(false);
-            this.status.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -345,7 +332,6 @@ namespace DATASCAN.View
         private System.Windows.Forms.ImageList imgEstimators;
         private System.Windows.Forms.ImageList imageScans;
         private System.Windows.Forms.StatusStrip status;
-        private System.Windows.Forms.ToolStripProgressBar progress;
     }
 }
 

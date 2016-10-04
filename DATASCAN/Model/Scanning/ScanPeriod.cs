@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DATASCAN.Model.Common;
 
 namespace DATASCAN.Model.Scanning
 {
@@ -8,14 +9,8 @@ namespace DATASCAN.Model.Scanning
     /// Сущность "Период опроса"
     /// </summary>
     [Table("Periods", Schema = "Scan")]
-    public class ScanPeriod
+    public class ScanPeriod : EntityBase
     {
-        /// <summary>
-        /// Идентификатор (первичный ключ) сущности
-        /// </summary>
-        [Key]
-        public int Id { get; set; }
-
         /// <summary>
         /// Период (время) опроса
         /// </summary>

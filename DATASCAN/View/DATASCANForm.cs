@@ -103,6 +103,13 @@ namespace DATASCAN.View
             scansMenu.Opening += ScansContextMenu_Opening;
 
             trvScans.ContextMenuStrip = scansMenu;
+
+            PictureBox progress = new PictureBox {Image = Resources.Progress};            
+
+            status.Items.Add(progress.Image);
+            status.Items.Add("Виконується запит до бази даних ...");
+            status.Items[0].Visible = false;
+            status.Items[1].Visible = false;
         }
 
         #endregion
@@ -154,7 +161,8 @@ namespace DATASCAN.View
 
             if (connected)
             {
-                progress.Visible = true;
+                status.Items[0].Visible = true;
+                status.Items[1].Visible = true;
 
                 _estimators = await _estimatorsService.GetAll(null, ex =>
                 {
@@ -190,7 +198,8 @@ namespace DATASCAN.View
 
                 FillScansTree();
 
-                progress.Visible = false;
+                status.Items[0].Visible = false;
+                status.Items[1].Visible = false;
             }
             else
             {
@@ -279,7 +288,7 @@ namespace DATASCAN.View
                     new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditPeriodicScan_Click),
                     new ToolStripSeparator(),
                     scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
-                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteScanMenu_Click)
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeletePeriodicScanMenu_Click)
                 });
 
                 scanMenu.Opening += ScansContextMenu_Opening;
@@ -302,7 +311,7 @@ namespace DATASCAN.View
                     new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditScheduledScan_Click),
                     new ToolStripSeparator(),
                     scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
-                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteScanMenu_Click)
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteScheduledScanMenu_Click)
                 });
 
                 scanMenu.Opening += ScansContextMenu_Opening;
@@ -315,19 +324,90 @@ namespace DATASCAN.View
             trvScans.EndUpdate();
         }
 
-        private void ActivateScanMenu_Click(object sender, EventArgs e)
+        private async void ActivateScanMenu_Click(object sender, EventArgs e)
         {
-            
+            TreeNode node = trvScans.SelectedNode;
+
+            EntityBase entity = node?.Tag as EntityBase;
+
+            if (entity != null)
+            {
+                entity.IsActive = true;
+                await _entitiesService.Update(entity, null, ex =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
+
+                await UpdateData();
+            }
         }
 
-        private void DeactivateScanMenu_Click(object sender, EventArgs e)
+        private async void DeactivateScanMenu_Click(object sender, EventArgs e)
         {
-            
+            TreeNode node = trvScans.SelectedNode;
+
+            EntityBase entity = node?.Tag as EntityBase;
+
+            if (entity != null)
+            {
+                entity.IsActive = false;
+                await _entitiesService.Update(entity, null, ex =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
+
+                await UpdateData();
+            }
         }
 
-        private void DeleteScanMenu_Click(object sender, EventArgs e)
+        private async void DeletePeriodicScanMenu_Click(object sender, EventArgs e)
         {
-            
+            TreeNode node = trvScans.SelectedNode;
+
+            PeriodicScan scan = node?.Tag as PeriodicScan;
+
+            if (scan != null)
+            {
+                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити періодичне опитування {scan} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    await _periodicScansService.Delete(scan.Id, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Періодичне опитування видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+
+                    await UpdateData();
+                }
+            }
+        }
+
+        private async void DeleteScheduledScanMenu_Click(object sender, EventArgs e)
+        {
+            TreeNode node = trvScans.SelectedNode;
+
+            ScheduledScan scan = node?.Tag as ScheduledScan;
+
+            if (scan != null)
+            {
+                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити опитування за графіком {scan} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    await _scheduledScansService.Delete(scan, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Опитування за графіком видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+
+                    await UpdateData();
+                }
+            }
         }
 
         private void FillCustomers()

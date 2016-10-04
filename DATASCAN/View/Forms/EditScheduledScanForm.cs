@@ -83,6 +83,7 @@ namespace DATASCAN.View.Forms
                     UpdatePeriods();
                     _periodsChanged = true;
                     SetChanged();
+                    txtPeriod.Text = string.Empty;
                 }                
             }
         }

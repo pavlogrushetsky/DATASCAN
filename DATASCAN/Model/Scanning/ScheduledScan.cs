@@ -13,5 +13,13 @@ namespace DATASCAN.Model.Scanning
         /// Коллекция периодов опроса
         /// </summary>
         public virtual ICollection<ScanPeriod> Periods { get; private set; } = new HashSet<ScanPeriod>();
+
+        /// <summary>
+        /// Возвращает текстовое описание опроса
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Title}, Id = {Id}";
+        }
     }
 }

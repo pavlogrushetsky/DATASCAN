@@ -89,6 +89,10 @@
     <Compile Include="Migrations\201610021643516_EditedScansModel.Designer.cs">
       <DependentUpon>201610021643516_EditedScansModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610041735219_MadeScanPeriodEntityBase.cs" />
+    <Compile Include="Migrations\201610041735219_MadeScanPeriodEntityBase.Designer.cs">
+      <DependentUpon>201610041735219_MadeScanPeriodEntityBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
     <Compile Include="Model\Common\DataRecordBase.cs" />
@@ -223,6 +227,9 @@
     <EmbeddedResource Include="Migrations\201610021643516_EditedScansModel.resx">
       <DependentUpon>201610021643516_EditedScansModel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610041735219_MadeScanPeriodEntityBase.resx">
+      <DependentUpon>201610041735219_MadeScanPeriodEntityBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -295,6 +302,7 @@
     <Content Include="Resources\Icons\ScheduledScan.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
+    <Content Include="Resources\Images\Progress.gif" />
     <Content Include="Resources\Images\RemovePeriod.png" />
     <Content Include="Resources\Images\AddPeriod.png" />
     <Content Include="Resources\Images\Scan.png" />
