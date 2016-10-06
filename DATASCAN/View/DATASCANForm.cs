@@ -32,6 +32,7 @@ namespace DATASCAN.View
         private readonly MeasurePointsService _pointsService;
         private readonly PeriodicScansService _periodicScansService;
         private readonly ScheduledScansService _scheduledScansService;
+        private readonly ScanMembersService _scanMembersService;
 
         #endregion
 
@@ -66,6 +67,7 @@ namespace DATASCAN.View
             _pointsService = new MeasurePointsService(_sqlConnection);
             _periodicScansService = new PeriodicScansService(_sqlConnection);
             _scheduledScansService = new ScheduledScansService(_sqlConnection);
+            _scanMembersService = new ScanMembersService(_sqlConnection);
 
             UpdateData().ConfigureAwait(false);
 
@@ -103,6 +105,11 @@ namespace DATASCAN.View
             scansMenu.Opening += ScansContextMenu_Opening;
 
             trvScans.ContextMenuStrip = scansMenu;
+
+            trvScans.AllowDrop = true;
+            trvScans.ItemDrag += TrvEstimators_ItemDrag;
+            trvScans.DragEnter += TrvEstimators_DragEnter;
+            trvScans.DragDrop += TrvEstimators_DragDrop;
 
             PictureBox progress = new PictureBox {Image = Resources.Progress};            
 
@@ -1397,6 +1404,73 @@ namespace DATASCAN.View
                     }
 
                     await UpdateData();
+                }
+                else
+                {
+                    EstimatorBase estimator = newNode.Tag as EstimatorBase;
+
+                    if (estimator != null && destNode != null)
+                    {
+                        if (destNode.Tag is PeriodicScan || destNode.Tag is ScheduledScan)
+                        {
+                            if (estimator is Floutec)
+                            {
+                                EditFloutecScanMemberForm form = new EditFloutecScanMemberForm
+                                {
+                                    StartPosition = FormStartPosition.CenterParent,
+                                    IsEdit = false
+                                };
+
+                                DialogResult result = form.ShowDialog();
+
+                                if (result == DialogResult.OK)
+                                {
+                                    ScanBase scan = (ScanBase) destNode.Tag;
+
+                                    ScanMemberBase member = form.Member;
+                                    member.ScanBaseId = scan.Id;
+                                    member.EstimatorId = estimator.Id;
+
+                                    await _scanMembersService.Insert(member, () =>
+                                    {
+                                        Logger.Log(lstMessages, new LogEntry { Message = $"", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                                    }, ex =>
+                                    {
+                                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                                    });
+                                }
+                            }
+                            else if (estimator is Roc809)
+                            {
+                                EditRocScanMemberForm form = new EditRocScanMemberForm
+                                {
+                                    StartPosition = FormStartPosition.CenterParent,
+                                    IsEdit = false
+                                };
+
+                                DialogResult result = form.ShowDialog();
+
+                                if (result == DialogResult.OK)
+                                {
+                                    ScanBase scan = (ScanBase)destNode.Tag;
+
+                                    ScanMemberBase member = form.Member;
+                                    member.ScanBaseId = scan.Id;
+                                    member.EstimatorId = estimator.Id;
+
+                                    await _scanMembersService.Insert(member, () =>
+                                    {
+                                        Logger.Log(lstMessages, new LogEntry { Message = $"", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                                    }, ex =>
+                                    {
+                                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                                    });
+                                }
+                            }
+
+                            await UpdateData();
+                        }                        
+                    }
                 }
             }
         }

@@ -141,6 +141,7 @@
     <Compile Include="Services\CustomersService.cs" />
     <Compile Include="Services\EntitiesService.cs" />
     <Compile Include="Services\DataContextService.cs" />
+    <Compile Include="Services\ScanMembersService.cs" />
     <Compile Include="Services\ScheduledScansService.cs" />
     <Compile Include="Services\PeriodicScansService.cs" />
     <Compile Include="Services\EstimatorsService.cs" />
