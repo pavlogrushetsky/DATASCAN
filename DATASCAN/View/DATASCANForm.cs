@@ -498,28 +498,13 @@ namespace DATASCAN.View
 
             scan?.Members.ToList().ForEach(member =>
             {
-                TreeNode memberNode;
+                EstimatorBase estimator = _estimators.Find(e => e.Id == member.EstimatorId);
 
-                if (!member.MeasurePointId.HasValue)
-                {
-                    EstimatorBase estimator = _estimators.Find(e => e.Id == member.EstimatorId);
-
-                    memberNode = scanNode.Nodes.Add(estimator.ToString());
-                    memberNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
-                    memberNode.Tag = estimator;
-                    memberNode.ImageIndex = 3;
-                    memberNode.SelectedImageIndex = 3;
-                }
-                else
-                {
-                    MeasurePointBase point = _points.Find(e => e.Id == member.MeasurePointId.Value);
-
-                    memberNode = scanNode.Nodes.Add(point.ToString());
-                    memberNode.ForeColor = point.IsActive ? Color.Black : Color.Red;
-                    memberNode.Tag = point;
-                    memberNode.ImageIndex = 4;
-                    memberNode.SelectedImageIndex = 4;
-                }
+                TreeNode memberNode = scanNode.Nodes.Add(estimator.ToString());
+                memberNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
+                memberNode.Tag = estimator;
+                memberNode.ImageIndex = 3;
+                memberNode.SelectedImageIndex = 3;
 
                 ContextMenuStrip memberMenu = new ContextMenuStrip();
 

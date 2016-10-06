@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
-using System.Linq;
 using DATASCAN.Migrations;
 using DATASCAN.Model;
 using DATASCAN.Model.Floutecs;
@@ -182,7 +181,17 @@ namespace DATASCAN.Context
         /// <summary>
         /// Элементы опросов данных
         /// </summary>
-        public DbSet<ScanMember> ScanMembers { get; set; }
+        public DbSet<ScanMemberBase> ScanMembers { get; set; }
+
+        /// <summary>
+        /// Элементы опросов данных вычислителей ROC809
+        /// </summary>
+        public DbSet<RocScanMember> RocScanMembers { get; set; }
+
+        /// <summary>
+        /// Элементы опросов данных вычислителей ФЛОУТЭК
+        /// </summary>
+        public DbSet<FloutecScanMember> FloutecScanMembers { get; set; }
 
         /// <summary>
         /// Периоды опросов данных

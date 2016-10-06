@@ -21,6 +21,6 @@ namespace DATASCAN.Model.Scanning
         /// <summary>
         /// Коллекция элементов опроса
         /// </summary>
-        public virtual ICollection<ScanMember> Members { get; private set; } = new HashSet<ScanMember>(); 
+        public virtual ICollection<ScanMemberBase> Members { get; private set; } = new HashSet<ScanMemberBase>(); 
     }
 }

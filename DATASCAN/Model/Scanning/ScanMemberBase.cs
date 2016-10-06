@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using DATASCAN.Model.Common;
 
 namespace DATASCAN.Model.Scanning
@@ -8,7 +7,7 @@ namespace DATASCAN.Model.Scanning
     /// Сущность "Элемент опроса данных"
     /// </summary>
     [Table("Members", Schema = "Scan")]
-    public class ScanMember : EntityBase
+    public abstract class ScanMemberBase : EntityBase
     {
         /// <summary>
         /// Первичный ключ вычислителя
@@ -20,24 +19,6 @@ namespace DATASCAN.Model.Scanning
         /// </summary>
         [ForeignKey("EstimatorId")]
         public virtual EstimatorBase Estimator { get; set; }
-
-        /// <summary>
-        /// Первичный ключ точки измерения
-        /// </summary>
-        public int? MeasurePointId { get; set; }
-
-        /// <summary>
-        /// Точка измерения
-        /// </summary>
-        [ForeignKey("MeasurePointId")]
-        public virtual MeasurePointBase MeasurePoint { get; set; }
-
-        /// <summary>
-        /// Тип опрашиваемых данных
-        /// </summary>
-        [Required]
-        [MaxLength(50)]
-        public string DataType { get; set; }
 
         /// <summary>
         /// Первичный ключ опроса данных

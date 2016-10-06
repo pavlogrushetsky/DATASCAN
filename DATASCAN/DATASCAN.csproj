@@ -93,6 +93,10 @@
     <Compile Include="Migrations\201610041735219_MadeScanPeriodEntityBase.Designer.cs">
       <DependentUpon>201610041735219_MadeScanPeriodEntityBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610061845015_AddedScanMembers.cs" />
+    <Compile Include="Migrations\201610061845015_AddedScanMembers.Designer.cs">
+      <DependentUpon>201610061845015_AddedScanMembers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
     <Compile Include="Model\Common\DataRecordBase.cs" />
@@ -125,7 +129,9 @@
     <Compile Include="Model\Rocs\Roc809MeasurePoint.cs" />
     <Compile Include="Model\Rocs\Roc809MinuteData.cs" />
     <Compile Include="Model\Rocs\Roc809PeriodicData.cs" />
-    <Compile Include="Model\Scanning\ScanMember.cs" />
+    <Compile Include="Model\Scanning\FloutecScanMember.cs" />
+    <Compile Include="Model\Scanning\RocScanMember.cs" />
+    <Compile Include="Model\Scanning\ScanMemberBase.cs" />
     <Compile Include="Model\Scanning\ScheduledScan.cs" />
     <Compile Include="Model\Scanning\PeriodicScan.cs" />
     <Compile Include="Model\Scanning\ScanBase.cs" />
@@ -197,6 +203,18 @@
     <Compile Include="View\Forms\EditRocPointForm.Designer.cs">
       <DependentUpon>EditRocPointForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\EditFloutecScanMemberForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditFloutecScanMemberForm.Designer.cs">
+      <DependentUpon>EditFloutecScanMemberForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Forms\EditRocScanMemberForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\EditRocScanMemberForm.Designer.cs">
+      <DependentUpon>EditRocScanMemberForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\EditScheduledScanForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -229,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610041735219_MadeScanPeriodEntityBase.resx">
       <DependentUpon>201610041735219_MadeScanPeriodEntityBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610061845015_AddedScanMembers.resx">
+      <DependentUpon>201610061845015_AddedScanMembers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -263,6 +284,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditRocPointForm.resx">
       <DependentUpon>EditRocPointForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditFloutecScanMemberForm.resx">
+      <DependentUpon>EditFloutecScanMemberForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\EditRocScanMemberForm.resx">
+      <DependentUpon>EditRocScanMemberForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditScheduledScanForm.resx">
       <DependentUpon>EditScheduledScanForm.cs</DependentUpon>
@@ -300,6 +327,7 @@
     <Content Include="Resources\Icons\PeriodicScan.ico" />
     <Content Include="Resources\Icons\Sensor.ico" />
     <Content Include="Resources\Icons\ScheduledScan.ico" />
+    <Content Include="Resources\Icons\Settings.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
     <Content Include="Resources\Images\Progress.gif" />
