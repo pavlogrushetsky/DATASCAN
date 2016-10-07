@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\Extensions\EntitiesExtensions.cs" />
     <Compile Include="View\Extensions\TreeViewExtensions.cs" />
     <Compile Include="View\Forms\EditCustomerForm.cs">
       <SubType>Form</SubType>

@@ -87,6 +87,8 @@ namespace DATASCAN.View
 
             trvEstimators.ContextMenuStrip = estimatorsMenu;
 
+            trvEstimators.ShowNodeToolTips = true;
+
             trvEstimators.AllowDrop = true;
             trvEstimators.ItemDrag += TrvEstimators_ItemDrag;
             trvEstimators.DragEnter += TrvEstimators_DragEnter;
@@ -161,45 +163,24 @@ namespace DATASCAN.View
 
         private async Task UpdateData()
         {
-            bool connected = await _contextService.TestConnection(ex =>
-            {
-                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-            });
+            bool connected = await _contextService.TestConnection(ex => LogException(ex.Message));
 
             if (connected)
             {
                 status.Items[0].Visible = true;
                 status.Items[1].Visible = true;
 
-                _estimators = await _estimatorsService.GetAll(null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                }, e => e.OrderBy(o => o.Id), e => e.Customer, e => e.Group, e => e.MeasurePoints);
+                _estimators = await _estimatorsService.GetAll(null, ex => LogException(ex.Message), e => e.OrderBy(o => o.Id), e => e.Customer, e => e.Group, e => e.MeasurePoints);
 
-                _customers = await _customersService.GetAll(null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                }, c => c.OrderBy(o => o.Title));
+                _customers = await _customersService.GetAll(null, ex => LogException(ex.Message), c => c.OrderBy(o => o.Title));
 
-                _groups = await _groupsService.GetAll(null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                }, g => g.OrderBy(o => o.Name));
+                _groups = await _groupsService.GetAll(null, ex => LogException(ex.Message), g => g.OrderBy(o => o.Name));
 
-                _points = await _pointsService.GetAll(null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                }, p => p.OrderBy(o => o.Id));
+                _points = await _pointsService.GetAll(null, ex => LogException(ex.Message), p => p.OrderBy(o => o.Id));
 
-                _periodicScans = await _periodicScansService.GetAll(null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                }, null, s => s.Members);
+                _periodicScans = await _periodicScansService.GetAll(null, ex => LogException(ex.Message), null, s => s.Members);
 
-                _scheduledScans = await _scheduledScansService.GetAll(null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                }, null, s => s.Members, s => s.Periods);
+                _scheduledScans = await _scheduledScansService.GetAll(null, ex => LogException(ex.Message), null, s => s.Members, s => s.Periods);
 
                 FillEstimatorsTree();
 
@@ -344,10 +325,7 @@ namespace DATASCAN.View
             if (entity != null)
             {
                 entity.IsActive = true;
-                await _entitiesService.Update(entity, null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
 
                 await UpdateData();
             }
@@ -362,10 +340,7 @@ namespace DATASCAN.View
             if (entity != null)
             {
                 entity.IsActive = false;
-                await _entitiesService.Update(entity, null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
 
                 await UpdateData();
             }
@@ -386,10 +361,7 @@ namespace DATASCAN.View
                     await _periodicScansService.Delete(scan.Id, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Періодичне опитування видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
 
                     await UpdateData();
                 }
@@ -411,10 +383,7 @@ namespace DATASCAN.View
                     await _scheduledScansService.Delete(scan, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Опитування за графіком видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
 
                     await UpdateData();
                 }
@@ -448,6 +417,8 @@ namespace DATASCAN.View
                 customerMenu.Opening += EstimatorsContextMenu_Opening;
 
                 customerNode.ContextMenuStrip = customerMenu;
+
+                customerNode.ToolTipText = customer.Info();
 
                 FillGroups(customerNode);
                 FillEstimators(customerNode);
@@ -494,6 +465,8 @@ namespace DATASCAN.View
                 groupMenu.Opening += EstimatorsContextMenu_Opening;
 
                 groupNode.ContextMenuStrip = groupMenu;
+
+                groupNode.ToolTipText = group.Info();
 
                 FillEstimators(groupNode);
             });
@@ -564,10 +537,7 @@ namespace DATASCAN.View
                 await _scanMembersService.Update(member, () =>
                 {
                     Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                }, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                }, ex => LogException(ex.Message));
 
                 await UpdateData();
             }
@@ -588,10 +558,7 @@ namespace DATASCAN.View
                     await _scanMembersService.Delete(member.Id, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
 
                     await UpdateData();
                 }
@@ -659,6 +626,8 @@ namespace DATASCAN.View
 
                 estimatorNode.ContextMenuStrip = estimatorMenu;
 
+                estimatorNode.ToolTipText = estimator is Floutec ? ((Floutec)estimator).Info() : ((Roc809)estimator).Info();
+
                 FillPoints(estimatorNode);
             });
         }
@@ -704,6 +673,8 @@ namespace DATASCAN.View
                         pointMenu.Opening += EstimatorsContextMenu_Opening;
 
                         pointNode.ContextMenuStrip = pointMenu;
+
+                        pointNode.ToolTipText = point is FloutecMeasureLine ? ((FloutecMeasureLine)point).Info() : ((Roc809MeasurePoint)point).Info();
                     }
                 });
             }            
@@ -786,20 +757,14 @@ namespace DATASCAN.View
                     await _customersService.Update(customer, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані замовника змінено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
                     await _customersService.Insert(customer, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано замовника: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -834,10 +799,7 @@ namespace DATASCAN.View
                     await _groupsService.Update(group, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані групи обчислювачів змінено: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
@@ -849,10 +811,7 @@ namespace DATASCAN.View
                     await _groupsService.Insert(group, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано групу обчислювачів: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -890,20 +849,14 @@ namespace DATASCAN.View
                     await _periodicScansService.Update(scan, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
                     await _periodicScansService.Insert(scan, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано періодичне опитування: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -936,20 +889,14 @@ namespace DATASCAN.View
                     await _scheduledScansService.Update(scan, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані опитування за графіком змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
                     await _scheduledScansService.Insert(scan, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано опитування за графіком: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -986,10 +933,7 @@ namespace DATASCAN.View
                     await _estimatorsService.Update(floutec, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ФЛОУТЕК змінено: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
@@ -1006,10 +950,7 @@ namespace DATASCAN.View
                     await _estimatorsService.Insert(floutec, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ФЛОУТЕК: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -1046,10 +987,7 @@ namespace DATASCAN.View
                     await _estimatorsService.Update(roc, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ROC809 змінено: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
@@ -1066,10 +1004,7 @@ namespace DATASCAN.View
                     await _estimatorsService.Insert(roc, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ROC809: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -1125,10 +1060,7 @@ namespace DATASCAN.View
                     await _pointsService.Update(point, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної точки обчислювача ROC809 змінено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
@@ -1140,10 +1072,7 @@ namespace DATASCAN.View
                     await _pointsService.Insert(point, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну точку обчислювача ROC809: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -1196,10 +1125,7 @@ namespace DATASCAN.View
                     await _pointsService.Update(line, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної нитки обчислювача ФЛОУТЕК змінено: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
                 else
                 {
@@ -1211,10 +1137,7 @@ namespace DATASCAN.View
                     await _pointsService.Insert(line, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну нитку обчислювача ФЛОУТЕК: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
                 }
 
                 await UpdateData();
@@ -1230,10 +1153,7 @@ namespace DATASCAN.View
             if (entity != null)
             {
                 entity.IsActive = false;
-                await _entitiesService.Update(entity, null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
 
                 await UpdateData();
             }
@@ -1248,10 +1168,7 @@ namespace DATASCAN.View
             if (entity != null)
             {
                 entity.IsActive = true;
-                await _entitiesService.Update(entity, null, ex =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                });
+                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
 
                 await UpdateData();
             }
@@ -1272,10 +1189,7 @@ namespace DATASCAN.View
                     await _pointsService.Delete(point, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Вимірювальну точку видалено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
 
                     await UpdateData();
                 }
@@ -1297,10 +1211,7 @@ namespace DATASCAN.View
                     await _customersService.Delete(customer.Id, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Замовника видалено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
 
                     await UpdateData();
                 }
@@ -1322,10 +1233,7 @@ namespace DATASCAN.View
                     await _groupsService.Delete(group.Id, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
 
                     await UpdateData();
                 }
@@ -1347,10 +1255,7 @@ namespace DATASCAN.View
                     await _estimatorsService.Delete(estimator, () =>
                     {
                         Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач видалено: {estimator}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });
+                    }, ex => LogException(ex.Message));
 
                     await UpdateData();
                 }
@@ -1413,10 +1318,7 @@ namespace DATASCAN.View
                             await _groupsService.Update(estimatorsGroup, () =>
                             {
                                 Logger.Log(lstMessages, new LogEntry { Message = destNode == null ? $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' відкріплено від замовника" : $"Групу обчислювачів з Id={estimatorsGroup.Id} та назвою '{estimatorsGroup.Name}' закріплено за замовником з Id={estimatorsGroup.Customer.Id} та назвою '{estimatorsGroup.Customer.Title}'", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                            }, ex =>
-                            {
-                                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                            });
+                            }, ex => LogException(ex.Message));
                         }
                     }
                     else if (estimator != null)
@@ -1458,10 +1360,7 @@ namespace DATASCAN.View
                             await _estimatorsService.Update(estimator, () =>
                             {
                                 Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                            }, ex =>
-                            {
-                                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                            });
+                            }, ex => LogException(ex.Message));
                         }
                     }
 
@@ -1496,10 +1395,7 @@ namespace DATASCAN.View
                                     await _scanMembersService.Insert(member, () =>
                                     {
                                         Logger.Log(lstMessages, new LogEntry { Message = $"", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                                    }, ex =>
-                                    {
-                                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                                    });
+                                    }, ex => LogException(ex.Message));
                                 }
                             }
                             else if (estimator is Roc809)
@@ -1523,10 +1419,7 @@ namespace DATASCAN.View
                                     await _scanMembersService.Insert(member, () =>
                                     {
                                         Logger.Log(lstMessages, new LogEntry { Message = $"", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                                    }, ex =>
-                                    {
-                                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                                    });
+                                    }, ex => LogException(ex.Message));
                                 }
                             }
 
@@ -1539,5 +1432,13 @@ namespace DATASCAN.View
 
         #endregion
 
+        #region Вспомогательные методы
+
+        private void LogException(string message)
+        {
+            Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+        }
+
+        #endregion
     }
 }
