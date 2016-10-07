@@ -509,7 +509,7 @@ namespace DATASCAN.View
 
                 TreeNode memberNode = scanNode.Nodes.Add(estimator.ToString());
                 memberNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
-                memberNode.Tag = estimator;
+                memberNode.Tag = member;
                 memberNode.ImageIndex = 3;
                 memberNode.SelectedImageIndex = 3;
 
@@ -517,23 +517,85 @@ namespace DATASCAN.View
 
                 memberMenu.Items.AddRange(new ToolStripItem[]
                 {
+                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, MemberSettingsMenu_Click),
+                    new ToolStripSeparator(), 
                     new ToolStripMenuItem(Resources.DeleteFromScanMsg, Resources.Delete, DeleteMemberMenu_Click)
                 });
 
-                memberMenu.Opening += MembersContextMenu_Opening;
+                memberMenu.Opening += ScansContextMenu_Opening;
 
                 memberNode.ContextMenuStrip = memberMenu;
             });
         }
 
-        private void MembersContextMenu_Opening(object sender, CancelEventArgs e)
+        private async void MemberSettingsMenu_Click(object sender, EventArgs e)
         {
-            
+            TreeNode node = trvScans.SelectedNode;
+
+            ScanMemberBase member = node?.Tag as ScanMemberBase;
+
+            Form form;
+
+            if (member is RocScanMember)
+            {
+                form = new EditRocScanMemberForm
+                {
+                    StartPosition = FormStartPosition.CenterParent,
+                    IsEdit = true,
+                    Member = member as RocScanMember
+                };
+            }
+            else
+            {
+                form = new EditFloutecScanMemberForm
+                {
+                    StartPosition = FormStartPosition.CenterParent,
+                    IsEdit = true,
+                    Member = member as FloutecScanMember
+                };                
+            }
+
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                member = member is RocScanMember ? (ScanMemberBase)((EditRocScanMemberForm)form).Member : ((EditFloutecScanMemberForm)form).Member;
+
+                await _scanMembersService.Update(member, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                });
+
+                await UpdateData();
+            }
         }
 
-        private void DeleteMemberMenu_Click(object sender, EventArgs e)
+        private async void DeleteMemberMenu_Click(object sender, EventArgs e)
         {
-            
+            TreeNode node = trvScans.SelectedNode;
+
+            ScanMemberBase member = node?.Tag as ScanMemberBase;
+
+            if (member != null)
+            {
+                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити групу обчислювачів {member} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    await _scanMembersService.Delete(member.Id, () =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                    }, ex =>
+                    {
+                        Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                    });
+
+                    await UpdateData();
+                }
+            }
         }
 
         private void FillEstimators(TreeNode parentNode = null)

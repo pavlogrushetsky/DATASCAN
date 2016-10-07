@@ -23,12 +23,12 @@ namespace DATASCAN.Services
                 {
                     if (estimator is Roc809)
                     {
-                        Roc809 roc = repo.GetAll().Where(e => e.Id == estimator.Id).OfType<Roc809>().Include(e => e.AlarmData).Include(e => e.EventData).Include(e => e.MeasurePoints).Single();
+                        Roc809 roc = repo.GetAll().Where(e => e.Id == estimator.Id).OfType<Roc809>().Include(e => e.AlarmData).Include(e => e.EventData).Include(e => e.MeasurePoints).Include(e => e.Scans).Single();
                         repo.Delete(new List<Roc809> { roc });
                     }
                     else
                     {
-                        EstimatorBase est = repo.GetAll().Where(e => e.Id == estimator.Id).Include(e => e.MeasurePoints).Single();
+                        EstimatorBase est = repo.GetAll().Where(e => e.Id == estimator.Id).Include(e => e.MeasurePoints).Include(e => e.Scans).Single();
                         repo.Delete(new List<EstimatorBase> { est });
                     }                   
                 }
