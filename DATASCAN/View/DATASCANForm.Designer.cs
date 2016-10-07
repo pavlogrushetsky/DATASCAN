@@ -36,6 +36,9 @@ namespace DATASCAN.View
             this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConnection = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuLanguage = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuUkrainian = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRussian = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.splHorizontal = new System.Windows.Forms.SplitContainer();
             this.splVertical = new System.Windows.Forms.SplitContainer();
@@ -82,7 +85,8 @@ namespace DATASCAN.View
             // 
             this.mnuSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuDatabase,
-            this.mnuConnection});
+            this.mnuConnection,
+            this.mnuLanguage});
             this.mnuSettings.Image = global::DATASCAN.Properties.Resources.Settings;
             this.mnuSettings.Name = "mnuSettings";
             this.mnuSettings.Size = new System.Drawing.Size(117, 20);
@@ -102,6 +106,28 @@ namespace DATASCAN.View
             this.mnuConnection.Name = "mnuConnection";
             this.mnuConnection.Size = new System.Drawing.Size(169, 22);
             this.mnuConnection.Text = "Підключення";
+            // 
+            // mnuLanguage
+            // 
+            this.mnuLanguage.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuUkrainian,
+            this.mnuRussian});
+            this.mnuLanguage.Image = global::DATASCAN.Properties.Resources.Language;
+            this.mnuLanguage.Name = "mnuLanguage";
+            this.mnuLanguage.Size = new System.Drawing.Size(169, 22);
+            this.mnuLanguage.Text = "Мова інтерфейсу";
+            // 
+            // mnuUkrainian
+            // 
+            this.mnuUkrainian.Name = "mnuUkrainian";
+            this.mnuUkrainian.Size = new System.Drawing.Size(152, 22);
+            this.mnuUkrainian.Text = "Українська";
+            // 
+            // mnuRussian
+            // 
+            this.mnuRussian.Name = "mnuRussian";
+            this.mnuRussian.Size = new System.Drawing.Size(152, 22);
+            this.mnuRussian.Text = "Російська";
             // 
             // mnuAbout
             // 
@@ -334,6 +360,9 @@ namespace DATASCAN.View
         private System.Windows.Forms.ImageList imgEstimators;
         private System.Windows.Forms.ImageList imageScans;
         private System.Windows.Forms.StatusStrip status;
+        private System.Windows.Forms.ToolStripMenuItem mnuLanguage;
+        private System.Windows.Forms.ToolStripMenuItem mnuUkrainian;
+        private System.Windows.Forms.ToolStripMenuItem mnuRussian;
     }
 }
 

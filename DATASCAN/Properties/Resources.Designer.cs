@@ -400,6 +400,16 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Language {
+            get {
+                object obj = ResourceManager.GetObject("Language", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ok {
             get {
                 object obj = ResourceManager.GetObject("Ok", resourceCulture);
