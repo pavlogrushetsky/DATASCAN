@@ -165,13 +165,13 @@ namespace DATASCAN.View.Forms
             txtPhone.Enabled = rbGPRS.Checked;
             err.SetError(txtAddress, "");
             err.SetError(txtPhone, "");
-            if (!rbGPRS.Checked)
+            if (!rbGPRS.Checked && !string.IsNullOrEmpty(Roc.Phone))
             {                
                 txtPhone.Text = Roc.Phone;
             }
             else
             {
-                txtAddress.Text = ConvertIpToMask(Roc.Address);
+                txtAddress.Text = !string.IsNullOrEmpty(Roc.Address) ? ConvertIpToMask(Roc.Address) : string.Empty;
                 numPort.Value = Roc.Port == 0 ? 4000 : Roc.Port;
             }
         }

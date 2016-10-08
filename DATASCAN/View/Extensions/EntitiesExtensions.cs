@@ -1,6 +1,8 @@
-﻿using DATASCAN.Model;
+﻿using System.Linq;
+using DATASCAN.Model;
 using DATASCAN.Model.Floutecs;
 using DATASCAN.Model.Rocs;
+using DATASCAN.Model.Scanning;
 
 namespace DATASCAN.View.Extensions
 {
@@ -38,7 +40,7 @@ namespace DATASCAN.View.Extensions
         {
             return $"Id:\t\t\t{floutec.Id}\n" +
                    $"Назва:\t\t\t{floutec.Name}\n" +
-                   $"Опис:\t\t{floutec.Description}\n" +
+                   $"Опис:\t\t\t{floutec.Description}\n" +
                    $"Адреса:\t\t{floutec.Address}\n" +
                    $"Номер телефону:\t{floutec.Phone}\n" +
                    "Опитування:\t\t" + (floutec.IsScannedViaGPRS ? "По GPRS" : "Таблиці DBF") + "\n" +
@@ -64,6 +66,78 @@ namespace DATASCAN.View.Extensions
                    "Опитування:\t\t" + (roc.IsScannedViaGPRS ? "По GPRS" : "По TCP/IP") + "\n" +
                    $"Створено:\t\t{roc.DateCreated.ToString("dd.MM.yyyy HH:mm")}\n" +
                    $"Змінено:\t\t{roc.DateModified.ToString("dd.MM.yyyy HH:mm")}";
+        }
+
+        /// <summary>
+        /// Возвращает текст для элемента дерева для вычислителя
+        /// </summary>
+        public static string NodeTitle(this EstimatorBase estimator)
+        {
+            Floutec floutec = estimator as Floutec;
+            if (floutec != null) return $"{floutec.Name} (ФЛОУТЕК, Адреса = {floutec.Address})";
+
+            Roc809 roc = estimator as Roc809;
+            if (roc != null) return roc.IsScannedViaGPRS ? 
+                    $"{roc.Name} (ROC, Телефон = {roc.Phone})" : 
+                    $"{roc.Name} (ROC, Адреса = {roc.Address})";
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Возвращает текст для элемента дерева для точки измерения
+        /// </summary>
+        public static string NodeTitle(this MeasurePointBase point)
+        {            
+            FloutecMeasureLine floutecLine = point as FloutecMeasureLine;
+            if (floutecLine != null)
+            {
+                string sensor;
+
+                switch (floutecLine.SensorType)
+                {
+                    case 0:
+                        sensor = "Діафрагма";
+                        break;
+                    case 1:
+                        sensor = "Лічильник";
+                        break;
+                    case 2:
+                        sensor = "Витратомір";
+                        break;
+                    default:
+                        sensor = "Діафрагма";
+                        break;
+                }
+
+                return $"{floutecLine.Number} {floutecLine.Name} ({sensor})";
+            }
+
+            Roc809MeasurePoint rocPoint = point as Roc809MeasurePoint;
+            if (rocPoint != null) return $"{rocPoint.Number} {rocPoint.Name} (Сегмент = {rocPoint.HistSegment})";
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Возвращает текст для элемента дерева опросов
+        /// </summary>
+        public static string NodeTitle(this ScanBase scan)
+        {
+            PeriodicScan periodic = scan as PeriodicScan;
+            if (periodic != null)
+            {
+                string type = periodic.PeriodType ? "год." : "хв.";
+                return $"{periodic.Title} ({periodic.Period} {type})";
+            }
+
+            ScheduledScan scheduled = scan as ScheduledScan;
+            if (scheduled != null)
+            {
+                return $"{scheduled.Title} ({scheduled.Periods.FirstOrDefault()?.Period.ToString(@"hh\:mm")})";
+            } 
+
+            return string.Empty;
         }
 
         /// <summary>

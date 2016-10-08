@@ -42,7 +42,7 @@ namespace DATASCAN.Migrations
                 new FloutecParamTypes { Code = 42, Param = "Р,Т,П", Description = "Расход, температура, плотность" }
             };
 
-            if (!floutecParamTypes.Any())
+            if (!context.FloutecParamTypes.Any())
             {
                 floutecParamTypes.ForEach(p => { context.FloutecParamTypes.AddOrUpdate(p); });
             }            

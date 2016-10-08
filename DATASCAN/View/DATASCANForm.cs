@@ -22,10 +22,12 @@ namespace DATASCAN.View
 {
     public partial class DATASCANForm : Form
     {
-        #region Services
+        #region Fields & constructor
+
+        private string _sqlConnection;
 
         private readonly DataContextService _contextService;
-        private readonly EntitiesService<EntityBase> _entitiesService; 
+        private readonly EntitiesService<EntityBase> _entitiesService;
         private readonly EstimatorsService _estimatorsService;
         private readonly CustomersService _customersService;
         private readonly GroupsService _groupsService;
@@ -34,26 +36,19 @@ namespace DATASCAN.View
         private readonly ScheduledScansService _scheduledScansService;
         private readonly ScanMembersService _scanMembersService;
 
-        #endregion
-
-        #region Entities collections
-
-        private List<EstimatorBase> _estimators = new List<EstimatorBase>();        
-        private List<Customer> _customers = new List<Customer>();               
-        private List<EstimatorsGroup> _groups = new List<EstimatorsGroup>();                
-        private List<MeasurePointBase> _points = new List<MeasurePointBase>();        
+        private List<EstimatorBase> _estimators = new List<EstimatorBase>();
+        private List<Customer> _customers = new List<Customer>();
+        private List<EstimatorsGroup> _groups = new List<EstimatorsGroup>();
+        private List<MeasurePointBase> _points = new List<MeasurePointBase>();
         private List<PeriodicScan> _periodicScans = new List<PeriodicScan>();
         private List<ScheduledScan> _scheduledScans = new List<ScheduledScan>();
 
-        #endregion
-
-        #region Fields & constructor
-
-        private string _sqlConnection;  
-
         public DATASCANForm()
         {
-            InitializeComponent();            
+            InitializeComponent();              
+            InitializeEstimatorsTree();   
+            InitializeScansTree();  
+            InitializeStatusStrip();
 
             GetSettings();
 
@@ -68,57 +63,8 @@ namespace DATASCAN.View
             _periodicScansService = new PeriodicScansService(_sqlConnection);
             _scheduledScansService = new ScheduledScansService(_sqlConnection);
             _scanMembersService = new ScanMembersService(_sqlConnection);
-
-            UpdateData().ConfigureAwait(false);
-
-            ContextMenuStrip estimatorsMenu = new ContextMenuStrip();
-
-            estimatorsMenu.Items.AddRange(new ToolStripItem[]
-            {
-                new ToolStripMenuItem(Resources.AddCustomerMsg, null, EditCustomerMenu_Click),
-                new ToolStripMenuItem(Resources.AddEstimatorsGroupMsg, null, EditGroupMenu_Click),
-                new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
-                new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
-                new ToolStripSeparator(), 
-                new ToolStripMenuItem(Resources.UpdateMsg, Resources.Refresh, RefreshMenu_Click)
-            });
-
-            estimatorsMenu.Opening += EstimatorsContextMenu_Opening;
-
-            trvEstimators.ContextMenuStrip = estimatorsMenu;
-
-            trvEstimators.ShowNodeToolTips = true;
-
-            trvEstimators.AllowDrop = true;
-            trvEstimators.ItemDrag += TrvEstimators_ItemDrag;
-            trvEstimators.DragEnter += TrvEstimators_DragEnter;
-            trvEstimators.DragDrop += TrvEstimators_DragDrop;
-
-            ContextMenuStrip scansMenu = new ContextMenuStrip();
-
-            scansMenu.Items.AddRange(new ToolStripItem[]
-            {
-                new ToolStripMenuItem(Resources.AddPeriodicScan, null, EditPeriodicScan_Click),
-                new ToolStripMenuItem(Resources.AddScheduledScan, null, EditScheduledScan_Click),
-                new ToolStripSeparator(),
-                new ToolStripMenuItem(Resources.UpdateMsg, Resources.Refresh, RefreshMenu_Click)
-            });
-
-            scansMenu.Opening += ScansContextMenu_Opening;
-
-            trvScans.ContextMenuStrip = scansMenu;
-
-            trvScans.AllowDrop = true;
-            trvScans.ItemDrag += TrvEstimators_ItemDrag;
-            trvScans.DragEnter += TrvEstimators_DragEnter;
-            trvScans.DragDrop += TrvEstimators_DragDrop;
-
-            PictureBox progress = new PictureBox {Image = Resources.Progress};            
-
-            status.Items.Add(progress.Image);
-            status.Items.Add("Виконується запит до бази даних ...");
-            status.Items[0].Visible = false;
-            status.Items[1].Visible = false;
+           
+            UpdateData().ConfigureAwait(false);                     
         }
 
         #endregion
@@ -133,7 +79,7 @@ namespace DATASCAN.View
             }
             catch (Exception ex)
             {
-                Logger.Log(lstMessages, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
+                LogException(ex.Message);
             }            
         }
 
@@ -163,7 +109,13 @@ namespace DATASCAN.View
 
         private async Task UpdateData()
         {
+            status.Items[0].Visible = true;
+            status.Items[2].Visible = true;
+
             bool connected = await _contextService.TestConnection(ex => LogException(ex.Message));
+
+            status.Items[0].Visible = false;
+            status.Items[2].Visible = false;
 
             if (connected)
             {
@@ -171,19 +123,13 @@ namespace DATASCAN.View
                 status.Items[1].Visible = true;
 
                 _estimators = await _estimatorsService.GetAll(null, ex => LogException(ex.Message), e => e.OrderBy(o => o.Id), e => e.Customer, e => e.Group, e => e.MeasurePoints);
-
                 _customers = await _customersService.GetAll(null, ex => LogException(ex.Message), c => c.OrderBy(o => o.Title));
-
                 _groups = await _groupsService.GetAll(null, ex => LogException(ex.Message), g => g.OrderBy(o => o.Name));
-
                 _points = await _pointsService.GetAll(null, ex => LogException(ex.Message), p => p.OrderBy(o => o.Id));
-
                 _periodicScans = await _periodicScansService.GetAll(null, ex => LogException(ex.Message), null, s => s.Members);
-
                 _scheduledScans = await _scheduledScansService.GetAll(null, ex => LogException(ex.Message), null, s => s.Members, s => s.Periods);
 
                 FillEstimatorsTree();
-
                 FillScansTree();
 
                 status.Items[0].Visible = false;
@@ -206,25 +152,125 @@ namespace DATASCAN.View
 
         #endregion
 
-        #region Estimators tree filling
+        #region Filling tree views
 
         private void FillEstimatorsTree()
         {
             var savedExpansionState = trvEstimators.Nodes.GetExpansionState();
 
             trvEstimators.BeginUpdate();
-
             trvEstimators.Nodes.Clear();
 
             FillCustomers();
-
             FillGroups();
-
             FillEstimators();
 
             trvEstimators.Nodes.SetExpansionState(savedExpansionState);
-
             trvEstimators.EndUpdate();                     
+        }
+
+        private void FillCustomers()
+        {
+            _customers.ForEach(customer =>
+            {
+                TreeNode customerNode = trvEstimators.Nodes.Add(customer.Title);
+                customerNode.ForeColor = customer.IsActive ? Color.Black : Color.Red;
+                customerNode.Tag = customer;
+                customerNode.ImageIndex = 0;
+                customerNode.SelectedImageIndex = 0;
+                customerNode.ContextMenuStrip = CustomerContextMenu(customer);
+                customerNode.ToolTipText = customer.Info();
+
+                FillGroups(customerNode);
+                FillEstimators(customerNode);
+            });
+        }
+
+        private void FillGroups(TreeNode customerNode = null)
+        {
+            List<EstimatorsGroup> groups;
+            Customer customer;
+
+            if (customerNode == null)
+            {
+                groups = _groups.Where(g => !g.CustomerId.HasValue).ToList();
+            }
+            else
+            {
+                customer = customerNode.Tag as Customer;
+                groups = _groups.Where(g => customer != null && g.CustomerId == customer.Id).ToList();
+            }
+
+            groups.ForEach(group =>
+            {
+                TreeNode groupNode = customerNode?.Nodes.Add(group.Name) ?? trvEstimators.Nodes.Add(group.Name);
+                groupNode.ForeColor = group.IsActive ? Color.Black : Color.Red;
+                groupNode.Tag = group;
+                groupNode.ImageIndex = 2;
+                groupNode.SelectedImageIndex = 2;
+                groupNode.ContextMenuStrip = GroupContextMenu(group);
+                groupNode.ToolTipText = group.Info();
+
+                FillEstimators(groupNode);
+            });
+        }
+
+        private void FillEstimators(TreeNode parentNode = null)
+        {
+            List<EstimatorBase> estimators = new List<EstimatorBase>();
+
+            if (parentNode != null)
+            {
+                if (parentNode.Tag is EstimatorsGroup)
+                {
+                    EstimatorsGroup group = parentNode.Tag as EstimatorsGroup;
+                    estimators = _estimators.Where(e => e.GroupId == group.Id).ToList();
+                }
+                else if (parentNode.Tag is Customer)
+                {
+                    Customer customer = parentNode.Tag as Customer;
+                    estimators = _estimators.Where(e => e.CustomerId == customer.Id && !e.GroupId.HasValue).ToList();
+                }
+            }
+            else
+            {
+                estimators = _estimators.Where(e => !e.GroupId.HasValue && !e.CustomerId.HasValue).ToList();
+            }
+
+            estimators.ForEach(estimator =>
+            {
+                string nodeTitle = estimator.NodeTitle();
+
+                TreeNode estimatorNode = parentNode?.Nodes.Add(nodeTitle) ?? trvEstimators.Nodes.Add(nodeTitle);
+                estimatorNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
+                estimatorNode.Tag = estimator;
+                estimatorNode.ImageIndex = 3;
+                estimatorNode.SelectedImageIndex = 3;
+                estimatorNode.ContextMenuStrip = EstimatorContextMenu(estimator);
+                estimatorNode.ToolTipText = estimator is Floutec ? ((Floutec)estimator).Info() : ((Roc809)estimator).Info();
+
+                FillPoints(estimatorNode);
+            });
+        }
+
+        private void FillPoints(TreeNode estimatorNode)
+        {
+            if (estimatorNode != null && estimatorNode.Tag is EstimatorBase)
+            {
+                EstimatorBase estimator = estimatorNode.Tag as EstimatorBase;
+
+                _points.Where(p => p.EstimatorId == estimator.Id).ToList().ForEach(point =>
+                {
+                    TreeNode pointNode = estimatorNode.Nodes.Add(point.NodeTitle());
+
+                    pointNode.ForeColor = point.IsActive ? Color.Black : Color.Red;
+                    pointNode.Tag = point;
+                    pointNode.ImageIndex = 4;
+                    pointNode.SelectedImageIndex = 4;
+                    pointNode.ContextMenuStrip = MeasurePointContextMenu(estimator, point);
+                    pointNode.ToolTipText = point is FloutecMeasureLine ? ((FloutecMeasureLine)point).Info() : ((Roc809MeasurePoint)point).Info();
+                });
+            }
         }
 
         private void FillScansTree()
@@ -232,89 +278,75 @@ namespace DATASCAN.View
             var savedExpansionState = trvScans.Nodes.GetExpansionState();
 
             trvScans.BeginUpdate();
-
             trvScans.Nodes.Clear();
 
             TreeNode periodicScansNode = trvScans.Nodes.Add("Періодичні опитування");
             periodicScansNode.ImageIndex = 0;
             periodicScansNode.SelectedImageIndex = 0;
-
-            ContextMenuStrip periodicScansMenu = new ContextMenuStrip();
-
-            periodicScansMenu.Items.AddRange(new ToolStripItem[]
-            {
-                new ToolStripMenuItem(Resources.AddPeriodicScan, null, EditPeriodicScan_Click),
-            });
-
-            periodicScansNode.ContextMenuStrip = periodicScansMenu;
+            periodicScansNode.ContextMenuStrip = PeriodicScansContextMenu();
 
             TreeNode scheduledScansNode = trvScans.Nodes.Add("Опитування за графіком");
             scheduledScansNode.ImageIndex = 1;
             scheduledScansNode.SelectedImageIndex = 1;
+            scheduledScansNode.ContextMenuStrip = ScheduledScansContextMenu();
 
-            ContextMenuStrip scheduledScansMenu = new ContextMenuStrip();
-
-            scheduledScansMenu.Items.AddRange(new ToolStripItem[]
-            {
-                new ToolStripMenuItem(Resources.AddScheduledScan, null, EditScheduledScan_Click),
-            });
-
-            scheduledScansNode.ContextMenuStrip = scheduledScansMenu;
-
-            _periodicScans.ForEach(scan =>
-            {
-                TreeNode scanNode = periodicScansNode.Nodes.Add(scan.Title);
-                scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
-                scanNode.Tag = scan;
-                scanNode.ImageIndex = 2;
-                scanNode.SelectedImageIndex = 2;
-
-                ContextMenuStrip scanMenu = new ContextMenuStrip();
-
-                scanMenu.Items.AddRange(new ToolStripItem[]
-                {
-                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditPeriodicScan_Click),
-                    new ToolStripSeparator(),
-                    scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
-                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeletePeriodicScanMenu_Click)
-                });
-
-                scanMenu.Opening += ScansContextMenu_Opening;
-
-                scanNode.ContextMenuStrip = scanMenu;
-
-                FillMembers(scanNode);
-            });
-
-            _scheduledScans.ForEach(scan =>
-            {
-                TreeNode scanNode = scheduledScansNode.Nodes.Add(scan.Title);
-                scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
-                scanNode.Tag = scan;
-                scanNode.ImageIndex = 2;
-                scanNode.SelectedImageIndex = 2;
-
-                ContextMenuStrip scanMenu = new ContextMenuStrip();
-
-                scanMenu.Items.AddRange(new ToolStripItem[]
-                {
-                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditScheduledScan_Click),
-                    new ToolStripSeparator(),
-                    scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
-                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteScheduledScanMenu_Click)
-                });
-
-                scanMenu.Opening += ScansContextMenu_Opening;
-
-                scanNode.ContextMenuStrip = scanMenu;
-
-                FillMembers(scanNode);
-            });
+            FillPeriodicScans(periodicScansNode);
+            FillScheduledScans(scheduledScansNode);
 
             trvScans.Nodes.SetExpansionState(savedExpansionState);
-
             trvScans.EndUpdate();
+        }        
+
+        private void FillPeriodicScans(TreeNode scansGroup)
+        {
+            _periodicScans.ForEach(scan =>
+            {
+                TreeNode scanNode = scansGroup.Nodes.Add(scan.NodeTitle());
+                scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
+                scanNode.Tag = scan;
+                scanNode.ImageIndex = 2;
+                scanNode.SelectedImageIndex = 2;
+                scanNode.ContextMenuStrip = PeriodicScanContextMenu(scan);
+
+                FillMembers(scanNode);
+            });
         }
+
+        private void FillScheduledScans(TreeNode scansGroup)
+        {
+            _scheduledScans.ForEach(scan =>
+            {
+                TreeNode scanNode = scansGroup.Nodes.Add(scan.NodeTitle());
+                scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
+                scanNode.Tag = scan;
+                scanNode.ImageIndex = 2;
+                scanNode.SelectedImageIndex = 2;
+                scanNode.ContextMenuStrip = ScheduledScanContextMenu(scan);
+
+                FillMembers(scanNode);
+            });
+        }
+
+        private void FillMembers(TreeNode scanNode)
+        {
+            ScanBase scan = scanNode.Tag as ScanBase;
+
+            scan?.Members.ToList().ForEach(member =>
+            {
+                EstimatorBase estimator = _estimators.Find(e => e.Id == member.EstimatorId);
+
+                TreeNode memberNode = scanNode.Nodes.Add(estimator.NodeTitle());
+                memberNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
+                memberNode.Tag = member;
+                memberNode.ImageIndex = 3;
+                memberNode.SelectedImageIndex = 3;
+                memberNode.ContextMenuStrip = ScanMemberContextMenu();
+            });
+        }
+
+        #endregion
+
+        #region Tree views events handlers
 
         private async void ActivateScanMenu_Click(object sender, EventArgs e)
         {
@@ -326,7 +358,6 @@ namespace DATASCAN.View
             {
                 entity.IsActive = true;
                 await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
-
                 await UpdateData();
             }
         }
@@ -341,7 +372,6 @@ namespace DATASCAN.View
             {
                 entity.IsActive = false;
                 await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
-
                 await UpdateData();
             }
         }
@@ -388,117 +418,6 @@ namespace DATASCAN.View
                     await UpdateData();
                 }
             }
-        }
-
-        private void FillCustomers()
-        {
-            _customers.ForEach(customer =>
-            {
-                TreeNode customerNode = trvEstimators.Nodes.Add(customer.Title);
-                customerNode.ForeColor = customer.IsActive ? Color.Black : Color.Red;
-                customerNode.Tag = customer;
-                customerNode.ImageIndex = 0;
-                customerNode.SelectedImageIndex = 0;
-
-                ContextMenuStrip customerMenu = new ContextMenuStrip();
-
-                customerMenu.Items.AddRange(new ToolStripItem[]
-                {
-                    new ToolStripMenuItem(Resources.AddEstimatorsGroupMsg, null, EditGroupMenu_Click),
-                    new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
-                    new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
-                    new ToolStripSeparator(),
-                    new ToolStripMenuItem(Resources.InformationMsg, Resources.Information, EditCustomerMenu_Click),
-                    new ToolStripSeparator(), 
-                    customer.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteCustomerMenu_Click)
-                });
-
-                customerMenu.Opening += EstimatorsContextMenu_Opening;
-
-                customerNode.ContextMenuStrip = customerMenu;
-
-                customerNode.ToolTipText = customer.Info();
-
-                FillGroups(customerNode);
-                FillEstimators(customerNode);
-            });
-        }       
-
-        private void FillGroups(TreeNode customerNode = null)
-        {
-            List<EstimatorsGroup> groups;
-            Customer customer;
-
-            if (customerNode == null)
-            {
-                groups = _groups.Where(g => !g.CustomerId.HasValue).ToList();
-            }
-            else
-            {
-                customer = customerNode.Tag as Customer;
-                groups = _groups.Where(g => customer != null && g.CustomerId == customer.Id).ToList();
-            }
-
-            groups.ForEach(group =>
-            {
-                TreeNode groupNode = customerNode?.Nodes.Add(group.Name) ?? trvEstimators.Nodes.Add(group.Name);
-
-                groupNode.ForeColor = group.IsActive ? Color.Black : Color.Red;
-                groupNode.Tag = group;
-                groupNode.ImageIndex = 2;
-                groupNode.SelectedImageIndex = 2;
-
-                ContextMenuStrip groupMenu = new ContextMenuStrip();
-
-                groupMenu.Items.AddRange(new ToolStripItem[]
-                {
-                    new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
-                    new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
-                    new ToolStripSeparator(),
-                    new ToolStripMenuItem(Resources.InformationMsg, Resources.Information, EditGroupMenu_Click),
-                    new ToolStripSeparator(),
-                    group.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteGroupMenu_Click)
-                });
-
-                groupMenu.Opening += EstimatorsContextMenu_Opening;
-
-                groupNode.ContextMenuStrip = groupMenu;
-
-                groupNode.ToolTipText = group.Info();
-
-                FillEstimators(groupNode);
-            });
-        }
-
-        private void FillMembers(TreeNode scanNode)
-        {
-            ScanBase scan = scanNode.Tag as ScanBase;
-
-            scan?.Members.ToList().ForEach(member =>
-            {
-                EstimatorBase estimator = _estimators.Find(e => e.Id == member.EstimatorId);
-
-                TreeNode memberNode = scanNode.Nodes.Add(estimator.ToString());
-                memberNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
-                memberNode.Tag = member;
-                memberNode.ImageIndex = 3;
-                memberNode.SelectedImageIndex = 3;
-
-                ContextMenuStrip memberMenu = new ContextMenuStrip();
-
-                memberMenu.Items.AddRange(new ToolStripItem[]
-                {
-                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, MemberSettingsMenu_Click),
-                    new ToolStripSeparator(), 
-                    new ToolStripMenuItem(Resources.DeleteFromScanMsg, Resources.Delete, DeleteMemberMenu_Click)
-                });
-
-                memberMenu.Opening += ScansContextMenu_Opening;
-
-                memberNode.ContextMenuStrip = memberMenu;
-            });
         }
 
         private async void MemberSettingsMenu_Click(object sender, EventArgs e)
@@ -563,121 +482,6 @@ namespace DATASCAN.View
                     await UpdateData();
                 }
             }
-        }
-
-        private void FillEstimators(TreeNode parentNode = null)
-        {
-            List<EstimatorBase> estimators = new List<EstimatorBase>();
-
-            if (parentNode != null)
-            {
-                if (parentNode.Tag is EstimatorsGroup)
-                {
-                    EstimatorsGroup group = parentNode.Tag as EstimatorsGroup;
-                    estimators = _estimators.Where(e => e.GroupId == group.Id).ToList();
-                }
-                else if (parentNode.Tag is Customer)
-                {
-                    Customer customer = parentNode.Tag as Customer;
-                    estimators = _estimators.Where(e => e.CustomerId == customer.Id && !e.GroupId.HasValue).ToList();
-                }
-            }
-            else
-            {
-                estimators = _estimators.Where(e => !e.GroupId.HasValue && !e.CustomerId.HasValue).ToList();
-            }
-
-            estimators.ForEach(estimator =>
-            {
-                Floutec floutec = estimator as Floutec;
-                Roc809 roc = estimator as Roc809;
-
-                string nodeTitle = string.Empty;
-
-                if (floutec != null)
-                {
-                    nodeTitle = $"{floutec.Name} (ФЛОУТЕК, Адреса = {floutec.Address})";
-                }
-                else if (roc != null)
-                {
-                    nodeTitle = $"{roc.Name} (ROC, Адреса = {roc.Address})";
-                }
-
-                TreeNode estimatorNode = parentNode?.Nodes.Add(nodeTitle) ?? trvEstimators.Nodes.Add(nodeTitle);
-
-                estimatorNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
-                estimatorNode.Tag = estimator;
-                estimatorNode.ImageIndex = 3;
-                estimatorNode.SelectedImageIndex = 3;
-
-                ContextMenuStrip estimatorMenu = new ContextMenuStrip();
-
-                estimatorMenu.Items.AddRange(new ToolStripItem[]
-                {
-                    estimator is Floutec ? new ToolStripMenuItem(Resources.AddMeasureLineMsg, null, EditLineMenu_Click) : new ToolStripMenuItem(Resources.AddMeasurePointMsg, null, EditPointMenu_Click),
-                    new ToolStripSeparator(),
-                    estimator is Floutec ? new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditFloutecMenu_Click) : new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditRocMenu_Click),
-                    new ToolStripSeparator(),
-                    estimator.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
-                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteEstimatorMenu_Click)
-                });
-
-                estimatorMenu.Opening += EstimatorsContextMenu_Opening;
-
-                estimatorNode.ContextMenuStrip = estimatorMenu;
-
-                estimatorNode.ToolTipText = estimator is Floutec ? ((Floutec)estimator).Info() : ((Roc809)estimator).Info();
-
-                FillPoints(estimatorNode);
-            });
-        }
-
-        private void FillPoints(TreeNode estimatorNode)
-        {
-            if (estimatorNode != null && estimatorNode.Tag is EstimatorBase)
-            {
-                EstimatorBase estimator = estimatorNode.Tag as EstimatorBase;
-
-                _points.Where(p => p.EstimatorId == estimator.Id).ToList().ForEach(point =>
-                {
-                    TreeNode pointNode = null;
-
-                    if (point is FloutecMeasureLine)
-                    {
-                        FloutecMeasureLine floutecLine = point as FloutecMeasureLine;
-                        pointNode = estimatorNode.Nodes.Add($"{floutecLine.Number} {floutecLine.Name}");
-                    }
-                    else if (point is Roc809MeasurePoint)
-                    {
-                        Roc809MeasurePoint rocPoint = point as Roc809MeasurePoint;
-                        pointNode = estimatorNode.Nodes.Add($"{rocPoint.Number} {rocPoint.Name} (Сегмент = {rocPoint.HistSegment})");
-                    }
-
-                    if (pointNode != null)
-                    {
-                        pointNode.ForeColor = point.IsActive ? Color.Black : Color.Red;
-                        pointNode.Tag = point;
-                        pointNode.ImageIndex = 4;
-                        pointNode.SelectedImageIndex = 4;
-
-                        ContextMenuStrip pointMenu = new ContextMenuStrip();
-
-                        pointMenu.Items.AddRange(new ToolStripItem[]
-                        {
-                            estimator is Floutec ? new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditLineMenu_Click) : new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditPointMenu_Click),
-                            new ToolStripSeparator(),
-                            point.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
-                            new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeletePointMenu_Click)
-                        });
-
-                        pointMenu.Opening += EstimatorsContextMenu_Opening;
-
-                        pointNode.ContextMenuStrip = pointMenu;
-
-                        pointNode.ToolTipText = point is FloutecMeasureLine ? ((FloutecMeasureLine)point).Info() : ((Roc809MeasurePoint)point).Info();
-                    }
-                });
-            }            
         }
 
         #endregion
@@ -1432,7 +1236,228 @@ namespace DATASCAN.View
 
         #endregion
 
-        #region Вспомогательные методы
+        #region Components initialization
+
+        private ContextMenuStrip EstimatorsContextMenu()
+        {
+            ContextMenuStrip estimatorsMenu = new ContextMenuStrip();
+
+            estimatorsMenu.Items.AddRange(new ToolStripItem[]
+                {
+                new ToolStripMenuItem(Resources.AddCustomerMsg, null, EditCustomerMenu_Click),
+                new ToolStripMenuItem(Resources.AddEstimatorsGroupMsg, null, EditGroupMenu_Click),
+                new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
+                new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
+                new ToolStripSeparator(),
+                new ToolStripMenuItem(Resources.UpdateMsg, Resources.Refresh, RefreshMenu_Click)
+                });
+
+            estimatorsMenu.Opening += EstimatorsContextMenu_Opening;
+
+            return estimatorsMenu;
+        }
+
+        private ContextMenuStrip EstimatorContextMenu(EstimatorBase estimator)
+        {
+            ContextMenuStrip estimatorMenu = new ContextMenuStrip();
+
+            estimatorMenu.Items.AddRange(new ToolStripItem[]
+            {
+                    estimator is Floutec ? new ToolStripMenuItem(Resources.AddMeasureLineMsg, null, EditLineMenu_Click) : new ToolStripMenuItem(Resources.AddMeasurePointMsg, null, EditPointMenu_Click),
+                    new ToolStripSeparator(),
+                    estimator is Floutec ? new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditFloutecMenu_Click) : new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditRocMenu_Click),
+                    new ToolStripSeparator(),
+                    estimator.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteEstimatorMenu_Click)
+            });
+
+            estimatorMenu.Opening += EstimatorsContextMenu_Opening;
+
+            return estimatorMenu;
+        }
+
+        private ContextMenuStrip MeasurePointContextMenu(EstimatorBase estimator, MeasurePointBase point)
+        {
+            ContextMenuStrip pointMenu = new ContextMenuStrip();
+
+            pointMenu.Items.AddRange(new ToolStripItem[]
+            {
+                        estimator is Floutec ? new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditLineMenu_Click) : new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditPointMenu_Click),
+                        new ToolStripSeparator(),
+                        point.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                        new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeletePointMenu_Click)
+            });
+
+            pointMenu.Opening += EstimatorsContextMenu_Opening;
+
+            return pointMenu;
+        }
+
+        private ContextMenuStrip CustomerContextMenu(Customer customer)
+        {
+            ContextMenuStrip customerMenu = new ContextMenuStrip();
+
+            customerMenu.Items.AddRange(new ToolStripItem[]
+            {
+                    new ToolStripMenuItem(Resources.AddEstimatorsGroupMsg, null, EditGroupMenu_Click),
+                    new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
+                    new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
+                    new ToolStripSeparator(),
+                    new ToolStripMenuItem(Resources.InformationMsg, Resources.Information, EditCustomerMenu_Click),
+                    new ToolStripSeparator(),
+                    customer.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteCustomerMenu_Click)
+            });
+
+            customerMenu.Opening += EstimatorsContextMenu_Opening;
+
+            return customerMenu;
+        }
+
+        private ContextMenuStrip GroupContextMenu(EstimatorsGroup group)
+        {
+            ContextMenuStrip groupMenu = new ContextMenuStrip();
+
+            groupMenu.Items.AddRange(new ToolStripItem[]
+            {
+                    new ToolStripMenuItem(Resources.AddFloutecMsg, null, EditFloutecMenu_Click),
+                    new ToolStripMenuItem(Resources.AddRocMsg, null, EditRocMenu_Click),
+                    new ToolStripSeparator(),
+                    new ToolStripMenuItem(Resources.InformationMsg, Resources.Information, EditGroupMenu_Click),
+                    new ToolStripSeparator(),
+                    group.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteGroupMenu_Click)
+            });
+
+            groupMenu.Opening += EstimatorsContextMenu_Opening;
+
+            return groupMenu;
+        }
+
+        private ContextMenuStrip ScansContextMenu()
+        {
+            ContextMenuStrip scansMenu = new ContextMenuStrip();
+
+            scansMenu.Items.AddRange(new ToolStripItem[]
+            {
+                new ToolStripMenuItem(Resources.AddPeriodicScan, null, EditPeriodicScan_Click),
+                new ToolStripMenuItem(Resources.AddScheduledScan, null, EditScheduledScan_Click),
+                new ToolStripSeparator(),
+                new ToolStripMenuItem(Resources.UpdateMsg, Resources.Refresh, RefreshMenu_Click)
+            });
+
+            scansMenu.Opening += ScansContextMenu_Opening;
+
+            return scansMenu;
+        }
+
+        private ContextMenuStrip PeriodicScansContextMenu()
+        {
+            ContextMenuStrip periodicScansMenu = new ContextMenuStrip();
+
+            periodicScansMenu.Items.AddRange(new ToolStripItem[]
+            {
+                new ToolStripMenuItem(Resources.AddPeriodicScan, null, EditPeriodicScan_Click),
+            });
+
+            return periodicScansMenu;
+        }
+
+        private ContextMenuStrip ScheduledScansContextMenu()
+        {
+            ContextMenuStrip scheduledScansMenu = new ContextMenuStrip();
+
+            scheduledScansMenu.Items.AddRange(new ToolStripItem[]
+            {
+                new ToolStripMenuItem(Resources.AddScheduledScan, null, EditScheduledScan_Click),
+            });
+
+            return scheduledScansMenu;
+        }
+
+        private ContextMenuStrip PeriodicScanContextMenu(PeriodicScan scan)
+        {
+            ContextMenuStrip scanMenu = new ContextMenuStrip();
+
+            scanMenu.Items.AddRange(new ToolStripItem[]
+            {
+                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditPeriodicScan_Click),
+                    new ToolStripSeparator(),
+                    scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeletePeriodicScanMenu_Click)
+            });
+
+            scanMenu.Opening += ScansContextMenu_Opening;
+
+            return scanMenu;
+        }
+
+        private ContextMenuStrip ScheduledScanContextMenu(ScheduledScan scan)
+        {
+            ContextMenuStrip scanMenu = new ContextMenuStrip();
+
+            scanMenu.Items.AddRange(new ToolStripItem[]
+            {
+                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, EditScheduledScan_Click),
+                    new ToolStripSeparator(),
+                    scan.IsActive ? new ToolStripMenuItem(Resources.DeactivateMsg, Resources.Deactivate, DeactivateScanMenu_Click) : new ToolStripMenuItem(Resources.ActivateMsg, Resources.Activate, ActivateScanMenu_Click),
+                    new ToolStripMenuItem(Resources.DeleteMsg, Resources.Delete, DeleteScheduledScanMenu_Click)
+            });
+
+            scanMenu.Opening += ScansContextMenu_Opening;
+
+            return scanMenu;
+        }
+
+        public ContextMenuStrip ScanMemberContextMenu()
+        {
+            ContextMenuStrip memberMenu = new ContextMenuStrip();
+
+            memberMenu.Items.AddRange(new ToolStripItem[]
+            {
+                    new ToolStripMenuItem(Resources.SettingsMsg, Resources.Settings, MemberSettingsMenu_Click),
+                    new ToolStripSeparator(),
+                    new ToolStripMenuItem(Resources.DeleteFromScanMsg, Resources.Delete, DeleteMemberMenu_Click)
+            });
+
+            memberMenu.Opening += ScansContextMenu_Opening;
+
+            return memberMenu;
+        }
+
+        private void InitializeEstimatorsTree()
+        {
+            trvEstimators.ContextMenuStrip = EstimatorsContextMenu();
+            trvEstimators.ShowNodeToolTips = true;
+            trvEstimators.AllowDrop = true;
+            trvEstimators.ItemDrag += TrvEstimators_ItemDrag;
+            trvEstimators.DragEnter += TrvEstimators_DragEnter;
+            trvEstimators.DragDrop += TrvEstimators_DragDrop;
+        }
+
+        private void InitializeScansTree()
+        {
+            trvScans.ContextMenuStrip = ScansContextMenu();
+            trvScans.AllowDrop = true;
+            trvScans.ItemDrag += TrvEstimators_ItemDrag;
+            trvScans.DragEnter += TrvEstimators_DragEnter;
+            trvScans.DragDrop += TrvEstimators_DragDrop;
+        }
+
+        private void InitializeStatusStrip()
+        {
+            PictureBox progress = new PictureBox { Image = Resources.Progress };
+            status.Items.Add(progress.Image);
+            status.Items.Add("Виконується запит до бази даних ...");
+            status.Items.Add("Встановлюється з'єднання з сервером баз даних ...");
+            status.Items[0].Visible = false;
+            status.Items[1].Visible = false;
+            status.Items[2].Visible = false;
+        }
+
+        #endregion
+
+        #region Helping methods
 
         private void LogException(string message)
         {
