@@ -106,6 +106,7 @@ namespace DATASCAN.View
             this.mnuConnection.Name = "mnuConnection";
             this.mnuConnection.Size = new System.Drawing.Size(169, 22);
             this.mnuConnection.Text = "Підключення";
+            this.mnuConnection.Click += new System.EventHandler(this.mnuConnection_Click);
             // 
             // mnuLanguage
             // 
@@ -120,13 +121,13 @@ namespace DATASCAN.View
             // mnuUkrainian
             // 
             this.mnuUkrainian.Name = "mnuUkrainian";
-            this.mnuUkrainian.Size = new System.Drawing.Size(152, 22);
+            this.mnuUkrainian.Size = new System.Drawing.Size(134, 22);
             this.mnuUkrainian.Text = "Українська";
             // 
             // mnuRussian
             // 
             this.mnuRussian.Name = "mnuRussian";
-            this.mnuRussian.Size = new System.Drawing.Size(152, 22);
+            this.mnuRussian.Size = new System.Drawing.Size(134, 22);
             this.mnuRussian.Text = "Російська";
             // 
             // mnuAbout

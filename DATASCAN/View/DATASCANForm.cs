@@ -75,7 +75,7 @@ namespace DATASCAN.View
         {
             try
             {
-                ServerSettings.Get();
+                Infrastructure.Settings.Settings.Get();
             }
             catch (Exception ex)
             {
@@ -87,21 +87,21 @@ namespace DATASCAN.View
         {
             SqlConnectionStringBuilder connection = new SqlConnectionStringBuilder
             {
-                DataSource = ServerSettings.ServerName,
-                InitialCatalog = ServerSettings.DatabaseName,
+                DataSource = Infrastructure.Settings.Settings.ServerName,
+                InitialCatalog = Infrastructure.Settings.Settings.DatabaseName,
                 MultipleActiveResultSets = true,
-                ConnectTimeout = int.Parse(ServerSettings.ConnectionTimeout)
+                ConnectTimeout = int.Parse(Infrastructure.Settings.Settings.ConnectionTimeout)
             };
 
-            if (string.IsNullOrEmpty(ServerSettings.UserName) || string.IsNullOrEmpty(ServerSettings.UserPassword))
+            if (string.IsNullOrEmpty(Infrastructure.Settings.Settings.UserName) || string.IsNullOrEmpty(Infrastructure.Settings.Settings.UserPassword))
             {
                 connection.IntegratedSecurity = true;
             }
             else
             {
                 connection.IntegratedSecurity = false;
-                connection.UserID = ServerSettings.UserName;
-                connection.Password = ServerSettings.UserPassword;
+                connection.UserID = Infrastructure.Settings.Settings.UserName;
+                connection.Password = Infrastructure.Settings.Settings.UserPassword;
             }
 
             _sqlConnection = connection.ToString();
@@ -532,6 +532,17 @@ namespace DATASCAN.View
 
                 InitializeConnection();
                 await UpdateData();
+            }
+        }
+
+        private void mnuConnection_Click(object sender, EventArgs e)
+        {
+            ConnectionSettingsForm form = new ConnectionSettingsForm {StartPosition = FormStartPosition.CenterParent};
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування підключення змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
             }
         }
 

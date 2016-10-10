@@ -37,11 +37,11 @@ namespace DATASCAN.View.Forms
         {
             InitializeComponent();
 
-            txtServerName.Text = ServerSettings.ServerName;
-            txtDatabaseName.Text = ServerSettings.DatabaseName;
-            txtUserName.Text = ServerSettings.UserName;
-            txtUserPassword.Text = ServerSettings.UserPassword;
-            numConnectionTimeout.Text = ServerSettings.ConnectionTimeout;
+            txtServerName.Text = Settings.ServerName;
+            txtDatabaseName.Text = Settings.DatabaseName;
+            txtUserName.Text = Settings.UserName;
+            txtUserPassword.Text = Settings.UserPassword;
+            numConnectionTimeout.Text = Settings.ConnectionTimeout;
 
             btnCancel.Select();
         }
@@ -52,13 +52,13 @@ namespace DATASCAN.View.Forms
             {
                 if (_settingsValid)
                 {
-                    ServerSettings.ServerName = txtServerName.Text;
-                    ServerSettings.DatabaseName = txtDatabaseName.Text;
-                    ServerSettings.UserName = txtUserName.Text;
-                    ServerSettings.UserPassword = txtUserPassword.Text;
-                    ServerSettings.ConnectionTimeout = numConnectionTimeout.Text;
+                    Settings.ServerName = txtServerName.Text;
+                    Settings.DatabaseName = txtDatabaseName.Text;
+                    Settings.UserName = txtUserName.Text;
+                    Settings.UserPassword = txtUserPassword.Text;
+                    Settings.ConnectionTimeout = numConnectionTimeout.Text;
 
-                    ServerSettings.Save();
+                    Settings.Save();
 
                     DialogResult = DialogResult.OK;
                     Close();
@@ -123,35 +123,35 @@ namespace DATASCAN.View.Forms
 
         private void txtServerName_TextChanged(object sender, EventArgs e)
         {
-            _serverNameChanged = !txtServerName.Text.Equals(ServerSettings.ServerName);
+            _serverNameChanged = !txtServerName.Text.Equals(Settings.ServerName);
             SetSettingsChanged();
             ValidateSettings();
         }
 
         private void txtDatabaseName_TextChanged(object sender, EventArgs e)
         {
-            _databaseNameChanged = !txtDatabaseName.Text.Equals(ServerSettings.DatabaseName);
+            _databaseNameChanged = !txtDatabaseName.Text.Equals(Settings.DatabaseName);
             SetSettingsChanged();
             ValidateSettings();
         }
 
         private void txtUserName_TextChanged(object sender, EventArgs e)
         {
-            _userNameChanged = !txtUserName.Text.Equals(ServerSettings.UserName);
+            _userNameChanged = !txtUserName.Text.Equals(Settings.UserName);
             SetSettingsChanged();
             ValidateSettings();
         }
 
         private void txtUserPassword_TextChanged(object sender, EventArgs e)
         {
-            _userPasswordChanged = !txtUserPassword.Text.Equals(ServerSettings.UserPassword);
+            _userPasswordChanged = !txtUserPassword.Text.Equals(Settings.UserPassword);
             SetSettingsChanged();
             ValidateSettings();
         }
 
         private void numConnectionTimeout_ValueChanged(object sender, EventArgs e)
         {
-            _timeoutChanged = !numConnectionTimeout.Text.Equals(ServerSettings.ConnectionTimeout);
+            _timeoutChanged = !numConnectionTimeout.Text.Equals(Settings.ConnectionTimeout);
             SetSettingsChanged();
             ValidateSettings();
         }
@@ -220,7 +220,7 @@ namespace DATASCAN.View.Forms
 
         private void numConnectionTimeout_KeyDown(object sender, KeyEventArgs e)
         {
-            _timeoutChanged = !numConnectionTimeout.Text.Equals(ServerSettings.ConnectionTimeout);
+            _timeoutChanged = !numConnectionTimeout.Text.Equals(Settings.ConnectionTimeout);
             SetSettingsChanged();
             ValidateSettings();
         }

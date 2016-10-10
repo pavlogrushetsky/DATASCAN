@@ -64,7 +64,7 @@
     <Compile Include="Infrastructure\Logging\Logger.cs" />
     <Compile Include="Infrastructure\Logging\LogStatus.cs" />
     <Compile Include="Infrastructure\Logging\LogType.cs" />
-    <Compile Include="Infrastructure\Settings\ServerSettings.cs" />
+    <Compile Include="Infrastructure\Settings\Settings.cs" />
     <Compile Include="Migrations\201609051849594_Initial.cs" />
     <Compile Include="Migrations\201609051849594_Initial.Designer.cs">
       <DependentUpon>201609051849594_Initial.cs</DependentUpon>
@@ -163,6 +163,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View\Extensions\EntitiesExtensions.cs" />
     <Compile Include="View\Extensions\TreeViewExtensions.cs" />
+    <Compile Include="View\Forms\ConnectionSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\ConnectionSettingsForm.Designer.cs">
+      <DependentUpon>ConnectionSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\EditCustomerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -266,6 +272,9 @@
     <EmbeddedResource Include="View\DATASCANForm.resx">
       <DependentUpon>DATASCANForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\ConnectionSettingsForm.resx">
+      <DependentUpon>ConnectionSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\EditCustomerForm.resx">
       <DependentUpon>EditCustomerForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -317,6 +326,8 @@
     <Folder Include="Resources\Cursors\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Icons\ConnectionSettings.ico" />
+    <Content Include="Resources\Icons\Ok.ico" />
     <Content Include="Resources\Icons\Scan.ico" />
     <Content Include="Resources\Icons\Customer.ico" />
     <Content Include="Resources\Icons\DatabaseSettings.ico" />

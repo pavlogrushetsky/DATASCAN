@@ -8,7 +8,7 @@ namespace DATASCAN.Infrastructure.Settings
     /// <summary>
     /// Класс, позволяющий сохранять настройки сервера баз данных
     /// </summary>
-    public static class ServerSettings
+    public static class Settings
     {
         private static readonly string _fileName = "DATASCAN.settings";
 
@@ -23,6 +23,22 @@ namespace DATASCAN.Infrastructure.Settings
         public static string UserPassword { get; set; } = "";
 
         public static string ConnectionTimeout { get; set; } = "10";
+
+        public static string COMPort1 { get; set; } = "";
+
+        public static string COMPort2 { get; set; } = "";
+
+        public static string COMPort3 { get; set; } = "";
+
+        public static string Baudrate { get; set; } = "9600";
+
+        public static string Parity { get; set; } = "None";
+
+        public static string DataBits { get; set; } = "8";
+
+        public static string StopBits { get; set; } = "One";
+
+        public static string DbfPath { get; set; } = @"C:\Dispatch\tabDbf";
 
         /// <summary>
         /// Получает значения настроек из файла
@@ -46,6 +62,14 @@ namespace DATASCAN.Infrastructure.Settings
                         UserName = settings["UserName"]?.ToString() ?? "";
                         UserPassword = settings["UserPassword"]?.ToString() ?? "";
                         ConnectionTimeout = settings["ConnectionTimeout"]?.ToString() ?? "";
+                        COMPort1 = settings["COMPort1"]?.ToString() ?? "";
+                        COMPort2 = settings["COMPort2"]?.ToString() ?? "";
+                        COMPort3 = settings["COMPort3"]?.ToString() ?? "";
+                        Baudrate = settings["Baudrate"]?.ToString() ?? "";
+                        Parity = settings["Parity"]?.ToString() ?? "";
+                        DataBits = settings["DataBits"]?.ToString() ?? "";
+                        StopBits = settings["StopBits"]?.ToString() ?? "";
+                        DbfPath = settings["DbfPath"]?.ToString() ?? "";
                     }
                 }
             }
@@ -66,7 +90,15 @@ namespace DATASCAN.Infrastructure.Settings
                 { "DatabaseName", DatabaseName },
                 { "UserName", UserName },
                 { "UserPassword", UserPassword },
-                { "ConnectionTimeout", ConnectionTimeout }
+                { "ConnectionTimeout", ConnectionTimeout },
+                { "COMPort1", COMPort1 },
+                { "COMPort2", COMPort2 },
+                { "COMPort3", COMPort3 },
+                { "Baudrate", Baudrate },
+                { "Parity", Parity },
+                { "DataBits", DataBits },
+                { "StopBits", StopBits },
+                { "DbfPath", DbfPath }
             };
 
             if (!Directory.Exists(_filePath))
