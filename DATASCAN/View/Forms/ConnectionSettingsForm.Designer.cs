@@ -51,20 +51,14 @@
             this.cbPort1 = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.errorPort1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.successPort1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.errorPort2 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.successPort2 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.errorPort3 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.successPort3 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.statusPort1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.statusPort2 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.statusPort3 = new System.Windows.Forms.ErrorProvider(this.components);
             this.gbDbf.SuspendLayout();
             this.gbGPRS.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorPort1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.successPort1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorPort2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.successPort2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorPort3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.successPort3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.statusPort1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.statusPort2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.statusPort3)).BeginInit();
             this.SuspendLayout();
             // 
             // gbDbf
@@ -287,41 +281,23 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // errorPort1
+            // statusPort1
             // 
-            this.errorPort1.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.errorPort1.ContainerControl = this;
-            this.errorPort1.Icon = ((System.Drawing.Icon)(resources.GetObject("errorPort1.Icon")));
+            this.statusPort1.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.statusPort1.ContainerControl = this;
+            this.statusPort1.Icon = ((System.Drawing.Icon)(resources.GetObject("statusPort1.Icon")));
             // 
-            // successPort1
+            // statusPort2
             // 
-            this.successPort1.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.successPort1.ContainerControl = this;
-            this.successPort1.Icon = ((System.Drawing.Icon)(resources.GetObject("successPort1.Icon")));
+            this.statusPort2.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.statusPort2.ContainerControl = this;
+            this.statusPort2.Icon = ((System.Drawing.Icon)(resources.GetObject("statusPort2.Icon")));
             // 
-            // errorPort2
+            // statusPort3
             // 
-            this.errorPort2.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.errorPort2.ContainerControl = this;
-            this.errorPort2.Icon = ((System.Drawing.Icon)(resources.GetObject("errorPort2.Icon")));
-            // 
-            // successPort2
-            // 
-            this.successPort2.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.successPort2.ContainerControl = this;
-            this.successPort2.Icon = ((System.Drawing.Icon)(resources.GetObject("successPort2.Icon")));
-            // 
-            // errorPort3
-            // 
-            this.errorPort3.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.errorPort3.ContainerControl = this;
-            this.errorPort3.Icon = ((System.Drawing.Icon)(resources.GetObject("errorPort3.Icon")));
-            // 
-            // successPort3
-            // 
-            this.successPort3.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.successPort3.ContainerControl = this;
-            this.successPort3.Icon = ((System.Drawing.Icon)(resources.GetObject("successPort3.Icon")));
+            this.statusPort3.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.statusPort3.ContainerControl = this;
+            this.statusPort3.Icon = ((System.Drawing.Icon)(resources.GetObject("statusPort3.Icon")));
             // 
             // ConnectionSettingsForm
             // 
@@ -344,12 +320,9 @@
             this.gbDbf.PerformLayout();
             this.gbGPRS.ResumeLayout(false);
             this.gbGPRS.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorPort1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.successPort1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorPort2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.successPort2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorPort3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.successPort3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.statusPort1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.statusPort2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.statusPort3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -377,11 +350,8 @@
         private System.Windows.Forms.Button btnTestConnection;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.ErrorProvider errorPort1;
-        private System.Windows.Forms.ErrorProvider successPort1;
-        private System.Windows.Forms.ErrorProvider errorPort2;
-        private System.Windows.Forms.ErrorProvider successPort2;
-        private System.Windows.Forms.ErrorProvider errorPort3;
-        private System.Windows.Forms.ErrorProvider successPort3;
+        private System.Windows.Forms.ErrorProvider statusPort1;
+        private System.Windows.Forms.ErrorProvider statusPort2;
+        private System.Windows.Forms.ErrorProvider statusPort3;
     }
 }

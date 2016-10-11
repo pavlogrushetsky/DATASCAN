@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using DATASCAN.Infrastructure.Settings;
+using DATASCAN.Communication.Serial;
+using static System.String;
+using Settings = DATASCAN.Infrastructure.Settings.Settings;
+
 // ReSharper disable UnusedParameter.Local
 
 namespace DATASCAN.View.Forms
@@ -43,19 +45,23 @@ namespace DATASCAN.View.Forms
 
         private const string TITLE = "Налаштування підключення";
 
-        private readonly string[] _ports;
-
-        private readonly TaskScheduler uisyncContext;
+        private readonly List<string> _ports;
 
         public ConnectionSettingsForm()
         {
             InitializeComponent();
 
-            uisyncContext = TaskScheduler.FromCurrentSynchronizationContext();
-
             txtDbfPath.Text = Settings.DbfPath;
 
-            _ports = SerialPort.GetPortNames();
+            _ports = SerialPort.GetPortNames().ToList();
+            if (!IsNullOrEmpty(Settings.COMPort1) && !_ports.Contains(Settings.COMPort1))
+                _ports.Add(Settings.COMPort1);
+            if (!IsNullOrEmpty(Settings.COMPort2) && !_ports.Contains(Settings.COMPort2))
+                _ports.Add(Settings.COMPort2);
+            if (!IsNullOrEmpty(Settings.COMPort3) && !_ports.Contains(Settings.COMPort3))
+                _ports.Add(Settings.COMPort3);
+            _ports.Sort((s1, s2) => int.Parse(s1.Substring(3, s1.Length - 3)).CompareTo(int.Parse(s2.Substring(3, s2.Length - 3))));
+            _ports.ToList().Insert(0, "");
 
             cbPort1.Items.AddRange(_ports.ToArray<object>());
             cbPort1.SelectedItem = Settings.COMPort1;
@@ -110,14 +116,11 @@ namespace DATASCAN.View.Forms
             {
                 _port1Changed = !cbPort1.SelectedItem.Equals(Settings.COMPort1);
                 SetChanged();
-
-                if (cbPort1.SelectedItem.Equals(""))
-                    cbPort1.SelectedIndex = -1;
             }
 
             EnableTestButton();
-            successPort1.SetError(cbPort1, "");
-            errorPort1.SetError(cbPort1, "");
+
+            statusPort1.SetError(cbPort1, "");
         }
 
         private void cbPort2_SelectedIndexChanged(object sender, EventArgs e)
@@ -126,15 +129,11 @@ namespace DATASCAN.View.Forms
             {
                 _port2Changed = !cbPort2.SelectedItem.Equals(Settings.COMPort2);
                 SetChanged();
-
-                if (cbPort2.SelectedItem.Equals(""))
-                    cbPort2.SelectedIndex = -1;
             }
 
             EnableTestButton();
 
-            successPort2.SetError(cbPort2, "");
-            errorPort2.SetError(cbPort2, "");
+            statusPort2.SetError(cbPort2, "");
         }
 
         private void cbPort3_SelectedIndexChanged(object sender, EventArgs e)
@@ -143,15 +142,11 @@ namespace DATASCAN.View.Forms
             {
                 _port3Changed = !cbPort3.SelectedItem.Equals(Settings.COMPort3);
                 SetChanged();
-
-                if (cbPort3.SelectedItem.Equals(""))
-                    cbPort3.SelectedIndex = -1;
             }
 
             EnableTestButton();
 
-            successPort3.SetError(cbPort3, "");
-            errorPort3.SetError(cbPort3, "");
+            statusPort3.SetError(cbPort3, "");
         }
 
         private void cbBaudrate_SelectedIndexChanged(object sender, EventArgs e)
@@ -223,9 +218,9 @@ namespace DATASCAN.View.Forms
 
         private void EnableTestButton()
         {
-            btnTestConnection.Enabled = cbPort1.SelectedIndex >= 0 ||
-                                        cbPort2.SelectedIndex >= 0 ||
-                                        cbPort3.SelectedIndex >= 0;
+            btnTestConnection.Enabled = cbPort1.SelectedIndex > 0 ||
+                                        cbPort2.SelectedIndex > 0 ||
+                                        cbPort3.SelectedIndex > 0;
         }
 
         private void cbPort1_DropDown(object sender, EventArgs e)
@@ -257,80 +252,59 @@ namespace DATASCAN.View.Forms
 
         private void btnTestConnection_Click(object sender, EventArgs e)
         {
-            SerialPort port1 = new SerialPort {PortName = cbPort1.SelectedItem.ToString()};
+            ResetPortsStatuses();
+            string port1 = cbPort1.SelectedItem.ToString();
+            string port2 = cbPort2.SelectedItem.ToString();
+            string port3 = cbPort3.SelectedItem.ToString();
 
-            SerialPort port2 = new SerialPort {PortName = cbPort2.SelectedItem.ToString()};
+            if (!IsNullOrEmpty(port1))
+                TestConnection(port1, statusPort1, cbPort1);
 
-            SerialPort port3 = new SerialPort {PortName = cbPort3.SelectedItem.ToString()};
+            if (!IsNullOrEmpty(port2))
+                TestConnection(port2, statusPort2, cbPort2);
 
-            TestConnection(port1, errorPort1, successPort1, cbPort1);
-            Thread.Sleep(100);
-            TestConnection(port2, errorPort2, successPort2, cbPort2);
-            Thread.Sleep(100);
-            TestConnection(port3, errorPort3, successPort3, cbPort3);
-            Thread.Sleep(100);
+            if (!IsNullOrEmpty(port3))
+                TestConnection(port3, statusPort3, cbPort3);
         }
 
-        private void TestConnection(SerialPort port, ErrorProvider err, ErrorProvider succ, ComboBox cb)
+        private void TestConnection(string port, ErrorProvider stat, ComboBox cb)
         {
             try
-            {                
-                port.BaudRate = int.Parse(cbBaudrate.SelectedItem.ToString());
-                port.DataBits = int.Parse(cbDataBits.SelectedItem.ToString());
-                port.StopBits = (StopBits)Enum.Parse(typeof(StopBits), (string)cbStopBits.SelectedItem);
-                port.Parity = (Parity)Enum.Parse(typeof(Parity), (string)cbParity.SelectedItem);
-                port.Handshake = Handshake.None;
-                port.DataReceived += (sender, args) => OnSerialDataReceived(sender, args, err, succ, cb);
-                port.ReadTimeout = 500;
-                port.WriteTimeout = 500;
-
-                ThreadPool.SetMinThreads(2, 4);
-
-                if (!port.IsOpen)
-                    port.Open();
-
-                port.WriteLine(@"ATQ0V1E0" + "\r\n");
+            {
+                SerialPortFixer.Execute(port);
+                using (SerialPort serialPort = new SerialPort
+                {
+                    PortName = port,
+                    BaudRate = int.Parse(cbBaudrate.SelectedItem.ToString()),
+                    DataBits = int.Parse(cbDataBits.SelectedItem.ToString()),
+                    StopBits = (StopBits) Enum.Parse(typeof (StopBits), (string) cbStopBits.SelectedItem),
+                    Parity = (Parity) Enum.Parse(typeof (Parity), (string) cbParity.SelectedItem),
+                    Handshake = Handshake.None,
+                    ReadTimeout = 500,
+                    WriteTimeout = 500                    
+                })
+                {
+                    serialPort.Open();
+                    serialPort.WriteLine(@"ATQ0V1E0" + "\r\n");
+                    Thread.Sleep(500);
+                    string result = serialPort.ReadExisting();
+                    if (!result.Contains("OK"))
+                    {
+                        stat.SetError(cb, "Помилка встановлення з'єднання");
+                    }
+                }
             }
             catch (Exception)
             {
-                if (port.IsOpen)
-                    port.Close();
-                err.SetError(cb, "Помилка встановлення з'єднання");
+                stat.SetError(cb, "Помилка встановлення з'єднання");
             }
-        }
-
-        private void OnSerialDataReceived(object sender, SerialDataReceivedEventArgs e, ErrorProvider err, ErrorProvider succ, ComboBox cb)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                SerialPort port = sender as SerialPort;
-                if (port != null)
-                {
-                    string result = port.ReadExisting();
-                    
-                    if (port.IsOpen)
-                        port.Close();
-
-                    return result;
-                }
-                return "";
-            }).ContinueWith(res =>
-            {
-                if (res.Result.Contains("OK"))
-                    succ.SetError(cb, "З'єднання встановлено");
-                else
-                    err.SetError(cb, "Помилка встановлення з'єднання");
-            }, uisyncContext);            
         }
 
         private void ResetPortsStatuses()
         {
-            successPort1.SetError(cbPort1, "");
-            errorPort1.SetError(cbPort1, "");
-            successPort2.SetError(cbPort2, "");
-            errorPort2.SetError(cbPort2, "");
-            successPort3.SetError(cbPort3, "");
-            errorPort3.SetError(cbPort3, "");
+            statusPort1.SetError(cbPort1, "");
+            statusPort2.SetError(cbPort2, "");
+            statusPort3.SetError(cbPort3, "");
         }
     }
 }

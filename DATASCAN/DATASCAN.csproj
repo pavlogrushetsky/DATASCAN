@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communication\Serial\SerialPortFixer.cs" />
     <Compile Include="Context\DataContext.cs" />
     <Compile Include="Infrastructure\Logging\LogEntry.cs" />
     <Compile Include="Infrastructure\Logging\Logger.cs" />
