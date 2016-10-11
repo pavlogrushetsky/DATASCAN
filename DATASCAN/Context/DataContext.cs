@@ -27,10 +27,10 @@ namespace DATASCAN.Context
         /// Инициализирует контекст данных на основе указанного соединения
         /// </summary>
         /// <param name="connection"><see cref="DbConnection"/>Соединение</param>
-        public DataContext(DbConnection connection) : base(connection, true)
+        public DataContext(DbConnection connection, bool initialize) : base(connection, true)
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Configuration>(true));
-            Database.Initialize(true);
+            Database.Initialize(initialize);
         }
 
         /// <summary>

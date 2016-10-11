@@ -26,13 +26,13 @@ namespace DATASCAN.Services
         /// Возвращает true, если соединение установлено, иначе false
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> TestConnection(Action<Exception> onException = null)
+        public async Task<bool> TestConnection(bool initialize, Action<Exception> onException = null)
         {
             return await Task.Factory.StartNew(() =>
             {
                 DbConnection connection = new SqlConnection(_connection);
 
-                using (DataContext context = new DataContext(connection))
+                using (DataContext context = new DataContext(connection, initialize))
                 {
                     context.Database.Connection.Open();
                 }

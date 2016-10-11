@@ -64,7 +64,7 @@ namespace DATASCAN.View
             _scheduledScansService = new ScheduledScansService(_sqlConnection);
             _scanMembersService = new ScanMembersService(_sqlConnection);
            
-            UpdateData().ConfigureAwait(false);                     
+            UpdateData(true).ConfigureAwait(false);                     
         }
 
         #endregion
@@ -107,12 +107,12 @@ namespace DATASCAN.View
             _sqlConnection = connection.ToString();
         }
 
-        private async Task UpdateData()
+        private async Task UpdateData(bool initialize)
         {
             status.Items[0].Visible = true;
             status.Items[2].Visible = true;
 
-            bool connected = await _contextService.TestConnection(ex => LogException(ex.Message));
+            bool connected = await _contextService.TestConnection(initialize, ex => LogException(ex.Message));
 
             status.Items[0].Visible = false;
             status.Items[2].Visible = false;
@@ -358,7 +358,7 @@ namespace DATASCAN.View
             {
                 entity.IsActive = true;
                 await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -372,7 +372,7 @@ namespace DATASCAN.View
             {
                 entity.IsActive = false;
                 await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -393,7 +393,7 @@ namespace DATASCAN.View
                         Logger.Log(lstMessages, new LogEntry { Message = $"Періодичне опитування видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex => LogException(ex.Message));
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
             }
         }
@@ -415,7 +415,7 @@ namespace DATASCAN.View
                         Logger.Log(lstMessages, new LogEntry { Message = $"Опитування за графіком видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex => LogException(ex.Message));
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
             }
         }
@@ -458,7 +458,7 @@ namespace DATASCAN.View
                     Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                 }, ex => LogException(ex.Message));
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -479,7 +479,7 @@ namespace DATASCAN.View
                         Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex => LogException(ex.Message));
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
             }
         }
@@ -531,7 +531,7 @@ namespace DATASCAN.View
                 Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
 
                 InitializeConnection();
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -582,7 +582,7 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -629,13 +629,13 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
         private async void RefreshMenu_Click(object sender, EventArgs e)
         {
-            await UpdateData();
+            await UpdateData(false);
         }
 
         private async void EditPeriodicScan_Click(object sender, EventArgs e)
@@ -674,7 +674,7 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -714,7 +714,7 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -768,7 +768,7 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }         
         }
 
@@ -822,7 +822,7 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -890,7 +890,7 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -955,7 +955,7 @@ namespace DATASCAN.View
                     }, ex => LogException(ex.Message));
                 }
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -970,7 +970,7 @@ namespace DATASCAN.View
                 entity.IsActive = false;
                 await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -985,7 +985,7 @@ namespace DATASCAN.View
                 entity.IsActive = true;
                 await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
 
-                await UpdateData();
+                await UpdateData(false);
             }
         }
 
@@ -1006,7 +1006,7 @@ namespace DATASCAN.View
                         Logger.Log(lstMessages, new LogEntry { Message = $"Вимірювальну точку видалено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex => LogException(ex.Message));
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
             }
         }
@@ -1028,7 +1028,7 @@ namespace DATASCAN.View
                         Logger.Log(lstMessages, new LogEntry { Message = $"Замовника видалено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex => LogException(ex.Message));
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
             }
         }
@@ -1050,7 +1050,7 @@ namespace DATASCAN.View
                         Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex => LogException(ex.Message));
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
             }
         }
@@ -1072,7 +1072,7 @@ namespace DATASCAN.View
                         Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач видалено: {estimator}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex => LogException(ex.Message));
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
             }
         }
@@ -1179,7 +1179,7 @@ namespace DATASCAN.View
                         }
                     }
 
-                    await UpdateData();
+                    await UpdateData(false);
                 }
                 else
                 {
@@ -1238,7 +1238,7 @@ namespace DATASCAN.View
                                 }
                             }
 
-                            await UpdateData();
+                            await UpdateData(false);
                         }                        
                     }
                 }

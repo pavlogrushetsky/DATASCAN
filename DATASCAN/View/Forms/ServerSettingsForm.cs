@@ -105,7 +105,7 @@ namespace DATASCAN.View.Forms
 
             DataContextService service = new DataContextService(connectionString.ToString());
 
-            bool result = await service.TestConnection();
+            bool result = await service.TestConnection(false);
 
             if (result)
             {

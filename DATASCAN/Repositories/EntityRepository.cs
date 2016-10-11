@@ -27,7 +27,7 @@ namespace DATASCAN.Repositories
         {
             // Создание соединения и инициализация контекста данных
             SqlConnection connection = new SqlConnection(connectionString);
-            _context = new DataContext(connection);
+            _context = new DataContext(connection, false);
         }
 
         /// <summary>
