@@ -505,18 +505,25 @@ namespace DATASCAN.View
             trvScans.BeginUpdate();
             trvScans.Nodes.Clear();
 
-            TreeNode periodicScansNode = trvScans.Nodes.Add("Періодичні опитування");
-            periodicScansNode.ImageIndex = 0;
-            periodicScansNode.SelectedImageIndex = 0;
-            periodicScansNode.ContextMenuStrip = PeriodicScansContextMenu();
+            if (_periodicScans.Any())
+            {
+                TreeNode periodicScansNode = trvScans.Nodes.Add("Періодичні опитування");
+                periodicScansNode.ImageIndex = 0;
+                periodicScansNode.SelectedImageIndex = 0;
+                periodicScansNode.ContextMenuStrip = PeriodicScansContextMenu();
 
-            TreeNode scheduledScansNode = trvScans.Nodes.Add("Опитування за графіком");
-            scheduledScansNode.ImageIndex = 1;
-            scheduledScansNode.SelectedImageIndex = 1;
-            scheduledScansNode.ContextMenuStrip = ScheduledScansContextMenu();
+                FillPeriodicScans(periodicScansNode);
+            }
 
-            FillPeriodicScans(periodicScansNode);
-            FillScheduledScans(scheduledScansNode);
+            if (_scheduledScans.Any())
+            {
+                TreeNode scheduledScansNode = trvScans.Nodes.Add("Опитування за графіком");
+                scheduledScansNode.ImageIndex = 1;
+                scheduledScansNode.SelectedImageIndex = 1;
+                scheduledScansNode.ContextMenuStrip = ScheduledScansContextMenu();
+
+                FillScheduledScans(scheduledScansNode);
+            }
 
             trvScans.Nodes.SetExpansionState(savedExpansionState);
             trvScans.EndUpdate();
