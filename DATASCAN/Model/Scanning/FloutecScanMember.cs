@@ -32,5 +32,13 @@ namespace DATASCAN.Model.Scanning
         /// Опрашивать часовые данные
         /// </summary>
         public bool ScanHourlyData { get; set; }
+
+        /// <summary>
+        /// Возвращает текстовое описание элемента
+        /// </summary>
+        public override string ToString()
+        {
+            return $"ФЛОУТЕК, Id = {EstimatorId}";
+        }
     }
 }

@@ -32,5 +32,13 @@ namespace DATASCAN.Model.Scanning
         /// Опрашивать суточные данные
         /// </summary>
         public bool ScanDailyData { get; set; }
+
+        /// <summary>
+        /// Возвращает текстовое описание элемента
+        /// </summary>
+        public override string ToString()
+        {
+            return $"ROC, Id = {EstimatorId}";
+        }
     }
 }

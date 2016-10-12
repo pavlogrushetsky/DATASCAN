@@ -134,7 +134,10 @@ namespace DATASCAN.View.Extensions
             ScheduledScan scheduled = scan as ScheduledScan;
             if (scheduled != null)
             {
-                return $"{scheduled.Title} ({scheduled.Periods.FirstOrDefault()?.Period.ToString(@"hh\:mm")})";
+                string period = scheduled.Periods.Any()
+                    ? $"({scheduled.Periods.FirstOrDefault()?.Period.ToString(@"hh\:mm")})"
+                    : "";
+                return $"{scheduled.Title} {period}";
             } 
 
             return string.Empty;
@@ -184,6 +187,39 @@ namespace DATASCAN.View.Extensions
                    $"Історичний сегмент:\t{point.HistSegment}\n" +
                    $"Створено:\t\t{point.DateCreated.ToString("dd.MM.yyyy HH:mm")}\n" +
                    $"Змінено:\t\t{point.DateModified.ToString("dd.MM.yyyy HH:mm")}";
+        }
+
+        /// <summary>
+        /// Возвращает полную информацию о периодическом опросе
+        /// </summary>
+        public static string Info(this PeriodicScan scan)
+        {
+            string type = scan.PeriodType ? "год." : "хв.";
+
+            return $"Id:\t\t\t{scan.Id}\n" +
+                   $"Назва:\t\t\t{scan.Title}\n" +
+                   $"Період:\t\t\t{scan.Period} {type}\n" +
+                   $"Останнє опитування:\t{scan.DateLastScanned?.ToString("dd.MM.yyyy HH:mm")}\n" +
+                   $"Створено:\t\t{scan.DateCreated.ToString("dd.MM.yyyy HH:mm")}\n" +
+                   $"Змінено:\t\t{scan.DateModified.ToString("dd.MM.yyyy HH:mm")}";
+        }
+
+        /// <summary>
+        /// Возвращает полную информацию о периодическом опросе
+        /// </summary>
+        public static string Info(this ScheduledScan scan)
+        {
+            string periods = scan.Periods.FirstOrDefault()?.Period.ToString(@"hh\:mm") + "\n";
+            scan.Periods.Skip(1).ToList().ForEach(p =>
+            {
+                periods = periods + $"\t\t{p.Period.ToString(@"hh\:mm")}\n";
+            });
+
+            return $"Id:\t\t{scan.Id}\n" +
+                   $"Назва:\t\t{scan.Title}\n" +
+                   $"Періоди:\t{periods}" +
+                   $"Створено:\t{scan.DateCreated.ToString("dd.MM.yyyy HH:mm")}\n" +
+                   $"Змінено:\t{scan.DateModified.ToString("dd.MM.yyyy HH:mm")}";
         }
     }
 }
