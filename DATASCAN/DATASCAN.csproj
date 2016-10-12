@@ -138,7 +138,9 @@
     <Compile Include="Model\Scanning\ScanBase.cs" />
     <Compile Include="Model\Scanning\ScanPeriod.cs" />
     <Compile Include="Repositories\DataRecordRepository.cs" />
+    <Compile Include="Repositories\DbfRepository.cs" />
     <Compile Include="Repositories\EntityRepository.cs" />
+    <Compile Include="Repositories\Extensions\FloutecDataExtensions.cs" />
     <Compile Include="Services\CustomersService.cs" />
     <Compile Include="Services\EntitiesService.cs" />
     <Compile Include="Services\DataContextService.cs" />
