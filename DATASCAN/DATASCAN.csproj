@@ -150,6 +150,7 @@
     <Compile Include="Services\EstimatorsService.cs" />
     <Compile Include="Services\GroupsService.cs" />
     <Compile Include="Services\MeasurePointsService.cs" />
+    <Compile Include="View\Common\NativeMethods.cs" />
     <Compile Include="View\Controls\LogListView.cs">
       <SubType>Component</SubType>
     </Compile>

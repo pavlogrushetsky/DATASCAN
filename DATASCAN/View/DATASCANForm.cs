@@ -14,6 +14,7 @@ using DATASCAN.Model.Rocs;
 using DATASCAN.Model.Scanning;
 using DATASCAN.Properties;
 using DATASCAN.Services;
+using DATASCAN.View.Common;
 using DATASCAN.View.Extensions;
 using DATASCAN.View.Forms;
 
@@ -1317,6 +1318,35 @@ namespace DATASCAN.View
             await UpdateData(false);
         }
 
+        private void mnuExpand_Click(object sender, EventArgs e)
+        {
+            ShowMe();
+        }
+
+        private void mnuExit_Click(object sender, EventArgs e)
+        {
+            var confirmResult = MessageBox.Show(
+                                "Ви дійсно бажаєте вийти з програми?",
+                                "Вихід",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning,
+                                MessageBoxDefaultButton.Button2);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
+
+        private void DATASCANForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
+        }
+
         #endregion                
 
         #region Drag and Drop
@@ -1498,6 +1528,25 @@ namespace DATASCAN.View
             Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
         }
 
-        #endregion
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == NativeMethods.WM_SHOWME)
+            {
+                ShowMe();
+            }
+            base.WndProc(ref m);
+        }
+
+        private void ShowMe()
+        {
+            Show();
+
+            if (WindowState == FormWindowState.Minimized)
+            {
+                WindowState = FormWindowState.Normal;
+            }
+        }
+
+        #endregion        
     }
 }
