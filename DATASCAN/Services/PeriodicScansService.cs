@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using DATASCAN.Model.Scanning;
 using DATASCAN.Repositories;
@@ -17,7 +20,11 @@ namespace DATASCAN.Services
             {
                 using (EntityRepository<PeriodicScan> repo = new EntityRepository<PeriodicScan>(_connection))
                 {
-                    repo.Delete(scanId);
+                    PeriodicScan sc = repo.GetAll()
+                        .Where(s => s.Id == scanId)
+                        .Include(s => s.Members)
+                        .Single();
+                    repo.Delete(new List<PeriodicScan> { sc });
                 }
             }, TaskCreationOptions.LongRunning)
             .ContinueWith(result =>

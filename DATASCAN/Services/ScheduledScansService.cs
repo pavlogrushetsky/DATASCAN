@@ -70,7 +70,11 @@ namespace DATASCAN.Services
             {
                 using (EntityRepository<ScheduledScan> repo = new EntityRepository<ScheduledScan>(_connection))
                 {
-                    ScheduledScan sc = repo.GetAll().Where(s => s.Id == scan.Id).Include(s => s.Periods).Single();
+                    ScheduledScan sc = repo.GetAll()
+                        .Where(s => s.Id == scan.Id)
+                        .Include(s => s.Periods)
+                        .Include(s => s.Members)
+                        .Single();
                     repo.Delete(new List<ScheduledScan> { sc });
                 }
             }, TaskCreationOptions.LongRunning)
