@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,12 +37,18 @@ namespace DATASCAN.View
         private readonly ScheduledScansService _scheduledScansService;
         private readonly ScanMembersService _scanMembersService;
 
+        private readonly RocTcpIpService _rocTcpIpService = new RocTcpIpService();
+        private readonly RocGprsService _rocGprsService = new RocGprsService();
+        private readonly FloutecDbfService _floutecDbfService = new FloutecDbfService();
+
         private List<EstimatorBase> _estimators = new List<EstimatorBase>();
         private List<Customer> _customers = new List<Customer>();
         private List<EstimatorsGroup> _groups = new List<EstimatorsGroup>();
         private List<MeasurePointBase> _points = new List<MeasurePointBase>();
         private List<PeriodicScan> _periodicScans = new List<PeriodicScan>();
         private List<ScheduledScan> _scheduledScans = new List<ScheduledScan>();
+
+        private const int SCAN_PERIOD_MS = 5000;
 
         public DATASCANForm()
         {
@@ -64,8 +71,12 @@ namespace DATASCAN.View
             _scheduledScansService = new ScheduledScansService(_sqlConnection);
             _scanMembersService = new ScanMembersService(_sqlConnection);
            
-            UpdateData(true).ConfigureAwait(false);                     
-        }
+            UpdateData(true).ConfigureAwait(false);
+
+            var timer = new Timer { Interval = SCAN_PERIOD_MS };
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }        
 
         #endregion
 
@@ -85,7 +96,7 @@ namespace DATASCAN.View
 
         private void InitializeConnection()
         {
-            SqlConnectionStringBuilder connection = new SqlConnectionStringBuilder
+            var connection = new SqlConnectionStringBuilder
             {
                 DataSource = Infrastructure.Settings.Settings.ServerName,
                 InitialCatalog = Infrastructure.Settings.Settings.DatabaseName,
@@ -156,7 +167,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip EstimatorsContextMenu()
         {
-            ContextMenuStrip estimatorsMenu = new ContextMenuStrip();
+            var estimatorsMenu = new ContextMenuStrip();
 
             estimatorsMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -175,7 +186,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip EstimatorContextMenu(EstimatorBase estimator)
         {
-            ContextMenuStrip estimatorMenu = new ContextMenuStrip();
+            var estimatorMenu = new ContextMenuStrip();
 
             estimatorMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -194,7 +205,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip MeasurePointContextMenu(EstimatorBase estimator, MeasurePointBase point)
         {
-            ContextMenuStrip pointMenu = new ContextMenuStrip();
+            var pointMenu = new ContextMenuStrip();
 
             pointMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -211,7 +222,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip CustomerContextMenu(Customer customer)
         {
-            ContextMenuStrip customerMenu = new ContextMenuStrip();
+            var customerMenu = new ContextMenuStrip();
 
             customerMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -232,7 +243,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip GroupContextMenu(EstimatorsGroup group)
         {
-            ContextMenuStrip groupMenu = new ContextMenuStrip();
+            var groupMenu = new ContextMenuStrip();
 
             groupMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -252,7 +263,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip ScansContextMenu()
         {
-            ContextMenuStrip scansMenu = new ContextMenuStrip();
+            var scansMenu = new ContextMenuStrip();
 
             scansMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -269,7 +280,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip PeriodicScansContextMenu()
         {
-            ContextMenuStrip periodicScansMenu = new ContextMenuStrip();
+            var periodicScansMenu = new ContextMenuStrip();
 
             periodicScansMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -281,7 +292,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip ScheduledScansContextMenu()
         {
-            ContextMenuStrip scheduledScansMenu = new ContextMenuStrip();
+            var scheduledScansMenu = new ContextMenuStrip();
 
             scheduledScansMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -293,7 +304,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip PeriodicScanContextMenu(PeriodicScan scan)
         {
-            ContextMenuStrip scanMenu = new ContextMenuStrip();
+            var scanMenu = new ContextMenuStrip();
 
             scanMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -310,7 +321,7 @@ namespace DATASCAN.View
 
         private ContextMenuStrip ScheduledScanContextMenu(ScheduledScan scan)
         {
-            ContextMenuStrip scanMenu = new ContextMenuStrip();
+            var scanMenu = new ContextMenuStrip();
 
             scanMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -327,7 +338,7 @@ namespace DATASCAN.View
 
         public ContextMenuStrip ScanMemberContextMenu()
         {
-            ContextMenuStrip memberMenu = new ContextMenuStrip();
+            var memberMenu = new ContextMenuStrip();
 
             memberMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -363,7 +374,7 @@ namespace DATASCAN.View
 
         private void InitializeStatusStrip()
         {
-            PictureBox progress = new PictureBox { Image = Resources.Progress };
+            var progress = new PictureBox { Image = Resources.Progress };
             status.Items.Add(progress.Image);
             status.Items.Add("Виконується запит до бази даних ...");
             status.Items.Add("Встановлюється з'єднання з сервером баз даних ...");
@@ -395,7 +406,7 @@ namespace DATASCAN.View
         {
             _customers.ForEach(customer =>
             {
-                TreeNode customerNode = trvEstimators.Nodes.Add(customer.Title);
+                var customerNode = trvEstimators.Nodes.Add(customer.Title);
                 customerNode.ForeColor = customer.IsActive ? Color.Black : Color.Red;
                 customerNode.Tag = customer;
                 customerNode.ImageIndex = 0;
@@ -425,7 +436,7 @@ namespace DATASCAN.View
 
             groups.ForEach(group =>
             {
-                TreeNode groupNode = customerNode?.Nodes.Add(group.Name) ?? trvEstimators.Nodes.Add(group.Name);
+                var groupNode = customerNode?.Nodes.Add(group.Name) ?? trvEstimators.Nodes.Add(group.Name);
                 groupNode.ForeColor = group.IsActive ? Color.Black : Color.Red;
                 groupNode.Tag = group;
                 groupNode.ImageIndex = 2;
@@ -439,18 +450,18 @@ namespace DATASCAN.View
 
         private void FillEstimators(TreeNode parentNode = null)
         {
-            List<EstimatorBase> estimators = new List<EstimatorBase>();
+            var estimators = new List<EstimatorBase>();
 
             if (parentNode != null)
             {
                 if (parentNode.Tag is EstimatorsGroup)
                 {
-                    EstimatorsGroup group = parentNode.Tag as EstimatorsGroup;
+                    var group = parentNode.Tag as EstimatorsGroup;
                     estimators = _estimators.Where(e => e.GroupId == group.Id).ToList();
                 }
                 else if (parentNode.Tag is Customer)
                 {
-                    Customer customer = parentNode.Tag as Customer;
+                    var customer = parentNode.Tag as Customer;
                     estimators = _estimators.Where(e => e.CustomerId == customer.Id && !e.GroupId.HasValue).ToList();
                 }
             }
@@ -461,9 +472,9 @@ namespace DATASCAN.View
 
             estimators.ForEach(estimator =>
             {
-                string nodeTitle = estimator.NodeTitle();
+                var nodeTitle = estimator.NodeTitle();
 
-                TreeNode estimatorNode = parentNode?.Nodes.Add(nodeTitle) ?? trvEstimators.Nodes.Add(nodeTitle);
+                var estimatorNode = parentNode?.Nodes.Add(nodeTitle) ?? trvEstimators.Nodes.Add(nodeTitle);
                 estimatorNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
                 estimatorNode.Tag = estimator;
                 estimatorNode.ImageIndex = 3;
@@ -477,13 +488,13 @@ namespace DATASCAN.View
 
         private void FillPoints(TreeNode estimatorNode)
         {
-            if (estimatorNode != null && estimatorNode.Tag is EstimatorBase)
+            if (estimatorNode?.Tag is EstimatorBase)
             {
-                EstimatorBase estimator = estimatorNode.Tag as EstimatorBase;
+                var estimator = estimatorNode.Tag as EstimatorBase;
 
                 _points.Where(p => p.EstimatorId == estimator.Id).ToList().ForEach(point =>
                 {
-                    TreeNode pointNode = estimatorNode.Nodes.Add(point.NodeTitle());
+                    var pointNode = estimatorNode.Nodes.Add(point.NodeTitle());
 
                     pointNode.ForeColor = point.IsActive ? Color.Black : Color.Red;
                     pointNode.Tag = point;
@@ -508,7 +519,7 @@ namespace DATASCAN.View
 
             if (_periodicScans.Any())
             {
-                TreeNode periodicScansNode = trvScans.Nodes.Add("Періодичні опитування");
+                var periodicScansNode = trvScans.Nodes.Add("Періодичні опитування");
                 periodicScansNode.ImageIndex = 0;
                 periodicScansNode.SelectedImageIndex = 0;
                 periodicScansNode.ContextMenuStrip = PeriodicScansContextMenu();
@@ -518,7 +529,7 @@ namespace DATASCAN.View
 
             if (_scheduledScans.Any())
             {
-                TreeNode scheduledScansNode = trvScans.Nodes.Add("Опитування за графіком");
+                var scheduledScansNode = trvScans.Nodes.Add("Опитування за графіком");
                 scheduledScansNode.ImageIndex = 1;
                 scheduledScansNode.SelectedImageIndex = 1;
                 scheduledScansNode.ContextMenuStrip = ScheduledScansContextMenu();
@@ -534,7 +545,7 @@ namespace DATASCAN.View
         {
             _periodicScans.ForEach(scan =>
             {
-                TreeNode scanNode = scansGroup.Nodes.Add(scan.NodeTitle());
+                var scanNode = scansGroup.Nodes.Add(scan.NodeTitle());
                 scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
                 scanNode.Tag = scan;
                 scanNode.ImageIndex = 2;
@@ -550,7 +561,7 @@ namespace DATASCAN.View
         {
             _scheduledScans.ForEach(scan =>
             {
-                TreeNode scanNode = scansGroup.Nodes.Add(scan.NodeTitle());
+                var scanNode = scansGroup.Nodes.Add(scan.NodeTitle());
                 scanNode.ForeColor = scan.IsActive ? Color.Black : Color.Red;
                 scanNode.Tag = scan;
                 scanNode.ImageIndex = 2;
@@ -564,13 +575,13 @@ namespace DATASCAN.View
 
         private void FillMembers(TreeNode scanNode)
         {
-            ScanBase scan = scanNode.Tag as ScanBase;
+            var scan = scanNode.Tag as ScanBase;
 
             scan?.Members.ToList().ForEach(member =>
             {
-                EstimatorBase estimator = _estimators.Find(e => e.Id == member.EstimatorId);
+                var estimator = _estimators.Find(e => e.Id == member.EstimatorId);
 
-                TreeNode memberNode = scanNode.Nodes.Add(estimator.NodeTitle());
+                var memberNode = scanNode.Nodes.Add(estimator.NodeTitle());
                 memberNode.ForeColor = estimator.IsActive ? Color.Black : Color.Red;
                 memberNode.Tag = member;
                 memberNode.ImageIndex = 3;
@@ -585,9 +596,9 @@ namespace DATASCAN.View
 
         private void EstimatorsContextMenu_Opening(object sender, CancelEventArgs e)
         {
-            TreeNode nodeAtMousePosition = trvEstimators.GetNodeAt(trvEstimators.PointToClient(MousePosition));
+            var nodeAtMousePosition = trvEstimators.GetNodeAt(trvEstimators.PointToClient(MousePosition));
 
-            TreeNode selectedNode = trvEstimators.SelectedNode;
+            var selectedNode = trvEstimators.SelectedNode;
 
             if (nodeAtMousePosition != null)
             {
@@ -602,20 +613,20 @@ namespace DATASCAN.View
 
         private async void EditCustomerMenu_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            Customer customer = node?.Tag as Customer;
+            var customer = node?.Tag as Customer;
 
-            EditCustomerForm form = new EditCustomerForm
+            var form = new EditCustomerForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.InformationMsg),
                 Customer = customer
             };
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
             if (result == DialogResult.OK && form.Customer != null)
             {
@@ -642,22 +653,22 @@ namespace DATASCAN.View
 
         private async void EditGroupMenu_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            Customer customer = node?.Tag as Customer;
+            var customer = node?.Tag as Customer;
 
-            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+            var group = node?.Tag as EstimatorsGroup;
 
-            EditEstimatorsGroupForm form = new EditEstimatorsGroupForm
+            var form = new EditEstimatorsGroupForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.InformationMsg),
                 Group = group
             };
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
             if (result == DialogResult.OK && form.Group != null)
             {
@@ -689,124 +700,122 @@ namespace DATASCAN.View
 
         private async void EditFloutecMenu_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            Customer customer = node?.Tag as Customer;
+            var customer = node?.Tag as Customer;
 
-            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+            var group = node?.Tag as EstimatorsGroup;
 
-            Floutec floutec = node?.Tag as Floutec;
+            var floutec = node?.Tag as Floutec;
 
-            EditFloutecForm form = new EditFloutecForm
+            var form = new EditFloutecForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Floutec = floutec
             };
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK && form.Floutec != null)
+            if (result != DialogResult.OK || form.Floutec == null) return;
+
+            floutec = form.Floutec;
+
+            if (form.IsEdit)
             {
-                floutec = form.Floutec;
-
-                if (form.IsEdit)
+                await _estimatorsService.Update(floutec, () =>
                 {
-                    await _estimatorsService.Update(floutec, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ФЛОУТЕК змінено: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-                else
-                {
-                    if (customer != null)
-                    {
-                        floutec.CustomerId = customer.Id;
-                    }
-                    else if (group != null)
-                    {
-                        floutec.GroupId = group.Id;
-                        floutec.CustomerId = group.CustomerId;
-                    }
-
-                    await _estimatorsService.Insert(floutec, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ФЛОУТЕК: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-
-                await UpdateData(false);
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ФЛОУТЕК змінено: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
             }
+            else
+            {
+                if (customer != null)
+                {
+                    floutec.CustomerId = customer.Id;
+                }
+                else if (@group != null)
+                {
+                    floutec.GroupId = @group.Id;
+                    floutec.CustomerId = @group.CustomerId;
+                }
+
+                await _estimatorsService.Insert(floutec, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ФЛОУТЕК: {floutec}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
+            }
+
+            await UpdateData(false);
         }
 
         private async void EditRocMenu_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            Customer customer = node?.Tag as Customer;
+            var customer = node?.Tag as Customer;
 
-            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+            var group = node?.Tag as EstimatorsGroup;
 
-            Roc809 roc = node?.Tag as Roc809;
+            var roc = node?.Tag as Roc809;
 
-            EditRocForm form = new EditRocForm
+            var form = new EditRocForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Roc = roc
             };
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK && form.Roc != null)
+            if (result != DialogResult.OK || form.Roc == null) return;
+
+            roc = form.Roc;
+
+            if (form.IsEdit)
             {
-                roc = form.Roc;
-
-                if (form.IsEdit)
+                await _estimatorsService.Update(roc, () =>
                 {
-                    await _estimatorsService.Update(roc, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ROC809 змінено: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-                else
-                {
-                    if (customer != null)
-                    {
-                        roc.CustomerId = customer.Id;
-                    }
-                    else if (group != null)
-                    {
-                        roc.GroupId = group.Id;
-                        roc.CustomerId = group.CustomerId;
-                    }
-
-                    await _estimatorsService.Insert(roc, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ROC809: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-
-                await UpdateData(false);
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані обчислювача ROC809 змінено: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
             }
+            else
+            {
+                if (customer != null)
+                {
+                    roc.CustomerId = customer.Id;
+                }
+                else if (@group != null)
+                {
+                    roc.GroupId = @group.Id;
+                    roc.CustomerId = @group.CustomerId;
+                }
+
+                await _estimatorsService.Insert(roc, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Додано обчислювач ROC809: {roc}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
+            }
+
+            await UpdateData(false);
         }
 
         private async void EditPointMenu_Click(object sender, EventArgs e)
         {
 
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            Roc809 roc = node?.Tag as Roc809;
+            var roc = node?.Tag as Roc809;
 
-            Roc809MeasurePoint point = node?.Tag as Roc809MeasurePoint;
+            var point = node?.Tag as Roc809MeasurePoint;
 
-            EditRocPointForm form = new EditRocPointForm
+            var form = new EditRocPointForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
@@ -833,47 +842,46 @@ namespace DATASCAN.View
                     .ToDictionary(d => d.Key, d => d.Value);
             }
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK && form.Point != null)
+            if (result != DialogResult.OK || form.Point == null) return;
+
+            point = form.Point;
+
+            if (form.IsEdit)
             {
-                point = form.Point;
-
-                if (form.IsEdit)
+                await _pointsService.Update(point, () =>
                 {
-                    await _pointsService.Update(point, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної точки обчислювача ROC809 змінено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-                else
-                {
-                    if (roc != null)
-                    {
-                        point.EstimatorId = roc.Id;
-                    }
-
-                    await _pointsService.Insert(point, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну точку обчислювача ROC809: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-
-                await UpdateData(false);
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної точки обчислювача ROC809 змінено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
             }
+            else
+            {
+                if (roc != null)
+                {
+                    point.EstimatorId = roc.Id;
+                }
+
+                await _pointsService.Insert(point, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну точку обчислювача ROC809: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
+            }
+
+            await UpdateData(false);
         }
 
         private async void EditLineMenu_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            Floutec floutec = node?.Tag as Floutec;
+            var floutec = node?.Tag as Floutec;
 
-            FloutecMeasureLine line = node?.Tag as FloutecMeasureLine;
+            var line = node?.Tag as FloutecMeasureLine;
 
-            EditFloutecLineForm form = new EditFloutecLineForm
+            var form = new EditFloutecLineForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
@@ -898,152 +906,143 @@ namespace DATASCAN.View
                     .ToList();
             }
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK && form.Line != null)
+            if (result != DialogResult.OK || form.Line == null) return;
+
+            line = form.Line;
+
+            if (form.IsEdit)
             {
-                line = form.Line;
-
-                if (form.IsEdit)
+                await _pointsService.Update(line, () =>
                 {
-                    await _pointsService.Update(line, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної нитки обчислювача ФЛОУТЕК змінено: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-                else
-                {
-                    if (floutec != null)
-                    {
-                        line.EstimatorId = floutec.Id;
-                    }
-
-                    await _pointsService.Insert(line, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну нитку обчислювача ФЛОУТЕК: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-
-                await UpdateData(false);
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані вимірювальної нитки обчислювача ФЛОУТЕК змінено: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
             }
+            else
+            {
+                if (floutec != null)
+                {
+                    line.EstimatorId = floutec.Id;
+                }
+
+                await _pointsService.Insert(line, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Додано вимірювальну нитку обчислювача ФЛОУТЕК: {line}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
+            }
+
+            await UpdateData(false);
         }
 
         private async void DeactivateMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            EntityBase entity = node?.Tag as EntityBase;
+            var entity = node?.Tag as EntityBase;
 
-            if (entity != null)
-            {
-                entity.IsActive = false;
-                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
+            if (entity == null) return;
 
-                await UpdateData(false);
-            }
+            entity.IsActive = false;
+
+            await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
+
+            await UpdateData(false);
         }
 
         private async void ActivateMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            EntityBase entity = node?.Tag as EntityBase;
+            var entity = node?.Tag as EntityBase;
 
-            if (entity != null)
-            {
-                entity.IsActive = true;
-                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
+            if (entity == null) return;
 
-                await UpdateData(false);
-            }
+            entity.IsActive = true;
+
+            await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
+
+            await UpdateData(false);
         }
 
         private async void DeletePointMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            MeasurePointBase point = node?.Tag as MeasurePointBase;
+            var point = node?.Tag as MeasurePointBase;
 
-            if (point != null)
+            if (point == null) return;
+
+            DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити вимірювальну точку {point} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.Yes) return;
+
+            await _pointsService.Delete(point, () =>
             {
-                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити вимірювальну точку {point} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                Logger.Log(lstMessages, new LogEntry { Message = $"Вимірювальну точку видалено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                if (result == DialogResult.Yes)
-                {
-                    await _pointsService.Delete(point, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Вимірювальну точку видалено: {point}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-
-                    await UpdateData(false);
-                }
-            }
+            await UpdateData(false);
         }
 
         private async void DeleteCustomerMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            Customer customer = node?.Tag as Customer;
+            var customer = node?.Tag as Customer;
 
-            if (customer != null)
+            if (customer == null) return;
+
+            DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити замовника {customer} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.Yes) return;
+
+            await _customersService.Delete(customer.Id, () =>
             {
-                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити замовника {customer} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                Logger.Log(lstMessages, new LogEntry { Message = $"Замовника видалено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                if (result == DialogResult.Yes)
-                {
-                    await _customersService.Delete(customer.Id, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Замовника видалено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-
-                    await UpdateData(false);
-                }
-            }
+            await UpdateData(false);
         }
 
         private async void DeleteGroupMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            EstimatorsGroup group = node?.Tag as EstimatorsGroup;
+            var group = node?.Tag as EstimatorsGroup;
 
-            if (group != null)
+            if (@group == null) return;
+
+            DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити групу обчислювачів {@group} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.Yes) return;
+
+            await _groupsService.Delete(@group.Id, () =>
             {
-                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити групу обчислювачів {group} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {@group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                if (result == DialogResult.Yes)
-                {
-                    await _groupsService.Delete(group.Id, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Групу обчислювачів видалено: {group}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-
-                    await UpdateData(false);
-                }
-            }
+            await UpdateData(false);
         }
 
         private async void DeleteEstimatorMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvEstimators.SelectedNode;
+            var node = trvEstimators.SelectedNode;
 
-            EstimatorBase estimator = node?.Tag as EstimatorBase;
+            var estimator = node?.Tag as EstimatorBase;
 
-            if (estimator != null)
+            if (estimator == null) return;
+
+            var result = MessageBox.Show($"Ви дійсно бажаєте видалити обчислювач {estimator} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.Yes) return;
+
+            await _estimatorsService.Delete(estimator, () =>
             {
-                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити обчислювач {estimator} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач видалено: {estimator}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                if (result == DialogResult.Yes)
-                {
-                    await _estimatorsService.Delete(estimator, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач видалено: {estimator}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-
-                    await UpdateData(false);
-                }
-            }
+            await UpdateData(false);
         }
 
         #endregion
@@ -1052,9 +1051,9 @@ namespace DATASCAN.View
 
         private void ScansContextMenu_Opening(object sender, CancelEventArgs e)
         {
-            TreeNode nodeAtMousePosition = trvScans.GetNodeAt(trvScans.PointToClient(MousePosition));
+            var nodeAtMousePosition = trvScans.GetNodeAt(trvScans.PointToClient(MousePosition));
 
-            TreeNode selectedNode = trvScans.SelectedNode;
+            var selectedNode = trvScans.SelectedNode;
 
             if (nodeAtMousePosition != null)
             {
@@ -1069,161 +1068,153 @@ namespace DATASCAN.View
 
         private async void ActivateScanMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            EntityBase entity = node?.Tag as EntityBase;
+            var entity = node?.Tag as EntityBase;
 
-            if (entity != null)
-            {
-                entity.IsActive = true;
-                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
-                await UpdateData(false);
-            }
+            if (entity == null) return;
+
+            entity.IsActive = true;
+            await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
+            await UpdateData(false);
         }
 
         private async void DeactivateScanMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            EntityBase entity = node?.Tag as EntityBase;
+            var entity = node?.Tag as EntityBase;
 
-            if (entity != null)
-            {
-                entity.IsActive = false;
-                await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
-                await UpdateData(false);
-            }
+            if (entity == null) return;
+
+            entity.IsActive = false;
+            await _entitiesService.Update(entity, null, ex => LogException(ex.Message));
+            await UpdateData(false);
         }
 
         private async void EditPeriodicScan_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            PeriodicScan scan = node?.Tag as PeriodicScan;
+            var scan = node?.Tag as PeriodicScan;
 
-            EditPeriodicScanForm form = new EditPeriodicScanForm
+            var form = new EditPeriodicScanForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Scan = scan
             };
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK && form.Scan != null)
+            if (result != DialogResult.OK || form.Scan == null) return;
+
+            scan = form.Scan;
+
+            if (form.IsEdit)
             {
-                scan = form.Scan;
-
-                if (form.IsEdit)
+                await _periodicScansService.Update(scan, () =>
                 {
-                    await _periodicScansService.Update(scan, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-                else
-                {
-                    await _periodicScansService.Insert(scan, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано періодичне опитування: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-
-                await UpdateData(false);
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
             }
+            else
+            {
+                await _periodicScansService.Insert(scan, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Додано періодичне опитування: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
+            }
+
+            await UpdateData(false);
         }
 
         private async void EditScheduledScan_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            var menuItem = sender as ToolStripMenuItem;
 
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            ScheduledScan scan = node?.Tag as ScheduledScan;
+            var scan = node?.Tag as ScheduledScan;
 
-            EditScheduledScanForm form = new EditScheduledScanForm
+            var form = new EditScheduledScanForm
             {
                 StartPosition = FormStartPosition.CenterParent,
                 IsEdit = menuItem != null && menuItem.Text.Equals(Resources.SettingsMsg),
                 Scan = scan
             };
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK && form.Scan != null)
+            if (result != DialogResult.OK || form.Scan == null) return;
+
+            scan = form.Scan;
+
+            if (form.IsEdit)
             {
-                scan = form.Scan;
-
-                if (form.IsEdit)
+                await _scheduledScansService.Update(scan, () =>
                 {
-                    await _scheduledScansService.Update(scan, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані опитування за графіком змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-                else
-                {
-                    await _scheduledScansService.Insert(scan, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано опитування за графіком: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-
-                await UpdateData(false);
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані опитування за графіком змінено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
             }
+            else
+            {
+                await _scheduledScansService.Insert(scan, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Додано опитування за графіком: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
+            }
+
+            await UpdateData(false);
         }
 
         private async void DeletePeriodicScanMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            PeriodicScan scan = node?.Tag as PeriodicScan;
+            var scan = node?.Tag as PeriodicScan;
 
-            if (scan != null)
+            if (scan == null) return;
+
+            var result = MessageBox.Show($"Ви дійсно бажаєте видалити періодичне опитування {scan} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.Yes) return;
+
+            await _periodicScansService.Delete(scan.Id, () =>
             {
-                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити періодичне опитування {scan} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                Logger.Log(lstMessages, new LogEntry { Message = $"Періодичне опитування видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                if (result == DialogResult.Yes)
-                {
-                    await _periodicScansService.Delete(scan.Id, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Періодичне опитування видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-
-                    await UpdateData(false);
-                }
-            }
+            await UpdateData(false);
         }
 
         private async void DeleteScheduledScanMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            ScheduledScan scan = node?.Tag as ScheduledScan;
+            var scan = node?.Tag as ScheduledScan;
 
-            if (scan != null)
+            if (scan == null) return;
+
+            var result = MessageBox.Show($"Ви дійсно бажаєте видалити опитування за графіком {scan} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.Yes) return;
+
+            await _scheduledScansService.Delete(scan, () =>
             {
-                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити опитування за графіком {scan} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                Logger.Log(lstMessages, new LogEntry { Message = $"Опитування за графіком видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                if (result == DialogResult.Yes)
-                {
-                    await _scheduledScansService.Delete(scan, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Опитування за графіком видалено: {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-
-                    await UpdateData(false);
-                }
-            }
+            await UpdateData(false);
         }
 
         private async void MemberSettingsMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            ScanMemberBase member = node?.Tag as ScanMemberBase;
+            var member = node?.Tag as ScanMemberBase;
 
             Form form;
 
@@ -1246,41 +1237,38 @@ namespace DATASCAN.View
                 };                
             }
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK)
+            if (result != DialogResult.OK) return;
+
+            member = member is RocScanMember ? (ScanMemberBase)((EditRocScanMemberForm)form).Member : ((EditFloutecScanMemberForm)form).Member;
+
+            await _scanMembersService.Update(member, () =>
             {
-                member = member is RocScanMember ? (ScanMemberBase)((EditRocScanMemberForm)form).Member : ((EditFloutecScanMemberForm)form).Member;
+                Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                await _scanMembersService.Update(member, () =>
-                {
-                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані періодичного опитування змінено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                }, ex => LogException(ex.Message));
-
-                await UpdateData(false);
-            }
+            await UpdateData(false);
         }
 
         private async void DeleteMemberMenu_Click(object sender, EventArgs e)
         {
-            TreeNode node = trvScans.SelectedNode;
+            var node = trvScans.SelectedNode;
 
-            ScanMemberBase member = node?.Tag as ScanMemberBase;
+            var member = node?.Tag as ScanMemberBase;
 
-            if (member != null)
+            if (member == null) return;
+
+            var result = MessageBox.Show($"Ви дійсно бажаєте видалити опитування обчислювача {member} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.Yes) return;
+
+            await _scanMembersService.Delete(member.Id, () =>
             {
-                DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити опитування обчислювача {member} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                Logger.Log(lstMessages, new LogEntry { Message = $"Опитування обчислювача видалено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            }, ex => LogException(ex.Message));
 
-                if (result == DialogResult.Yes)
-                {
-                    await _scanMembersService.Delete(member.Id, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Опитування обчислювача видалено: {member}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-
-                    await UpdateData(false);
-                }
-            }
+            await UpdateData(false);
         }
 
         #endregion        
@@ -1289,23 +1277,22 @@ namespace DATASCAN.View
 
         private async void mnuDatabase_Click(object sender, EventArgs e)
         {
-            ServerSettingsForm form = new ServerSettingsForm { StartPosition = FormStartPosition.CenterParent };
+            var form = new ServerSettingsForm { StartPosition = FormStartPosition.CenterParent };
 
-            DialogResult result = form.ShowDialog();
+            var result = form.ShowDialog();
 
-            if (result == DialogResult.OK)
-            {
-                Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+            if (result != DialogResult.OK) return;
 
-                InitializeConnection();
-                await UpdateData(false);
-            }
+            Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+
+            InitializeConnection();
+            await UpdateData(false);
         }
 
         private void mnuConnection_Click(object sender, EventArgs e)
         {
-            ConnectionSettingsForm form = new ConnectionSettingsForm {StartPosition = FormStartPosition.CenterParent};
-            DialogResult result = form.ShowDialog();
+            var form = new ConnectionSettingsForm {StartPosition = FormStartPosition.CenterParent};
+            var result = form.ShowDialog();
 
             if (result == DialogResult.OK)
             {
@@ -1353,19 +1340,17 @@ namespace DATASCAN.View
 
         private void TrvEstimators_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && e.Item != null)
+            if (e.Button != MouseButtons.Left || e.Item == null) return;
+
+            var node = e.Item as TreeNode;
+
+            if (node == null) return;
+
+            var entity = node.Tag as EntityBase;
+
+            if (entity is EstimatorsGroup || entity is EstimatorBase)
             {
-                TreeNode node = e.Item as TreeNode;
-
-                if (node != null)
-                {
-                    EntityBase entity = node.Tag as EntityBase;
-
-                    if (entity is EstimatorsGroup || entity is EstimatorBase)
-                    {
-                        trvEstimators.DoDragDrop(e.Item, DragDropEffects.Move);
-                    }
-                }               
+                trvEstimators.DoDragDrop(e.Item, DragDropEffects.Move);
             }
         }
 
@@ -1376,146 +1361,143 @@ namespace DATASCAN.View
 
         private async void TrvEstimators_DragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
-            {
-                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-                TreeNode destNode = ((TreeView)sender).GetNodeAt(pt);
-                TreeNode newNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+            if (!e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false)) return;
 
-                if ((TreeView)sender == newNode.TreeView)
+            var pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+            var destNode = ((TreeView)sender).GetNodeAt(pt);
+            var newNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+
+            if ((TreeView)sender == newNode.TreeView)
+            {
+                var estimatorsGroup = newNode.Tag as EstimatorsGroup;
+                var estimator = newNode.Tag as EstimatorBase;
+                if (estimatorsGroup != null)
                 {
-                    EstimatorsGroup estimatorsGroup = newNode.Tag as EstimatorsGroup;
-                    EstimatorBase estimator = newNode.Tag as EstimatorBase;
-                    if (estimatorsGroup != null)
+                    if (destNode == null || destNode.Tag is Customer)
                     {
-                        if (destNode == null || destNode.Tag is Customer)
+                        if (destNode == null)
                         {
-                            if (destNode == null)
+                            estimatorsGroup.CustomerId = null;
+                            estimatorsGroup.Customer = null;
+                        }
+                        else
+                        {
+                            var customer = destNode.Tag as Customer;
+                            estimatorsGroup.CustomerId = customer.Id;
+                            estimatorsGroup.Customer = customer;
+                        }
+
+                        await _groupsService.Update(estimatorsGroup, () =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = destNode == null ? $"Групу обчислювачів {estimatorsGroup} відкріплено від замовника" 
+                                : $"Групу обчислювачів {estimatorsGroup} закріплено за замовником {estimatorsGroup.Customer}",
+                                Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex => LogException(ex.Message));
+                    }
+                }
+                else if (estimator != null)
+                {
+                    string message;
+
+                    if (destNode == null || destNode.Tag is EstimatorsGroup || destNode.Tag is Customer)
+                    {
+                        if (destNode == null)
+                        {
+                            estimator.CustomerId = null;
+                            estimator.Customer = null;
+                            estimator.GroupId = null;
+                            estimator.Group = null;
+                            message = $"Обчислювач {estimator} відкріплено від замовників та груп";
+                        }
+                        else
+                        {
+                            var group = destNode.Tag as EstimatorsGroup;
+                            var customer = destNode.Tag as Customer;
+                            if (@group != null)
                             {
-                                estimatorsGroup.CustomerId = null;
-                                estimatorsGroup.Customer = null;
+                                estimator.GroupId = @group.Id;
+                                estimator.Group = @group;
+                                estimator.CustomerId = @group.CustomerId;
+                                estimator.Customer = _customers.SingleOrDefault(c => c.Id == @group.CustomerId);
+                                message = $"Обчислювач {estimator} закріплено за групою {@group}";
                             }
                             else
                             {
-                                Customer customer = destNode.Tag as Customer;
-                                estimatorsGroup.CustomerId = customer.Id;
-                                estimatorsGroup.Customer = customer;
-                            }
-
-                            await _groupsService.Update(estimatorsGroup, () =>
-                            {
-                                Logger.Log(lstMessages, new LogEntry { Message = destNode == null ? $"Групу обчислювачів {estimatorsGroup} відкріплено від замовника" 
-                                                                                                  : $"Групу обчислювачів {estimatorsGroup} закріплено за замовником {estimatorsGroup.Customer}",
-                                    Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                            }, ex => LogException(ex.Message));
-                        }
-                    }
-                    else if (estimator != null)
-                    {
-                        string message;
-
-                        if (destNode == null || destNode.Tag is EstimatorsGroup || destNode.Tag is Customer)
-                        {
-                            if (destNode == null)
-                            {
-                                estimator.CustomerId = null;
-                                estimator.Customer = null;
                                 estimator.GroupId = null;
                                 estimator.Group = null;
-                                message = $"Обчислювач {estimator} відкріплено від замовників та груп";
+                                estimator.CustomerId = customer.Id;
+                                estimator.Customer = customer;
+                                message = $"Обчислювач {estimator} закріплено за замовником {customer}";
                             }
-                            else
-                            {
-                                EstimatorsGroup group = destNode.Tag as EstimatorsGroup;
-                                Customer customer = destNode.Tag as Customer;
-                                if (group != null)
-                                {
-                                    estimator.GroupId = group.Id;
-                                    estimator.Group = group;
-                                    estimator.CustomerId = group.CustomerId;
-                                    estimator.Customer = _customers.SingleOrDefault(c => c.Id == group.CustomerId);
-                                    message = $"Обчислювач {estimator} закріплено за групою {group}";
-                                }
-                                else
-                                {
-                                    estimator.GroupId = null;
-                                    estimator.Group = null;
-                                    estimator.CustomerId = customer.Id;
-                                    estimator.Customer = customer;
-                                    message = $"Обчислювач {estimator} закріплено за замовником {customer}";
-                                }
-                            }
-
-                            await _estimatorsService.Update(estimator, () =>
-                            {
-                                Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                            }, ex => LogException(ex.Message));
                         }
-                    }
 
-                    await UpdateData(false);
-                }
-                else
-                {
-                    EstimatorBase estimator = newNode.Tag as EstimatorBase;
-
-                    if (estimator != null && destNode != null)
-                    {
-                        if (destNode.Tag is PeriodicScan || destNode.Tag is ScheduledScan)
+                        await _estimatorsService.Update(estimator, () =>
                         {
-                            if (estimator is Floutec)
-                            {
-                                EditFloutecScanMemberForm form = new EditFloutecScanMemberForm
-                                {
-                                    StartPosition = FormStartPosition.CenterParent,
-                                    IsEdit = false
-                                };
-
-                                DialogResult result = form.ShowDialog();
-
-                                if (result == DialogResult.OK)
-                                {
-                                    ScanBase scan = (ScanBase) destNode.Tag;
-
-                                    ScanMemberBase member = form.Member;
-                                    member.ScanBaseId = scan.Id;
-                                    member.EstimatorId = estimator.Id;
-
-                                    await _scanMembersService.Insert(member, () =>
-                                    {
-                                        Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач {estimator} додано до опитування {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                                    }, ex => LogException(ex.Message));
-                                }
-                            }
-                            else if (estimator is Roc809)
-                            {
-                                EditRocScanMemberForm form = new EditRocScanMemberForm
-                                {
-                                    StartPosition = FormStartPosition.CenterParent,
-                                    IsEdit = false
-                                };
-
-                                DialogResult result = form.ShowDialog();
-
-                                if (result == DialogResult.OK)
-                                {
-                                    ScanBase scan = (ScanBase)destNode.Tag;
-
-                                    ScanMemberBase member = form.Member;
-                                    member.ScanBaseId = scan.Id;
-                                    member.EstimatorId = estimator.Id;
-
-                                    await _scanMembersService.Insert(member, () =>
-                                    {
-                                        Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач {estimator} додано до опитування {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                                    }, ex => LogException(ex.Message));
-                                }
-                            }
-
-                            await UpdateData(false);
-                        }                        
+                            Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex => LogException(ex.Message));
                     }
                 }
+
+                await UpdateData(false);
+            }
+            else
+            {
+                var estimator = newNode.Tag as EstimatorBase;
+
+                if (estimator == null || destNode == null) return;
+
+                if (!(destNode.Tag is PeriodicScan) && !(destNode.Tag is ScheduledScan)) return;
+
+                if (estimator is Floutec)
+                {
+                    var form = new EditFloutecScanMemberForm
+                    {
+                        StartPosition = FormStartPosition.CenterParent,
+                        IsEdit = false
+                    };
+
+                    var result = form.ShowDialog();
+
+                    if (result == DialogResult.OK)
+                    {
+                        var scan = (ScanBase) destNode.Tag;
+
+                        ScanMemberBase member = form.Member;
+                        member.ScanBaseId = scan.Id;
+                        member.EstimatorId = estimator.Id;
+
+                        await _scanMembersService.Insert(member, () =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач {estimator} додано до опитування {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex => LogException(ex.Message));
+                    }
+                }
+                else if (estimator is Roc809)
+                {
+                    var form = new EditRocScanMemberForm
+                    {
+                        StartPosition = FormStartPosition.CenterParent,
+                        IsEdit = false
+                    };
+
+                    var result = form.ShowDialog();
+
+                    if (result == DialogResult.OK)
+                    {
+                        var scan = (ScanBase)destNode.Tag;
+
+                        ScanMemberBase member = form.Member;
+                        member.ScanBaseId = scan.Id;
+                        member.EstimatorId = estimator.Id;
+
+                        await _scanMembersService.Insert(member, () =>
+                        {
+                            Logger.Log(lstMessages, new LogEntry { Message = $"Обчислювач {estimator} додано до опитування {scan}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                        }, ex => LogException(ex.Message));
+                    }
+                }
+
+                await UpdateData(false);
             }
         }
 
@@ -1547,6 +1529,52 @@ namespace DATASCAN.View
             }
         }
 
-        #endregion        
+        #endregion
+
+        #region Scanning
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            var scansToProcess = new List<ScanBase>();
+            scansToProcess.AddRange(GetPeriodicScansToProcess());
+            scansToProcess.AddRange(GetScheduledScansToProcess());
+
+            var floutecMembers = scansToProcess.SelectMany(s => s.Members)
+                .Where(m => m is FloutecScanMember && m.IsActive).ToList();
+            var rocMembers = scansToProcess.SelectMany(s => s.Members)
+                .Where(m => m is RocScanMember && m.IsActive).ToList();
+
+            var floutecsToScan = _estimators.Where(f => f is Floutec && f.IsActive && floutecMembers.Select(m => m.EstimatorId).Contains(f.Id)).ToList();
+            var rocsToScanOverTcpIp = _estimators.Where(r => r is Roc809 && r.IsActive && rocMembers.Select(m => m.EstimatorId).Contains(r.Id) && !((Roc809)r).IsScannedViaGPRS).ToList();
+            var rocsToScanOverGprs = _estimators.Where(r => r is Roc809 && r.IsActive && rocMembers.Select(m => m.EstimatorId).Contains(r.Id) && ((Roc809)r).IsScannedViaGPRS).ToList();
+
+            if (floutecsToScan.Any())
+                Debug.WriteLine("Floutecs: " + floutecMembers.Count);
+
+            if (rocsToScanOverTcpIp.Any())
+                Debug.WriteLine("Rocs, TCPIP: " + rocsToScanOverTcpIp.Count);
+
+            if (rocsToScanOverGprs.Any())
+                Debug.WriteLine("Rocs, GPRS: " + rocsToScanOverGprs.Count);
+        }
+
+        private IEnumerable<PeriodicScan> GetPeriodicScansToProcess()
+        {
+            return _periodicScans.Where(s => s.IsActive 
+                && (!s.DateLastScanned.HasValue 
+                || s.DateLastScanned.Value.AddMinutes(!s.PeriodType ? s.Period : s.Period * 60).CompareTo(DateTime.Now) == 1));
+        }
+
+        private IEnumerable<ScheduledScan> GetScheduledScansToProcess()
+        {
+            var prev = DateTime.Now.TimeOfDay.Subtract(new TimeSpan(0, 0, 0, 0, SCAN_PERIOD_MS / 2));
+            var next = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, 0, 0, SCAN_PERIOD_MS / 2));
+
+            return _scheduledScans.Where(s => s.IsActive
+                && s.Periods.Select(p => p.Period)
+                    .Any(p => p > prev && p < next));
+        }
+
+        #endregion
     }
 }

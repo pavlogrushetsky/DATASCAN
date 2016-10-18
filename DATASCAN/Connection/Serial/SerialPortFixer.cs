@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
-namespace DATASCAN.Communication.Serial
+namespace DATASCAN.Connection.Serial
 {
     public class SerialPortFixer : IDisposable
     {
@@ -18,11 +18,9 @@ namespace DATASCAN.Communication.Serial
 
         public void Dispose()
         {
-            if (m_Handle != null)
-            {
-                m_Handle.Close();
-                m_Handle = null;
-            }
+            if (m_Handle == null) return;
+            m_Handle.Close();
+            m_Handle = null;
         }
 
         #endregion
@@ -42,15 +40,14 @@ namespace DATASCAN.Communication.Serial
             {
                 throw new ArgumentException("Invalid Serial Port", "portName");
             }
-            SafeFileHandle hFile = CreateFile(@"\\.\" + portName, dwAccess, 0, IntPtr.Zero, 3, dwFlagsAndAttributes,
-                                              IntPtr.Zero);
+            var hFile = CreateFile(@"\\.\" + portName, dwAccess, 0, IntPtr.Zero, 3, dwFlagsAndAttributes, IntPtr.Zero);
             if (hFile.IsInvalid)
             {
                 WinIoError();
             }
             try
             {
-                int fileType = GetFileType(hFile);
+                var fileType = GetFileType(hFile);
                 if ((fileType != 2) && (fileType != 0))
                 {
                     throw new ArgumentException("Invalid Serial Port", "portName");
@@ -89,7 +86,7 @@ namespace DATASCAN.Communication.Serial
 
         private void InitializeDcb()
         {
-            Dcb dcb = new Dcb();
+            var dcb = new Dcb();
             GetCommStateNative(ref dcb);
             dcb.Flags &= ~(1u << DcbFlagAbortOnError);
             SetCommStateNative(ref dcb);
@@ -97,14 +94,8 @@ namespace DATASCAN.Communication.Serial
 
         private static string GetMessage(int errorCode)
         {
-            StringBuilder lpBuffer = new StringBuilder(0x200);
-            if (
-                FormatMessage(0x3200, new HandleRef(null, IntPtr.Zero), errorCode, 0, lpBuffer, lpBuffer.Capacity,
-                              IntPtr.Zero) != 0)
-            {
-                return lpBuffer.ToString();
-            }
-            return "Unknown Error";
+            var lpBuffer = new StringBuilder(0x200);
+            return FormatMessage(0x3200, new HandleRef(null, IntPtr.Zero), errorCode, 0, lpBuffer, lpBuffer.Capacity, IntPtr.Zero) != 0 ? lpBuffer.ToString() : "Unknown Error";
         }
 
         private static int MakeHrFromErrorCode(int errorCode)
@@ -114,16 +105,16 @@ namespace DATASCAN.Communication.Serial
 
         private static void WinIoError()
         {
-            int errorCode = Marshal.GetLastWin32Error();
+            var errorCode = Marshal.GetLastWin32Error();
             throw new IOException(GetMessage(errorCode), MakeHrFromErrorCode(errorCode));
         }
 
         private void GetCommStateNative(ref Dcb lpDcb)
         {
-            int commErrors = 0;
-            Comstat comStat = new Comstat();
+            var commErrors = 0;
+            var comStat = new Comstat();
 
-            for (int i = 0; i < CommStateRetries; i++)
+            for (var i = 0; i < CommStateRetries; i++)
             {
                 if (!ClearCommError(m_Handle, ref commErrors, ref comStat))
                 {
@@ -142,10 +133,10 @@ namespace DATASCAN.Communication.Serial
 
         private void SetCommStateNative(ref Dcb lpDcb)
         {
-            int commErrors = 0;
-            Comstat comStat = new Comstat();
+            var commErrors = 0;
+            var comStat = new Comstat();
 
-            for (int i = 0; i < CommStateRetries; i++)
+            for (var i = 0; i < CommStateRetries; i++)
             {
                 if (!ClearCommError(m_Handle, ref commErrors, ref comStat))
                 {
@@ -167,9 +158,9 @@ namespace DATASCAN.Communication.Serial
         [StructLayout(LayoutKind.Sequential)]
         private struct Comstat
         {
-            public readonly uint Flags;
-            public readonly uint cbInQue;
-            public readonly uint cbOutQue;
+            private readonly uint Flags;
+            private readonly uint cbInQue;
+            private readonly uint cbOutQue;
         }
 
         #endregion
@@ -179,21 +170,21 @@ namespace DATASCAN.Communication.Serial
         [StructLayout(LayoutKind.Sequential)]
         private struct Dcb
         {
-            public readonly uint DCBlength;
-            public readonly uint BaudRate;
+            private readonly uint DCBlength;
+            private readonly uint BaudRate;
             public uint Flags;
-            public readonly ushort wReserved;
-            public readonly ushort XonLim;
-            public readonly ushort XoffLim;
-            public readonly byte ByteSize;
-            public readonly byte Parity;
-            public readonly byte StopBits;
-            public readonly byte XonChar;
-            public readonly byte XoffChar;
-            public readonly byte ErrorChar;
-            public readonly byte EofChar;
-            public readonly byte EvtChar;
-            public readonly ushort wReserved1;
+            private readonly ushort wReserved;
+            private readonly ushort XonLim;
+            private readonly ushort XoffLim;
+            private readonly byte ByteSize;
+            private readonly byte Parity;
+            private readonly byte StopBits;
+            private readonly byte XonChar;
+            private readonly byte XoffChar;
+            private readonly byte ErrorChar;
+            private readonly byte EofChar;
+            private readonly byte EvtChar;
+            private readonly ushort wReserved1;
         }
 
         #endregion

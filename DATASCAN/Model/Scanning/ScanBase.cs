@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DATASCAN.Model.Common;
@@ -17,6 +18,12 @@ namespace DATASCAN.Model.Scanning
         [Required]
         [MaxLength(200)]
         public string Title { get; set; }
+
+        /// <summary>
+        /// Дата и время последнего опроса
+        /// </summary>
+        [Column(TypeName = "datetime2")]
+        public DateTime? DateLastScanned { get; set; }
 
         /// <summary>
         /// Коллекция элементов опроса

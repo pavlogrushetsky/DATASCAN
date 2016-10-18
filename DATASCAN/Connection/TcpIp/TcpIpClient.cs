@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace DATASCAN.Connections.TcpIp
+namespace DATASCAN.Connection.TcpIp
 {
     /// <summary>
     /// Клиент для соединения с вычислителем ROC809

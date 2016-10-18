@@ -1,17 +1,17 @@
-﻿namespace DATASCAN.Connections.Common
+﻿namespace DATASCAN.Connection.Common
 {
     public static class Crc16
     {
-        const ushort polynomial = 0xA001;
+        private const ushort polynomial = 0xA001;
 
-        static readonly ushort[] lookupTable = new ushort[256];
+        private static readonly ushort[] lookupTable = new ushort[256];
 
         public static ushort Compute(byte[] bytes)
         {
             ushort crc = 0;
-            foreach (byte t in bytes)
+            foreach (var b in bytes)
             {
-                byte index = (byte)(crc ^ t);
+                var index = (byte)(crc ^ b);
                 crc = (ushort)((crc >> 8) ^ lookupTable[index]);
             }
             return crc;

@@ -59,9 +59,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connections\Common\Crc16.cs" />
-    <Compile Include="Connections\Serial\SerialPortFixer.cs" />
-    <Compile Include="Connections\TcpIp\TcpIpClient.cs" />
+    <Compile Include="Connection\Common\Crc16.cs" />
+    <Compile Include="Connection\Serial\SerialPortFixer.cs" />
+    <Compile Include="Connection\TcpIp\TcpIpClient.cs" />
     <Compile Include="Context\DataContext.cs" />
     <Compile Include="Infrastructure\Logging\LogEntry.cs" />
     <Compile Include="Infrastructure\Logging\Logger.cs" />
@@ -99,6 +99,10 @@
     <Compile Include="Migrations\201610061845015_AddedScanMembers.cs" />
     <Compile Include="Migrations\201610061845015_AddedScanMembers.Designer.cs">
       <DependentUpon>201610061845015_AddedScanMembers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610181707051_MovedDateLastScannedToScanBase.cs" />
+    <Compile Include="Migrations\201610181707051_MovedDateLastScannedToScanBase.Designer.cs">
+      <DependentUpon>201610181707051_MovedDateLastScannedToScanBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Common\CatalogBase.cs" />
@@ -146,6 +150,9 @@
     <Compile Include="Services\CustomersService.cs" />
     <Compile Include="Services\EntitiesService.cs" />
     <Compile Include="Services\DataContextService.cs" />
+    <Compile Include="Services\FloutecDbfService.cs" />
+    <Compile Include="Services\RocGprsService.cs" />
+    <Compile Include="Services\RocTcpIpService.cs" />
     <Compile Include="Services\ScanMembersService.cs" />
     <Compile Include="Services\ScheduledScansService.cs" />
     <Compile Include="Services\PeriodicScansService.cs" />
@@ -264,6 +271,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610061845015_AddedScanMembers.resx">
       <DependentUpon>201610061845015_AddedScanMembers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610181707051_MovedDateLastScannedToScanBase.resx">
+      <DependentUpon>201610181707051_MovedDateLastScannedToScanBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
