@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DATASCAN.Connection.Services;
 using DATASCAN.Infrastructure.Logging;
 using DATASCAN.Model;
 using DATASCAN.Model.Common;
@@ -1540,22 +1540,15 @@ namespace DATASCAN.View
             scansToProcess.AddRange(GetScheduledScansToProcess());
 
             var floutecMembers = scansToProcess.SelectMany(s => s.Members)
-                .Where(m => m is FloutecScanMember && m.IsActive).ToList();
-            var rocMembers = scansToProcess.SelectMany(s => s.Members)
-                .Where(m => m is RocScanMember && m.IsActive).ToList();
+                .Where(m => m is FloutecScanMember && m.IsActive && _estimators.Single(f => f.Id == m.EstimatorId).IsActive);
+            var rocTcpIpMembers = scansToProcess.SelectMany(s => s.Members)
+                .Where(m => m is RocScanMember && m.IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsActive && !_estimators.Single(r => r.Id == m.EstimatorId).IsScannedViaGPRS);
+            var rocGprsMembers = scansToProcess.SelectMany(s => s.Members)
+                .Where(m => m is RocScanMember && m.IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsScannedViaGPRS);
 
-            var floutecsToScan = _estimators.Where(f => f is Floutec && f.IsActive && floutecMembers.Select(m => m.EstimatorId).Contains(f.Id)).ToList();
-            var rocsToScanOverTcpIp = _estimators.Where(r => r is Roc809 && r.IsActive && rocMembers.Select(m => m.EstimatorId).Contains(r.Id) && !((Roc809)r).IsScannedViaGPRS).ToList();
-            var rocsToScanOverGprs = _estimators.Where(r => r is Roc809 && r.IsActive && rocMembers.Select(m => m.EstimatorId).Contains(r.Id) && ((Roc809)r).IsScannedViaGPRS).ToList();
-
-            if (floutecsToScan.Any())
-                Debug.WriteLine("Floutecs: " + floutecMembers.Count);
-
-            if (rocsToScanOverTcpIp.Any())
-                Debug.WriteLine("Rocs, TCPIP: " + rocsToScanOverTcpIp.Count);
-
-            if (rocsToScanOverGprs.Any())
-                Debug.WriteLine("Rocs, GPRS: " + rocsToScanOverGprs.Count);
+            _floutecDbfService.Process(floutecMembers);
+            _rocTcpIpService.Process(rocTcpIpMembers);
+            _rocGprsService.Process(rocGprsMembers);
         }
 
         private IEnumerable<PeriodicScan> GetPeriodicScansToProcess()
