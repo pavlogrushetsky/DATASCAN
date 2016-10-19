@@ -37,9 +37,9 @@ namespace DATASCAN.View
         private readonly ScheduledScansService _scheduledScansService;
         private readonly ScanMembersService _scanMembersService;
 
-        private readonly RocTcpIpService _rocTcpIpService = new RocTcpIpService();
-        private readonly RocGprsService _rocGprsService = new RocGprsService();
-        private readonly FloutecDbfService _floutecDbfService = new FloutecDbfService();
+        private readonly RocTcpIpService _rocTcpIpService;
+        private readonly RocGprsService _rocGprsService;
+        private readonly FloutecDbfService _floutecDbfService;
 
         private List<EstimatorBase> _estimators = new List<EstimatorBase>();
         private List<Customer> _customers = new List<Customer>();
@@ -70,6 +70,10 @@ namespace DATASCAN.View
             _periodicScansService = new PeriodicScansService(_sqlConnection);
             _scheduledScansService = new ScheduledScansService(_sqlConnection);
             _scanMembersService = new ScanMembersService(_sqlConnection);
+
+            _rocTcpIpService = new RocTcpIpService(lstMessages);
+            _rocGprsService = new RocGprsService(lstMessages);
+            _floutecDbfService = new FloutecDbfService(lstMessages);
            
             UpdateData(true).ConfigureAwait(false);
 
@@ -628,27 +632,26 @@ namespace DATASCAN.View
 
             var result = form.ShowDialog();
 
-            if (result == DialogResult.OK && form.Customer != null)
+            if (result != DialogResult.OK || form.Customer == null) return;
+
+            customer = form.Customer;
+
+            if (form.IsEdit)
             {
-                customer = form.Customer;
-
-                if (form.IsEdit)
+                await _customersService.Update(customer, () =>
                 {
-                    await _customersService.Update(customer, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Дані замовника змінено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-                else
-                {
-                    await _customersService.Insert(customer, () =>
-                    {
-                        Logger.Log(lstMessages, new LogEntry { Message = $"Додано замовника: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex => LogException(ex.Message));
-                }
-
-                await UpdateData(false);
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Дані замовника змінено: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
             }
+            else
+            {
+                await _customersService.Insert(customer, () =>
+                {
+                    Logger.Log(lstMessages, new LogEntry { Message = $"Додано замовника: {customer}", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+                }, ex => LogException(ex.Message));
+            }
+
+            await UpdateData(false);
         }
 
         private async void EditGroupMenu_Click(object sender, EventArgs e)
@@ -1568,9 +1571,9 @@ namespace DATASCAN.View
             var rocGprsMembers = scansToProcess.SelectMany(s => s.Members)
                 .Where(m => m is RocScanMember && m.IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsScannedViaGPRS);
 
-            _floutecDbfService.Process(floutecMembers);
-            _rocTcpIpService.Process(rocTcpIpMembers);
-            _rocGprsService.Process(rocGprsMembers);
+            _floutecDbfService.Process(_sqlConnection, floutecMembers, _estimators);
+            _rocTcpIpService.Process(_sqlConnection, rocTcpIpMembers, _estimators);
+            _rocGprsService.Process(_sqlConnection, rocGprsMembers, _estimators);
         }
 
         private IEnumerable<PeriodicScan> GetPeriodicScansToProcess()

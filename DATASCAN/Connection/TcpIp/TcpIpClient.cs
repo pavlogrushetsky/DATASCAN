@@ -49,7 +49,7 @@ namespace DATASCAN.Connection.TcpIp
             stream.Flush();
 
             // Чтение ответа из потока
-            byte[] response = new byte[1024];
+            var response = new byte[1024];
             stream.Read(response, 0, response.Length);
 
             return response;
