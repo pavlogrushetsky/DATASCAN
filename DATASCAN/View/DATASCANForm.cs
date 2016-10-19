@@ -717,6 +717,8 @@ namespace DATASCAN.View
                 Floutec = floutec
             };
 
+            form.Addresses = !form.IsEdit ? _estimators.OfType<Floutec>().Select(f => f.Address).ToList() : _estimators.OfType<Floutec>().Except(new[] { floutec }).Select(f => f.Address).ToList();
+
             var result = form.ShowDialog();
 
             if (result != DialogResult.OK || form.Floutec == null) return;

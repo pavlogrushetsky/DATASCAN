@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using DATASCAN.Model.Floutecs;
 using DATASCAN.Properties;
@@ -10,6 +11,8 @@ namespace DATASCAN.View.Forms
         public Floutec Floutec { get; set; }
 
         public bool IsEdit { get; set; }
+
+        public List<int> Addresses { private get; set; } 
 
         private bool _nameChanged;
 
@@ -81,6 +84,7 @@ namespace DATASCAN.View.Forms
         {
             _addressChanged = !numAddress.Value.Equals(Floutec.Address);
             SetChanged();
+            err.SetError(numAddress, "");
         }
 
         private void rbDbf_CheckedChanged(object sender, EventArgs e)
@@ -110,7 +114,7 @@ namespace DATASCAN.View.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {           
-            bool valid = ValidateName() & ValidatePhone();
+            bool valid = ValidateName() & ValidatePhone() & ValidateAddress();
 
             if (valid)
             {
@@ -153,6 +157,12 @@ namespace DATASCAN.View.Forms
         {
             err.SetError(txtPhone, !rbGPRS.Checked || (rbGPRS.Checked && !string.IsNullOrEmpty(txtPhone.Text) && txtPhone.MaskCompleted) ? "" : "Номер телефону вказано невірно");
             return string.IsNullOrEmpty(err.GetError(txtPhone));
+        }
+
+        private bool ValidateAddress()
+        {
+            err.SetError(numAddress, !Addresses.Contains((int)numAddress.Value) ? "" : "Обчислювач з такою адресою вже існує");
+            return string.IsNullOrEmpty(err.GetError(numAddress));
         }
     }
 }
