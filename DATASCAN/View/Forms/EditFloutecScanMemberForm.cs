@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using DATASCAN.Model.Scanning;
 
 namespace DATASCAN.View.Forms
@@ -6,6 +8,12 @@ namespace DATASCAN.View.Forms
     public partial class EditFloutecScanMemberForm : Form
     {
         public FloutecScanMember Member { get; set; }
+
+        public List<FloutecScanMember> ExistentMembers { private get; set; } 
+
+        public int ScanBaseId { private get; set; }
+
+        public int EstimatorId { private get; set; }
 
         public bool IsEdit { get; set; }
 
@@ -29,7 +37,17 @@ namespace DATASCAN.View.Forms
             {
                 if (!IsEdit)
                 {
-                    Member = new FloutecScanMember();
+                    Member = new FloutecScanMember
+                    {
+                        ScanBaseId = ScanBaseId,
+                        EstimatorId = EstimatorId
+                    };
+
+                    cbScanIdentData.Enabled = !ExistentMembers.Any(m => m.EstimatorId == EstimatorId && m.ScanIdentData);
+                    cbScanAlarmData.Enabled = !ExistentMembers.Any(m => m.EstimatorId == EstimatorId && m.ScanAlarmData);
+                    cbScanInterData.Enabled = !ExistentMembers.Any(m => m.EstimatorId == EstimatorId && m.ScanInterData);
+                    cbScanInstantData.Enabled = !ExistentMembers.Any(m => m.EstimatorId == EstimatorId && m.ScanInstantData);
+                    cbScanHourlyData.Enabled = !ExistentMembers.Any(m => m.EstimatorId == EstimatorId && m.ScanHourlyData);                    
                 }
                 else
                 {
@@ -38,8 +56,22 @@ namespace DATASCAN.View.Forms
                     cbScanInterData.Checked = Member.ScanInterData;
                     cbScanInstantData.Checked = Member.ScanInstantData;
                     cbScanHourlyData.Checked = Member.ScanHourlyData;
+
+                    cbScanIdentData.Enabled = !ExistentMembers.Except(new[] { Member }).Any(m => m.EstimatorId == Member.EstimatorId && m.ScanIdentData);
+                    cbScanAlarmData.Enabled = !ExistentMembers.Except(new[] { Member }).Any(m => m.EstimatorId == Member.EstimatorId && m.ScanAlarmData);
+                    cbScanInterData.Enabled = !ExistentMembers.Except(new[] { Member }).Any(m => m.EstimatorId == Member.EstimatorId && m.ScanInterData);
+                    cbScanInstantData.Enabled = !ExistentMembers.Except(new[] { Member }).Any(m => m.EstimatorId == Member.EstimatorId && m.ScanInstantData);
+                    cbScanHourlyData.Enabled = !ExistentMembers.Except(new[] { Member }).Any(m => m.EstimatorId == Member.EstimatorId && m.ScanHourlyData);
                 }
-            };
+
+                bool showInfo = !cbScanIdentData.Enabled || !cbScanAlarmData.Enabled || !cbScanInterData.Enabled ||
+                              !cbScanInstantData.Enabled || !cbScanHourlyData.Enabled;
+
+                info.SetError(cbScanIdentData, !showInfo ? "" : "Деякі дані обчислювача вже опитуються");
+
+                btnSave.Enabled = cbScanIdentData.Enabled || cbScanAlarmData.Enabled || cbScanInterData.Enabled ||
+                              cbScanInstantData.Enabled || cbScanHourlyData.Enabled;
+            };            
 
             btnCancel.Select();
         }

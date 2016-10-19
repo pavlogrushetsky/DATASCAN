@@ -1224,7 +1224,8 @@ namespace DATASCAN.View
                 {
                     StartPosition = FormStartPosition.CenterParent,
                     IsEdit = true,
-                    Member = member as RocScanMember
+                    Member = member as RocScanMember,
+                    ExistentMembers = GetRocMembers()
                 };
             }
             else
@@ -1233,7 +1234,8 @@ namespace DATASCAN.View
                 {
                     StartPosition = FormStartPosition.CenterParent,
                     IsEdit = true,
-                    Member = member as FloutecScanMember
+                    Member = member as FloutecScanMember,
+                    ExistentMembers = GetFloutecMembers()
                 };                
             }
 
@@ -1448,23 +1450,24 @@ namespace DATASCAN.View
 
                 if (!(destNode.Tag is PeriodicScan) && !(destNode.Tag is ScheduledScan)) return;
 
+                var scan = (ScanBase)destNode.Tag;
+
                 if (estimator is Floutec)
-                {
+                {                    
                     var form = new EditFloutecScanMemberForm
                     {
                         StartPosition = FormStartPosition.CenterParent,
-                        IsEdit = false
+                        IsEdit = false,
+                        ExistentMembers = GetFloutecMembers(),
+                        ScanBaseId = scan.Id,
+                        EstimatorId = estimator.Id
                     };
 
                     var result = form.ShowDialog();
 
                     if (result == DialogResult.OK)
-                    {
-                        var scan = (ScanBase) destNode.Tag;
-
+                    {                        
                         ScanMemberBase member = form.Member;
-                        member.ScanBaseId = scan.Id;
-                        member.EstimatorId = estimator.Id;
 
                         await _scanMembersService.Insert(member, () =>
                         {
@@ -1477,18 +1480,17 @@ namespace DATASCAN.View
                     var form = new EditRocScanMemberForm
                     {
                         StartPosition = FormStartPosition.CenterParent,
-                        IsEdit = false
+                        IsEdit = false,
+                        ExistentMembers = GetRocMembers(),
+                        ScanBaseId = scan.Id,
+                        EstimatorId = estimator.Id
                     };
 
                     var result = form.ShowDialog();
 
                     if (result == DialogResult.OK)
                     {
-                        var scan = (ScanBase)destNode.Tag;
-
                         ScanMemberBase member = form.Member;
-                        member.ScanBaseId = scan.Id;
-                        member.EstimatorId = estimator.Id;
 
                         await _scanMembersService.Insert(member, () =>
                         {
@@ -1527,6 +1529,24 @@ namespace DATASCAN.View
             {
                 WindowState = FormWindowState.Normal;
             }
+        }
+
+        private List<FloutecScanMember> GetFloutecMembers()
+        {
+            var members = new List<FloutecScanMember>();
+            members.AddRange(_periodicScans.SelectMany(s => s.Members.OfType<FloutecScanMember>()));
+            members.AddRange(_scheduledScans.SelectMany(s => s.Members.OfType<FloutecScanMember>()));
+
+            return members;
+        }
+
+        private List<RocScanMember> GetRocMembers()
+        {
+            var members = new List<RocScanMember>();
+            members.AddRange(_periodicScans.SelectMany(s => s.Members.OfType<RocScanMember>()));
+            members.AddRange(_scheduledScans.SelectMany(s => s.Members.OfType<RocScanMember>()));
+
+            return members;
         }
 
         #endregion

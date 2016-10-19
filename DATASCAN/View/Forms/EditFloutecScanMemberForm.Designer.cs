@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditFloutecScanMemberForm));
             this.cbScanIdentData = new System.Windows.Forms.CheckBox();
             this.cbScanAlarmData = new System.Windows.Forms.CheckBox();
@@ -36,6 +37,8 @@
             this.cbScanHourlyData = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.info = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.info)).BeginInit();
             this.SuspendLayout();
             // 
             // cbScanIdentData
@@ -113,6 +116,12 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // info
+            // 
+            this.info.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.info.ContainerControl = this;
+            this.info.Icon = ((System.Drawing.Icon)(resources.GetObject("info.Icon")));
+            // 
             // EditFloutecScanMemberForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -133,6 +142,7 @@
             this.MinimumSize = new System.Drawing.Size(200, 230);
             this.Name = "EditFloutecScanMemberForm";
             this.Text = "Опитувати дані";
+            ((System.ComponentModel.ISupportInitialize)(this.info)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,5 +157,6 @@
         private System.Windows.Forms.CheckBox cbScanHourlyData;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.ErrorProvider info;
     }
 }
