@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DATASCAN.Model;
 using DATASCAN.Model.Scanning;
 using DATASCAN.View.Controls;
 
-namespace DATASCAN.Connection.Services
+namespace DATASCAN.Connection.Scanners
 {
-    public class RocGprsService : ConnectionServiceBase
+    public class RocScanner : ScannerBase
     {
-        public RocGprsService(LogListView log) : base(log)
+        public RocScanner(LogListView log) : base(log)
         {
 
         }
 
         public override void Process(string connection, IEnumerable<ScanMemberBase> members, IEnumerable<EstimatorBase> estimators)
         {
-
+            _connection = connection;
+            _members = members.ToList();
+            _estimators = estimators.ToList();
         }
     }
 }

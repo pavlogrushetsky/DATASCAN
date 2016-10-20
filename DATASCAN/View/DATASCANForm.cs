@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DATASCAN.Connection.Services;
+using DATASCAN.Connection.Scanners;
 using DATASCAN.Infrastructure.Logging;
 using DATASCAN.Model;
 using DATASCAN.Model.Common;
@@ -37,9 +37,8 @@ namespace DATASCAN.View
         private readonly ScheduledScansService _scheduledScansService;
         private readonly ScanMembersService _scanMembersService;
 
-        private readonly RocTcpIpService _rocTcpIpService;
-        private readonly RocGprsService _rocGprsService;
-        private readonly FloutecDbfService _floutecDbfService;
+        private readonly RocScanner _rocScanner;
+        private readonly FloutecScanner _floutecScanner;
 
         private List<EstimatorBase> _estimators = new List<EstimatorBase>();
         private List<Customer> _customers = new List<Customer>();
@@ -71,9 +70,8 @@ namespace DATASCAN.View
             _scheduledScansService = new ScheduledScansService(_sqlConnection);
             _scanMembersService = new ScanMembersService(_sqlConnection);
 
-            _rocTcpIpService = new RocTcpIpService(lstMessages);
-            _rocGprsService = new RocGprsService(lstMessages);
-            _floutecDbfService = new FloutecDbfService(lstMessages);
+            _rocScanner = new RocScanner(lstMessages);
+            _floutecScanner = new FloutecScanner(lstMessages);
            
             UpdateData(true).ConfigureAwait(false);
 
@@ -1566,14 +1564,11 @@ namespace DATASCAN.View
 
             var floutecMembers = scansToProcess.SelectMany(s => s.Members)
                 .Where(m => m is FloutecScanMember && m.IsActive && _estimators.Single(f => f.Id == m.EstimatorId).IsActive);
-            var rocTcpIpMembers = scansToProcess.SelectMany(s => s.Members)
-                .Where(m => m is RocScanMember && m.IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsActive && !_estimators.Single(r => r.Id == m.EstimatorId).IsScannedViaGPRS);
-            var rocGprsMembers = scansToProcess.SelectMany(s => s.Members)
-                .Where(m => m is RocScanMember && m.IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsScannedViaGPRS);
+            var rocMembers = scansToProcess.SelectMany(s => s.Members)
+                .Where(m => m is RocScanMember && m.IsActive && _estimators.Single(r => r.Id == m.EstimatorId).IsActive);
 
-            _floutecDbfService.Process(_sqlConnection, floutecMembers, _estimators);
-            _rocTcpIpService.Process(_sqlConnection, rocTcpIpMembers, _estimators);
-            _rocGprsService.Process(_sqlConnection, rocGprsMembers, _estimators);
+            _floutecScanner.Process(_sqlConnection, floutecMembers, _estimators);
+            _rocScanner.Process(_sqlConnection, rocMembers, _estimators);
         }
 
         private IEnumerable<PeriodicScan> GetPeriodicScansToProcess()

@@ -61,7 +61,8 @@
   <ItemGroup>
     <Compile Include="Connection\Common\Crc16.cs" />
     <Compile Include="Connection\Serial\SerialPortFixer.cs" />
-    <Compile Include="Connection\Services\ConnectionServiceBase.cs" />
+    <Compile Include="Connection\Scanners\ScannerBase.cs" />
+    <Compile Include="Connection\Services\FloutecDbfService.cs" />
     <Compile Include="Connection\TcpIp\TcpIpClient.cs" />
     <Compile Include="Context\DataContext.cs" />
     <Compile Include="Infrastructure\Logging\LogEntry.cs" />
@@ -151,9 +152,8 @@
     <Compile Include="Services\CustomersService.cs" />
     <Compile Include="Services\EntitiesService.cs" />
     <Compile Include="Services\DataContextService.cs" />
-    <Compile Include="Connection\Services\FloutecDbfService.cs" />
-    <Compile Include="Connection\Services\RocGprsService.cs" />
-    <Compile Include="Connection\Services\RocTcpIpService.cs" />
+    <Compile Include="Connection\Scanners\FloutecScanner.cs" />
+    <Compile Include="Connection\Scanners\RocScanner.cs" />
     <Compile Include="Services\ScanMembersService.cs" />
     <Compile Include="Services\ScheduledScansService.cs" />
     <Compile Include="Services\PeriodicScansService.cs" />

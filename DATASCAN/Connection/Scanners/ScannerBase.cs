@@ -4,14 +4,18 @@ using DATASCAN.Model;
 using DATASCAN.Model.Scanning;
 using DATASCAN.View.Controls;
 
-namespace DATASCAN.Connection.Services
+namespace DATASCAN.Connection.Scanners
 {
-    public abstract class ConnectionServiceBase
+    public abstract class ScannerBase
     {
-        private readonly LogListView _log;
-        private readonly TaskScheduler _uiSyncContext ;
+        protected readonly LogListView _log;
+        protected readonly TaskScheduler _uiSyncContext ;
 
-        protected ConnectionServiceBase(LogListView log)
+        protected string _connection;
+        protected List<ScanMemberBase> _members;
+        protected List<EstimatorBase> _estimators;
+
+        protected ScannerBase(LogListView log)
         {
             _log = log;
             _uiSyncContext = TaskScheduler.FromCurrentSynchronizationContext();
