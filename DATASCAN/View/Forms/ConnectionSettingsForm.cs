@@ -181,13 +181,13 @@ namespace DATASCAN.View.Forms
         {
             if (_changed)
             {
-                Settings.COMPort1 = cbPort1.SelectedItem.ToString();
-                Settings.COMPort2 = cbPort2.SelectedItem.ToString();
-                Settings.COMPort3 = cbPort3.SelectedItem.ToString();
-                Settings.Baudrate = cbBaudrate.SelectedItem.ToString();
-                Settings.Parity = cbParity.SelectedItem.ToString();
-                Settings.StopBits = cbStopBits.SelectedItem.ToString();
-                Settings.DataBits = cbDataBits.SelectedItem.ToString();
+                Settings.COMPort1 = cbPort1.SelectedItem?.ToString();
+                Settings.COMPort2 = cbPort2.SelectedItem?.ToString();
+                Settings.COMPort3 = cbPort3.SelectedItem?.ToString();
+                Settings.Baudrate = cbBaudrate.SelectedItem?.ToString();
+                Settings.Parity = cbParity.SelectedItem?.ToString();
+                Settings.StopBits = cbStopBits.SelectedItem?.ToString();
+                Settings.DataBits = cbDataBits.SelectedItem?.ToString();
                 Settings.DbfPath = txtDbfPath.Text;
 
                 Settings.Save();

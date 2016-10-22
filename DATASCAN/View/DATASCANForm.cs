@@ -1556,7 +1556,7 @@ namespace DATASCAN.View
 
         #region Scanning
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private async void Timer_Tick(object sender, EventArgs e)
         {
             var scansToProcess = new List<ScanBase>();
             scansToProcess.AddRange(GetPeriodicScansToProcess());
@@ -1569,13 +1569,20 @@ namespace DATASCAN.View
 
             _floutecScanner.Process(_sqlConnection, floutecMembers, _estimators);
             _rocScanner.Process(_sqlConnection, rocMembers, _estimators);
+
+            scansToProcess.ForEach(scan =>
+            {
+                scan.DateLastScanned = DateTime.Now;                
+            });
+
+            await _entitiesService.Update(scansToProcess.OfType<EntityBase>().ToList(), null, ex => LogException(ex.Message));
         }
 
         private IEnumerable<PeriodicScan> GetPeriodicScansToProcess()
         {
             return _periodicScans.Where(s => s.IsActive 
                 && (!s.DateLastScanned.HasValue 
-                || s.DateLastScanned.Value.AddMinutes(!s.PeriodType ? s.Period : s.Period * 60).CompareTo(DateTime.Now) == 1));
+                || s.DateLastScanned.Value.AddMinutes(!s.PeriodType ? s.Period : s.Period * 60).CompareTo(DateTime.Now) < 0));
         }
 
         private IEnumerable<ScheduledScan> GetScheduledScansToProcess()

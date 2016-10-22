@@ -102,6 +102,36 @@ namespace DATASCAN.Services
         }
 
         /// <summary>
+        /// Обновляет данные сущностей
+        /// </summary>
+        /// <param name="entities">Сущности</param>
+        /// <param name="onSuccess">Действие, выполняемое в случае успешного обновления</param>
+        /// <param name="onException">Действие, выполняемое в случае исключения</param>
+        public virtual async Task Update(List<T> entities, Action onSuccess = null, Action<Exception> onException = null)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                entities.ForEach(e => e.DateModified = DateTime.Now);
+
+                using (EntityRepository<T> repo = new EntityRepository<T>(_connection))
+                {
+                    repo.Update(entities);
+                }
+            }, TaskCreationOptions.LongRunning)
+            .ContinueWith(result =>
+            {
+                if (result.Exception != null)
+                {
+                    onException?.Invoke(result.Exception.InnerException);
+                }
+                else
+                {
+                    onSuccess?.Invoke();
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        /// <summary>
         /// Добавляет данные сущности
         /// </summary>
         /// <param name="entity">Сущность</param>

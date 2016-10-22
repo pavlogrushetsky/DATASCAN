@@ -19,7 +19,7 @@ namespace DATASCAN.Connection.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (DbfRepository repo = new DbfRepository(_connection))
+                using (var repo = new DbfRepository(_connection))
                 {
                     return repo.GetIdentData(address, number);
                 }
@@ -41,7 +41,7 @@ namespace DATASCAN.Connection.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (DbfRepository repo = new DbfRepository(_connection))
+                using (var repo = new DbfRepository(_connection))
                 {
                     return repo.GetAllInterData(address, number);
                 }
@@ -63,7 +63,7 @@ namespace DATASCAN.Connection.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (DbfRepository repo = new DbfRepository(_connection))
+                using (var repo = new DbfRepository(_connection))
                 {
                     return repo.GetAllAlarmData(address, number);
                 }
@@ -85,7 +85,7 @@ namespace DATASCAN.Connection.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (DbfRepository repo = new DbfRepository(_connection))
+                using (var repo = new DbfRepository(_connection))
                 {
                     return repo.GetAllHourlyData(address, number);
                 }
@@ -107,7 +107,7 @@ namespace DATASCAN.Connection.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (DbfRepository repo = new DbfRepository(_connection))
+                using (var repo = new DbfRepository(_connection))
                 {
                     return repo.GetInstantData(address, number);
                 }

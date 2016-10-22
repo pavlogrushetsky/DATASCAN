@@ -154,6 +154,7 @@
     <Compile Include="Services\DataContextService.cs" />
     <Compile Include="Connection\Scanners\FloutecScanner.cs" />
     <Compile Include="Connection\Scanners\RocScanner.cs" />
+    <Compile Include="Services\FloutecDataService.cs" />
     <Compile Include="Services\ScanMembersService.cs" />
     <Compile Include="Services\ScheduledScansService.cs" />
     <Compile Include="Services\PeriodicScansService.cs" />

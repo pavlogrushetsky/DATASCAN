@@ -50,7 +50,9 @@ namespace DATASCAN.Repositories
         /// </summary>
         public void Insert(IEnumerable<DataRecord> records)
         {
-            _context.Set<DataRecord>().AddRange(records);
+            var dataRecords = records as List<DataRecord> ?? records.ToList();
+            dataRecords.ForEach(r => r.DateAdded = DateTime.Now);
+            _context.Set<DataRecord>().AddRange(dataRecords);
             _context.SaveChanges();
         }
 
@@ -59,6 +61,7 @@ namespace DATASCAN.Repositories
         /// </summary>
         public void Insert(DataRecord record)
         {
+            record.DateAdded = DateTime.Now;
             _context.Set<DataRecord>().Add(record);
             _context.SaveChanges();
         }

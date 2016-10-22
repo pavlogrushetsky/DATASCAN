@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DATASCAN.Connection.Services;
+using DATASCAN.Infrastructure.Logging;
 using DATASCAN.Model;
 using DATASCAN.Model.Floutecs;
 using DATASCAN.Model.Scanning;
+using DATASCAN.Services;
 using DATASCAN.View.Controls;
 
 namespace DATASCAN.Connection.Scanners
@@ -13,6 +15,7 @@ namespace DATASCAN.Connection.Scanners
     {
         private string _dbfConnection;
         private FloutecDbfService _dbfService;
+        private FloutecDataService _dataService;
 
         public FloutecScanner(LogListView log) : base(log)
         {                        
@@ -25,6 +28,7 @@ namespace DATASCAN.Connection.Scanners
             _estimators = estimators.ToList();
             _dbfConnection = Infrastructure.Settings.Settings.DbfPath;
             _dbfService = new FloutecDbfService(_dbfConnection);
+            _dataService = new FloutecDataService(_connection);
 
             _members.ForEach(m =>
             {
@@ -47,69 +51,114 @@ namespace DATASCAN.Connection.Scanners
         private void ProcessLine(FloutecScanMember member, Floutec floutec, FloutecMeasureLine line)
         {
             if (member.ScanIdentData)
-                ScanIdentData(floutec.Address, line.Number);
+                ScanIdentData(floutec, line);
             if (member.ScanInterData)
-                ScanInterData(floutec.Address, line.Number);
+                ScanInterData(floutec, line);
             if (member.ScanAlarmData)
-                ScanAlarmData(floutec.Address, line.Number);
+                ScanAlarmData(floutec, line);
             if (member.ScanHourlyData)
-                ScanHourlyData(floutec.Address, line.Number);
+                ScanHourlyData(floutec, line);
             if (member.ScanInstantData)
-                ScanInstantData(floutec.Address, line.Number);
+                ScanInstantData(floutec, line);
         }
 
-        private async void ScanIdentData(int address, int number)
+        private async void ScanIdentData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetIdentData(address, number, data =>
+            await _dbfService.GetIdentData(floutec.Address, line.Number, async data =>
             {
-                Debug.WriteLine("Ident data was received.");              
+                if (data == null)
+                {
+                    Logger.Log(_log, new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    return;
+                }
+
+                data.N_FLONIT = floutec.Address*10 + line.Number;
+                data.FloutecMeasureLineId = line.Id;
+
+                await _dataService.SaveIdentData(data, saved =>
+                {
+                    Logger.Log(_log,
+                        saved ? new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now }
+                              : new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} не змінилися", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                }, ex =>
+                {
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                });
             }, ex =>
             {
-                Debug.WriteLine(ex.Message);
-            });            
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+            });                                    
         }
 
-        private async void ScanInterData(int address, int number)
+        private async void ScanInterData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetInterData(address, number, data =>
+            await _dbfService.GetInterData(floutec.Address, line.Number, async data =>
             {
-                Debug.WriteLine("Inter data was received.");
+                if (data == null || !data.Any())
+                {
+                    Logger.Log(_log, new LogEntry { Message = $"Дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    return;
+                }
+
+                data.ForEach(d =>
+                {
+                    d.N_FLONIT = floutec.Address*10 + line.Number;
+                    d.FloutecMeasureLineId = line.Id;
+                });                
+
+                await _dataService.SaveInterData(line.Id, data, saved =>
+                {
+                    Logger.Log(_log,
+                        saved > 0
+                            ? new LogEntry { Message = $"Дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now }
+                            : new LogEntry { Message = $"Нові дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                }, ex =>
+                {
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                });
             }, ex =>
             {
-                Debug.WriteLine(ex.Message);
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
             });
         }
 
-        private async void ScanAlarmData(int address, int number)
+        private async void ScanAlarmData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetAlarmData(address, number, data =>
+            await _dbfService.GetAlarmData(floutec.Address, line.Number, data =>
             {
-                Debug.WriteLine("Alarm data was received.");
+                
             }, ex =>
             {
-                Debug.WriteLine(ex.Message);
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
             });
         }
 
-        private async void ScanHourlyData(int address, int number)
+        private async void ScanHourlyData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetHourlyData(address, number, data =>
+            await _dbfService.GetHourlyData(floutec.Address, line.Number, data =>
             {
-                Debug.WriteLine("Hourly data was received.");
+                
             }, ex =>
             {
-                Debug.WriteLine(ex.Message);
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання годинних даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
             });
         }
 
-        private async void ScanInstantData(int address, int number)
+        private async void ScanInstantData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetInstantData(address, number, data =>
+            await _dbfService.GetInstantData(floutec.Address, line.Number, data =>
             {
-                Debug.WriteLine("Hourly data was received.");
+                
             }, ex =>
             {
-                Debug.WriteLine(ex.Message);
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання миттєвих даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
             });
         }
     }

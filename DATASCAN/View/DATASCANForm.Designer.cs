@@ -55,6 +55,8 @@ namespace DATASCAN.View
             this.mnuNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuExpand = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
             this.lstMessages = new DATASCAN.View.Controls.LogListView();
             this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -73,6 +75,7 @@ namespace DATASCAN.View
             this.grpScans.SuspendLayout();
             this.grpMessages.SuspendLayout();
             this.mnuNotifyIcon.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnuDATASCAN
@@ -249,7 +252,7 @@ namespace DATASCAN.View
             // 
             // grpMessages
             // 
-            this.grpMessages.Controls.Add(this.lstMessages);
+            this.grpMessages.Controls.Add(this.tableLayoutPanel1);
             this.grpMessages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpMessages.Location = new System.Drawing.Point(0, 0);
             this.grpMessages.Name = "grpMessages";
@@ -305,6 +308,31 @@ namespace DATASCAN.View
             this.mnuExit.Text = "Вийти";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.lstMessages, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(878, 220);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 198);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "label1";
+            this.label1.Visible = false;
+            // 
             // lstMessages
             // 
             this.lstMessages.BackColor = System.Drawing.SystemColors.Control;
@@ -316,10 +344,10 @@ namespace DATASCAN.View
             this.colMessage});
             this.lstMessages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstMessages.FullRowSelect = true;
-            this.lstMessages.Location = new System.Drawing.Point(3, 16);
+            this.lstMessages.Location = new System.Drawing.Point(3, 3);
             this.lstMessages.MultiSelect = false;
             this.lstMessages.Name = "lstMessages";
-            this.lstMessages.Size = new System.Drawing.Size(878, 220);
+            this.lstMessages.Size = new System.Drawing.Size(872, 192);
             this.lstMessages.SmallImageList = this.imgMessages;
             this.lstMessages.TabIndex = 0;
             this.lstMessages.UseCompatibleStateImageBehavior = false;
@@ -369,6 +397,8 @@ namespace DATASCAN.View
             this.grpScans.ResumeLayout(false);
             this.grpMessages.ResumeLayout(false);
             this.mnuNotifyIcon.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -388,11 +418,6 @@ namespace DATASCAN.View
         private System.Windows.Forms.GroupBox grpMessages;
         private System.Windows.Forms.TreeView trvEstimators;
         private System.Windows.Forms.TreeView trvScans;
-        private LogListView lstMessages;
-        private System.Windows.Forms.ColumnHeader colStatus;
-        private System.Windows.Forms.ColumnHeader colType;
-        private System.Windows.Forms.ColumnHeader colTimestamp;
-        private System.Windows.Forms.ColumnHeader colMessage;
         private System.Windows.Forms.ImageList imgMessages;
         private System.Windows.Forms.ImageList imgEstimators;
         private System.Windows.Forms.ImageList imageScans;
@@ -404,6 +429,13 @@ namespace DATASCAN.View
         private System.Windows.Forms.ContextMenuStrip mnuNotifyIcon;
         private System.Windows.Forms.ToolStripMenuItem mnuExpand;
         private System.Windows.Forms.ToolStripMenuItem mnuExit;
+        private LogListView lstMessages;
+        private System.Windows.Forms.ColumnHeader colStatus;
+        private System.Windows.Forms.ColumnHeader colType;
+        private System.Windows.Forms.ColumnHeader colTimestamp;
+        private System.Windows.Forms.ColumnHeader colMessage;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -71,9 +71,10 @@ namespace DATASCAN.Repositories
         {
             foreach (Entity entity in entities)
             {
-                _context.Entry(entity).State = EntityState.Modified;
-                _context.SaveChanges();
+                _context.Entry(entity).State = EntityState.Modified;                
             }
+
+            _context.SaveChanges();
         }
 
         /// <summary>
