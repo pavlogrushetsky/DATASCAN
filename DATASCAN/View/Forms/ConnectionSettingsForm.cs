@@ -253,9 +253,9 @@ namespace DATASCAN.View.Forms
         private void btnTestConnection_Click(object sender, EventArgs e)
         {
             ResetPortsStatuses();
-            string port1 = cbPort1.SelectedItem.ToString();
-            string port2 = cbPort2.SelectedItem.ToString();
-            string port3 = cbPort3.SelectedItem.ToString();
+            string port1 = cbPort1.SelectedItem?.ToString();
+            string port2 = cbPort2.SelectedItem?.ToString();
+            string port3 = cbPort3.SelectedItem?.ToString();
 
             if (!IsNullOrEmpty(port1))
                 TestConnection(port1, statusPort1, cbPort1);

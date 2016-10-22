@@ -63,6 +63,7 @@
     <Compile Include="Connection\Serial\SerialPortFixer.cs" />
     <Compile Include="Connection\Scanners\ScannerBase.cs" />
     <Compile Include="Connection\Services\FloutecDbfService.cs" />
+    <Compile Include="Connection\Services\RocGprsService.cs" />
     <Compile Include="Connection\TcpIp\TcpIpClient.cs" />
     <Compile Include="Context\DataContext.cs" />
     <Compile Include="Infrastructure\Logging\LogEntry.cs" />
