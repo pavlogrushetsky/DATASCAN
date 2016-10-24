@@ -4,7 +4,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using DATASCAN.Communication.Utilities;
+using DATASCAN.Communication.Common;
 using static System.String;
 using Settings = DATASCAN.Infrastructure.Settings.Settings;
 

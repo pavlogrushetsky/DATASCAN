@@ -1,4 +1,4 @@
-﻿namespace DATASCAN.Communication.Utilities
+﻿namespace DATASCAN.Communication.Common
 {
     public static class Crc16
     {
