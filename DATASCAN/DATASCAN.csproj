@@ -70,22 +70,8 @@
     <Compile Include="Infrastructure\Logging\LogStatus.cs" />
     <Compile Include="Infrastructure\Logging\LogType.cs" />
     <Compile Include="Infrastructure\Settings\Settings.cs" />
-    <Compile Include="Repositories\DataRecordRepository.cs" />
-    <Compile Include="Repositories\DbfRepository.cs" />
-    <Compile Include="Repositories\EntityRepository.cs" />
-    <Compile Include="Repositories\Extensions\FloutecDataExtensions.cs" />
-    <Compile Include="Services\CustomersService.cs" />
-    <Compile Include="Services\EntitiesService.cs" />
-    <Compile Include="Services\DataContextService.cs" />
     <Compile Include="Connection\Scanners\FloutecScanner.cs" />
     <Compile Include="Connection\Scanners\RocScanner.cs" />
-    <Compile Include="Services\FloutecDataService.cs" />
-    <Compile Include="Services\ScanMembersService.cs" />
-    <Compile Include="Services\ScheduledScansService.cs" />
-    <Compile Include="Services\PeriodicScansService.cs" />
-    <Compile Include="Services\EstimatorsService.cs" />
-    <Compile Include="Services\GroupsService.cs" />
-    <Compile Include="Services\MeasurePointsService.cs" />
     <Compile Include="View\Common\NativeMethods.cs" />
     <Compile Include="View\Controls\LogListView.cs">
       <SubType>Component</SubType>
@@ -287,6 +273,10 @@
     <ProjectReference Include="..\DATASCAN.Core\DATASCAN.Core.csproj">
       <Project>{49d81ad9-8758-4ba0-be18-1a3c2a6d9792}</Project>
       <Name>DATASCAN.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DATASCAN.DataAccess\DATASCAN.DataAccess.csproj">
+      <Project>{d09a8e1a-c7eb-4547-be18-1c0ab8539beb}</Project>
+      <Name>DATASCAN.DataAccess</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

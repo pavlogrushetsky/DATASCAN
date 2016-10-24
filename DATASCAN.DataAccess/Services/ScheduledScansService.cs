@@ -5,9 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using DATASCAN.Core.Entities.Scanning;
-using DATASCAN.Repositories;
+using DATASCAN.DataAccess.Repositories;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public class ScheduledScansService : EntitiesService<ScheduledScan>
@@ -20,16 +20,16 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<ScheduledScan> scansRepo = new EntityRepository<ScheduledScan>(_connection))
+                using (var scansRepo = new EntityRepository<ScheduledScan>(_connection))
                 {
-                    ScheduledScan existingScan = scansRepo.GetAll().Where(s => s.Id == scan.Id).Include(s => s.Periods).Single();
+                    var existingScan = scansRepo.GetAll().Where(s => s.Id == scan.Id).Include(s => s.Periods).Single();
 
-                    List<ScanPeriod> periodsToDelete = existingScan.Periods.Where(ep => !scan.Periods.Select(p => p.Id).Contains(ep.Id)).ToList();
-                    List<ScanPeriod> periodsToAdd = scan.Periods.Where(p => p.Scan == null).ToList();
+                    var periodsToDelete = existingScan.Periods.Where(ep => !scan.Periods.Select(p => p.Id).Contains(ep.Id)).ToList();
+                    var periodsToAdd = scan.Periods.Where(p => p.Scan == null).ToList();
 
                     if (periodsToDelete.Any())
                     {
-                        using (EntityRepository<ScanPeriod> periodsRepo = new EntityRepository<ScanPeriod>(_connection))
+                        using (var periodsRepo = new EntityRepository<ScanPeriod>(_connection))
                         {
                             periodsToDelete.ForEach(s =>
                             {
@@ -68,9 +68,9 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<ScheduledScan> repo = new EntityRepository<ScheduledScan>(_connection))
+                using (var repo = new EntityRepository<ScheduledScan>(_connection))
                 {
-                    ScheduledScan sc = repo.GetAll()
+                    var sc = repo.GetAll()
                         .Where(s => s.Id == scan.Id)
                         .Include(s => s.Periods)
                         .Include(s => s.Members)

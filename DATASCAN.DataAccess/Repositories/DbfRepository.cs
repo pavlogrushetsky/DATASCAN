@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
 using DATASCAN.Core.Entities.Floutecs;
-using DATASCAN.Repositories.Extensions;
+using DATASCAN.DataAccess.Repositories.Extensions;
 
-namespace DATASCAN.Repositories
+namespace DATASCAN.DataAccess.Repositories
 {
     /// <summary>
     /// Репозиторий для доступа к данным таблиц Dbf
@@ -55,17 +55,17 @@ namespace DATASCAN.Repositories
         public FloutecIdentData GetIdentData(int address, int line)
         {
             // Создание объекта данных идентификации
-            FloutecIdentData identData = new FloutecIdentData();
-            int n_flonit = address * 10 + line;
+            var identData = new FloutecIdentData();
+            var n_flonit = address * 10 + line;
             identData.N_FLONIT = n_flonit;
 
-            bool hasData = false;
+            var hasData = false;
 
             // Формирование строки соединения с таблицей данных идентификации
             _command.CommandText = "SELECT DISTINCT * FROM ident.DBF WHERE N_FLONIT=" + n_flonit;
 
             // Чтение данных идентификации
-            using (OleDbDataReader reader = _command.ExecuteReader())
+            using (var reader = _command.ExecuteReader())
             {
                 if (reader != null)
                 {
@@ -82,7 +82,7 @@ namespace DATASCAN.Repositories
             _command.CommandText = "SELECT DISTINCT * FROM stat.DBF WHERE N_FLONIT=" + n_flonit;
 
             // Чтение статических данных
-            using (OleDbDataReader reader = _command.ExecuteReader())
+            using (var reader = _command.ExecuteReader())
             {
                 if (reader != null)
                 {
@@ -95,9 +95,7 @@ namespace DATASCAN.Repositories
                 }
             }
 
-            if (hasData)
-                return identData;
-            return null;
+            return hasData ? identData : null;
         }
 
         #endregion
@@ -115,42 +113,42 @@ namespace DATASCAN.Repositories
         public List<FloutecHourlyData> GetHourlyData(int address, int line, DateTime from, DateTime to)
         {
             // Инициализация пустой коллекции часовых данных
-            List<FloutecHourlyData> hourlyData = new List<FloutecHourlyData>();
+            var hourlyData = new List<FloutecHourlyData>();
 
             // Если период указан верно, то ...
-            if (to >= from)
-            {                
-                int n_flonit = address * 10 + line;
+            if (to < @from)
+                return hourlyData.Where(h => h.DAT > @from && h.DAT <= to).ToList();
 
-                // Формирование запроса
-                _command.CommandText = "SELECT DISTINCT * FROM rour.DBF WHERE N_FLONIT=" + n_flonit;
+            var n_flonit = address * 10 + line;
 
-                try
+            // Формирование запроса
+            _command.CommandText = "SELECT DISTINCT * FROM rour.DBF WHERE N_FLONIT=" + n_flonit;
+
+            try
+            {
+                // Выполнение команды
+                using (var reader = _command.ExecuteReader())
                 {
-                    // Выполнение команды
-                    using (OleDbDataReader reader = _command.ExecuteReader())
+                    while (reader != null && reader.Read())
                     {
-                        while (reader != null && reader.Read())
-                        {
-                            hourlyData.FromHourTable(reader);
-                        }
+                        hourlyData.FromHourTable(reader);
                     }
                 }
-                catch(Exception)
-                {
-                    _command.CommandText = "SELECT DISTINCT * FROM rou45.DBF WHERE N_FLONIT=" + n_flonit;
-
-                    using (OleDbDataReader reader = _command.ExecuteReader())
-                    {
-                        while (reader != null && reader.Read())
-                        {
-                            hourlyData.FromHourTable(reader);
-                        }
-                    }
-                }
-
-                hourlyData.ForEach(h => h.N_FLONIT = n_flonit);
             }
+            catch(Exception)
+            {
+                _command.CommandText = "SELECT DISTINCT * FROM rou45.DBF WHERE N_FLONIT=" + n_flonit;
+
+                using (var reader = _command.ExecuteReader())
+                {
+                    while (reader != null && reader.Read())
+                    {
+                        hourlyData.FromHourTable(reader);
+                    }
+                }
+            }
+
+            hourlyData.ForEach(h => h.N_FLONIT = n_flonit);
 
             return hourlyData.Where(h => h.DAT > from && h.DAT <= to).ToList();
         }
@@ -164,9 +162,9 @@ namespace DATASCAN.Repositories
         public List<FloutecHourlyData> GetAllHourlyData(int address, int line)
         {
             // Инициализация пустой коллекции часовых данных
-            List<FloutecHourlyData> hourlyData = new List<FloutecHourlyData>();
+            var hourlyData = new List<FloutecHourlyData>();
 
-            int n_flonit = address * 10 + line;
+            var n_flonit = address * 10 + line;
 
             // Формирование запроса
             _command.CommandText = "SELECT DISTINCT * FROM rour.DBF WHERE N_FLONIT=" + n_flonit;
@@ -174,7 +172,7 @@ namespace DATASCAN.Repositories
             try
             {
                 // Выполнение команды
-                using (OleDbDataReader reader = _command.ExecuteReader())
+                using (var reader = _command.ExecuteReader())
                 {
                     while (reader != null && reader.Read())
                     {
@@ -186,7 +184,7 @@ namespace DATASCAN.Repositories
             {
                 _command.CommandText = "SELECT DISTINCT * FROM rou45.DBF WHERE N_FLONIT=" + n_flonit;
 
-                using (OleDbDataReader reader = _command.ExecuteReader())
+                using (var reader = _command.ExecuteReader())
                 {
                     while (reader != null && reader.Read())
                     {
@@ -213,26 +211,26 @@ namespace DATASCAN.Repositories
         public FloutecInstantData GetInstantData(int address, int line)
         {
             // Создание объекта мгновенных данных
-            FloutecInstantData instantData = new FloutecInstantData();
-            int n_flonit = address * 10 + line;
+            var instantData = new FloutecInstantData();
+            var n_flonit = address * 10 + line;
             instantData.N_FLONIT = n_flonit;
 
             // Формирование строки соединения с таблицей мгновенных
             _command.CommandText = "SELECT DISTINCT * FROM mgnov.DBF WHERE N_FLONIT=" + n_flonit;
 
             // Чтение мгновенных
-            using (OleDbDataReader reader = _command.ExecuteReader())
+            using (var reader = _command.ExecuteReader())
             {
-                if (reader != null)
-                {
-                    while (reader.Read())
-                    {
-                        instantData.FromInstTable(reader);
-                    }
+                if (reader == null)
+                    return instantData;
 
-                    if (!reader.HasRows)
-                        return null;
+                while (reader.Read())
+                {
+                    instantData.FromInstTable(reader);
                 }
+
+                if (!reader.HasRows)
+                    return null;
             }
 
             return instantData;
@@ -253,27 +251,27 @@ namespace DATASCAN.Repositories
         public List<FloutecAlarmData> GetAlarmData(int address, int line, DateTime from, DateTime to)
         {
             // Инициализация пустой коллекции данных аварий
-            List<FloutecAlarmData> alarmData = new List<FloutecAlarmData>();
+            var alarmData = new List<FloutecAlarmData>();
 
             // Если период указан верно, то ...
-            if (to >= from)
+            if (to < @from)
+                return alarmData.Where(h => h.DAT > @from && h.DAT <= to).ToList();
+
+            var n_flonit = address * 10 + line;
+
+            // Формирование запроса
+            _command.CommandText = "SELECT DISTINCT * FROM avar.DBF WHERE N_FLONIT=" + n_flonit;
+
+            // Выполнение команды
+            using (var reader = _command.ExecuteReader())
             {
-                int n_flonit = address * 10 + line;
-
-                // Формирование запроса
-                _command.CommandText = "SELECT DISTINCT * FROM avar.DBF WHERE N_FLONIT=" + n_flonit;
-
-                // Выполнение команды
-                using (OleDbDataReader reader = _command.ExecuteReader())
+                while (reader != null && reader.Read())
                 {
-                    while (reader != null && reader.Read())
-                    {
-                        alarmData.FromAvarTable(reader);
-                    }
+                    alarmData.FromAvarTable(reader);
                 }
-
-                alarmData.ForEach(h => h.N_FLONIT = n_flonit);
             }
+
+            alarmData.ForEach(h => h.N_FLONIT = n_flonit);          
 
             return alarmData.Where(h => h.DAT > from && h.DAT <= to).ToList();
         }
@@ -287,15 +285,15 @@ namespace DATASCAN.Repositories
         public List<FloutecAlarmData> GetAllAlarmData(int address, int line)
         {
             // Инициализация пустой коллекции данных
-            List<FloutecAlarmData> alarmData = new List<FloutecAlarmData>();
+            var alarmData = new List<FloutecAlarmData>();
 
-            int n_flonit = address * 10 + line;
+            var n_flonit = address * 10 + line;
 
             // Формирование запроса
             _command.CommandText = "SELECT DISTINCT * FROM avar.DBF WHERE N_FLONIT=" + n_flonit;
 
             // Выполнение команды
-            using (OleDbDataReader reader = _command.ExecuteReader())
+            using (var reader = _command.ExecuteReader())
             {
                 while (reader != null && reader.Read())
                 {
@@ -321,15 +319,15 @@ namespace DATASCAN.Repositories
         public List<FloutecInterData> GetAllInterData(int address, int line)
         {
             // Инициализация пустой коллекции данных
-            List<FloutecInterData> interData = new List<FloutecInterData>();
+            var interData = new List<FloutecInterData>();
 
-            int n_flonit = address * 10 + line;
+            var n_flonit = address * 10 + line;
 
             // Формирование запроса
             _command.CommandText = "SELECT DISTINCT * FROM vmesh.DBF WHERE N_FLONIT=" + n_flonit;
 
             // Выполнение команды
-            using (OleDbDataReader reader = _command.ExecuteReader())
+            using (var reader = _command.ExecuteReader())
             {
                 while (reader != null && reader.Read())
                 {
@@ -353,27 +351,27 @@ namespace DATASCAN.Repositories
         public List<FloutecInterData> GetInterData(int address, int line, DateTime from, DateTime to)
         {
             // Инициализация пустой коллекции данных вмешательств
-            List<FloutecInterData> interData = new List<FloutecInterData>();
+            var interData = new List<FloutecInterData>();
 
             // Если период указан верно, то ...
-            if (to >= from)
+            if (to < @from)
+                return interData.Where(h => h.DAT > @from && h.DAT <= to).ToList();
+
+            var n_flonit = address * 10 + line;
+
+            // Формирование запроса
+            _command.CommandText = "SELECT DISTINCT * FROM vmesh.DBF WHERE N_FLONIT=" + n_flonit;
+
+            // Выполнение команды
+            using (var reader = _command.ExecuteReader())
             {
-                int n_flonit = address * 10 + line;
-
-                // Формирование запроса
-                _command.CommandText = "SELECT DISTINCT * FROM vmesh.DBF WHERE N_FLONIT=" + n_flonit;
-
-                // Выполнение команды
-                using (OleDbDataReader reader = _command.ExecuteReader())
+                while (reader != null && reader.Read())
                 {
-                    while (reader != null && reader.Read())
-                    {
-                        interData.FromVmeshTable(reader);
-                    }
+                    interData.FromVmeshTable(reader);
                 }
-
-                interData.ForEach(h => h.N_FLONIT = n_flonit);
             }
+
+            interData.ForEach(h => h.N_FLONIT = n_flonit);
 
             return interData.Where(h => h.DAT > from && h.DAT <= to).ToList();
         }

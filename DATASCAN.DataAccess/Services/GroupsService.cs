@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DATASCAN.Core.Entities;
-using DATASCAN.Repositories;
+using DATASCAN.DataAccess.Repositories;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
     public class GroupsService : EntitiesService<EstimatorsGroup>
     {
@@ -16,9 +16,9 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<EstimatorsGroup> repo = new EntityRepository<EstimatorsGroup>(_connection))
+                using (var repo = new EntityRepository<EstimatorsGroup>(_connection))
                 {
-                    EstimatorsGroup group = repo.Get(groupId);
+                    var group = repo.Get(groupId);
                     group.Estimators.ToList().ForEach(e => e.Group = null);
                     repo.Delete(groupId);
                 }

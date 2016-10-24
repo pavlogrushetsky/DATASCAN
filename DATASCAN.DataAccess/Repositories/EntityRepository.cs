@@ -6,7 +6,7 @@ using System.Linq;
 using DATASCAN.Core.Context;
 using DATASCAN.Core.Entities.Common;
 
-namespace DATASCAN.Repositories
+namespace DATASCAN.DataAccess.Repositories
 {
     /// <summary>
     /// Репозиторий для доступа к данным сущностей
@@ -26,7 +26,7 @@ namespace DATASCAN.Repositories
         public EntityRepository(string connectionString)
         {
             // Создание соединения и инициализация контекста данных
-            SqlConnection connection = new SqlConnection(connectionString);
+            var connection = new SqlConnection(connectionString);
             _context = new DataContext(connection, false);
         }
 
@@ -69,7 +69,7 @@ namespace DATASCAN.Repositories
         /// </summary>
         public void Update(IEnumerable<Entity> entities)
         {
-            foreach (Entity entity in entities)
+            foreach (var entity in entities)
             {
                 _context.Entry(entity).State = EntityState.Modified;                
             }

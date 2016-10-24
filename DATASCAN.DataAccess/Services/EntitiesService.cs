@@ -5,9 +5,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DATASCAN.Core.Entities.Common;
-using DATASCAN.Repositories;
+using DATASCAN.DataAccess.Repositories;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
     /// <summary>
     /// Сервис для доступа к данным сущностей
@@ -39,9 +39,9 @@ namespace DATASCAN.Services
 
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<T> repo = new EntityRepository<T>(_connection))
+                using (var repo = new EntityRepository<T>(_connection))
                 {
-                    IQueryable<T> entities = repo.GetAll();
+                    var entities = repo.GetAll();
 
                     if (include != null)
                     {
@@ -82,7 +82,7 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<T> repo = new EntityRepository<T>(_connection))
+                using (var repo = new EntityRepository<T>(_connection))
                 {
                     entity.DateModified = DateTime.Now;
                     repo.Update(entity);
@@ -113,7 +113,7 @@ namespace DATASCAN.Services
             {
                 entities.ForEach(e => e.DateModified = DateTime.Now);
 
-                using (EntityRepository<T> repo = new EntityRepository<T>(_connection))
+                using (var repo = new EntityRepository<T>(_connection))
                 {
                     repo.Update(entities);
                 }
@@ -141,7 +141,7 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<T> repo = new EntityRepository<T>(_connection))
+                using (var repo = new EntityRepository<T>(_connection))
                 {
                     repo.Insert(entity);
                 }

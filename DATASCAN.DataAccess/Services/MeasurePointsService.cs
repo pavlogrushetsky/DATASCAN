@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Floutecs;
 using DATASCAN.Core.Entities.Rocs;
-using DATASCAN.Repositories;
+using DATASCAN.DataAccess.Repositories;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
     public class MeasurePointsService : EntitiesService<MeasurePointBase>
     {
@@ -20,11 +20,11 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<MeasurePointBase> repo = new EntityRepository<MeasurePointBase>(_connection))
+                using (var repo = new EntityRepository<MeasurePointBase>(_connection))
                 {
                     if (point is FloutecMeasureLine)
                     {
-                        FloutecMeasureLine line = repo.GetAll()
+                        var line = repo.GetAll()
                             .Where(e => e.Id == point.Id)
                             .OfType<FloutecMeasureLine>()
                             .Include(l => l.AlarmData)
@@ -39,7 +39,7 @@ namespace DATASCAN.Services
 
                     if (point is Roc809MeasurePoint)
                     {
-                        Roc809MeasurePoint line = repo.GetAll()
+                        var line = repo.GetAll()
                             .Where(e => e.Id == point.Id)
                             .OfType<Roc809MeasurePoint>()
                             .Include(l => l.DailyData)

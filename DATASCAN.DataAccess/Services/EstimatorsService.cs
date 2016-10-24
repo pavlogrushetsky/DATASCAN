@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Rocs;
-using DATASCAN.Repositories;
+using DATASCAN.DataAccess.Repositories;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
     public class EstimatorsService : EntitiesService<EstimatorBase>
     {
@@ -19,16 +19,16 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<EstimatorBase> repo = new EntityRepository<EstimatorBase>(_connection))
+                using (var repo = new EntityRepository<EstimatorBase>(_connection))
                 {
                     if (estimator is Roc809)
                     {
-                        Roc809 roc = repo.GetAll().Where(e => e.Id == estimator.Id).OfType<Roc809>().Include(e => e.AlarmData).Include(e => e.EventData).Include(e => e.MeasurePoints).Include(e => e.Scans).Single();
+                        var roc = repo.GetAll().Where(e => e.Id == estimator.Id).OfType<Roc809>().Include(e => e.AlarmData).Include(e => e.EventData).Include(e => e.MeasurePoints).Include(e => e.Scans).Single();
                         repo.Delete(new List<Roc809> { roc });
                     }
                     else
                     {
-                        EstimatorBase est = repo.GetAll().Where(e => e.Id == estimator.Id).Include(e => e.MeasurePoints).Include(e => e.Scans).Single();
+                        var est = repo.GetAll().Where(e => e.Id == estimator.Id).Include(e => e.MeasurePoints).Include(e => e.Scans).Single();
                         repo.Delete(new List<EstimatorBase> { est });
                     }                   
                 }

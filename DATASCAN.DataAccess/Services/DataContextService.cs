@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using DATASCAN.Core.Context;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
     /// <summary>
     /// Сервис доступа к данным контекста данных
@@ -32,7 +32,7 @@ namespace DATASCAN.Services
             {
                 DbConnection connection = new SqlConnection(_connection);
 
-                using (DataContext context = new DataContext(connection, initialize))
+                using (var context = new DataContext(connection, initialize))
                 {
                     context.Database.Connection.Open();
                 }

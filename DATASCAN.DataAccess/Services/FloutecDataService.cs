@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATASCAN.Core.Entities.Floutecs;
-using DATASCAN.Repositories;
-using DATASCAN.Repositories.Extensions;
+using DATASCAN.DataAccess.Repositories;
+using DATASCAN.DataAccess.Repositories.Extensions;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
     public class FloutecDataService
     {

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DATASCAN", "DATASCAN\DATASC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DATASCAN.Core", "DATASCAN.Core\DATASCAN.Core.csproj", "{49D81AD9-8758-4BA0-BE18-1A3C2A6D9792}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DATASCAN.DataAccess", "DATASCAN.DataAccess\DATASCAN.DataAccess.csproj", "{D09A8E1A-C7EB-4547-BE18-1C0AB8539BEB}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -24,6 +26,10 @@ Global
 		{49D81AD9-8758-4BA0-BE18-1A3C2A6D9792}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49D81AD9-8758-4BA0-BE18-1A3C2A6D9792}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49D81AD9-8758-4BA0-BE18-1A3C2A6D9792}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D09A8E1A-C7EB-4547-BE18-1C0AB8539BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D09A8E1A-C7EB-4547-BE18-1C0AB8539BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D09A8E1A-C7EB-4547-BE18-1C0AB8539BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D09A8E1A-C7EB-4547-BE18-1C0AB8539BEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

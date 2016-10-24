@@ -2,8 +2,8 @@
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
+using DATASCAN.DataAccess.Services;
 using DATASCAN.Infrastructure.Settings;
-using DATASCAN.Services;
 
 namespace DATASCAN.View.Forms
 {

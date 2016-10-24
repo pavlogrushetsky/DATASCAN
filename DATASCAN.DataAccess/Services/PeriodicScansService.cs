@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using DATASCAN.Core.Entities.Scanning;
-using DATASCAN.Repositories;
+using DATASCAN.DataAccess.Repositories;
 
-namespace DATASCAN.Services
+namespace DATASCAN.DataAccess.Services
 {
-    public class ScanMembersService : EntitiesService<ScanMemberBase>
+    public class PeriodicScansService : EntitiesService<PeriodicScan>
     {
-        public ScanMembersService(string connection) : base(connection)
+        public PeriodicScansService(string connection) : base(connection)
         {
         }
 
@@ -15,9 +18,13 @@ namespace DATASCAN.Services
         {
             await Task.Factory.StartNew(() =>
             {
-                using (EntityRepository<ScanMemberBase> repo = new EntityRepository<ScanMemberBase>(_connection))
+                using (var repo = new EntityRepository<PeriodicScan>(_connection))
                 {
-                    repo.Delete(scanId);
+                    var sc = repo.GetAll()
+                        .Where(s => s.Id == scanId)
+                        .Include(s => s.Members)
+                        .Single();
+                    repo.Delete(new List<PeriodicScan> { sc });
                 }
             }, TaskCreationOptions.LongRunning)
             .ContinueWith(result =>

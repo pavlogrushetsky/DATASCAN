@@ -5,7 +5,7 @@ using System.Linq;
 using DATASCAN.Core.Context;
 using DATASCAN.Core.Entities.Common;
 
-namespace DATASCAN.Repositories
+namespace DATASCAN.DataAccess.Repositories
 {
     /// <summary>
     /// Репозиторий для доступа к данным опросов
@@ -25,7 +25,7 @@ namespace DATASCAN.Repositories
         public DataRecordRepository(string connectionString)
         {
             // Создание соединения и инициализация контекста данных
-            SqlConnection connection = new SqlConnection(connectionString);
+            var connection = new SqlConnection(connectionString);
             _context = new DataContext(connection, false);
         }
 
