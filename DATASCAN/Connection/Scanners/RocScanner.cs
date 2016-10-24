@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using DATASCAN.Connection.Services;
-using DATASCAN.Core.Model;
-using DATASCAN.Core.Model.Rocs;
-using DATASCAN.Core.Model.Scanning;
+using DATASCAN.Core.Entities;
+using DATASCAN.Core.Entities.Rocs;
+using DATASCAN.Core.Entities.Scanning;
 using DATASCAN.Infrastructure.Settings;
 using DATASCAN.View.Controls;
 

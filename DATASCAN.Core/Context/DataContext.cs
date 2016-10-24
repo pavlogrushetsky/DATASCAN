@@ -1,12 +1,12 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
+using DATASCAN.Core.Entities;
+using DATASCAN.Core.Entities.Floutecs;
+using DATASCAN.Core.Entities.Floutecs.Catalogs;
+using DATASCAN.Core.Entities.Rocs;
+using DATASCAN.Core.Entities.Rocs.Catalogs;
+using DATASCAN.Core.Entities.Scanning;
 using DATASCAN.Core.Migrations;
-using DATASCAN.Core.Model;
-using DATASCAN.Core.Model.Floutecs;
-using DATASCAN.Core.Model.Floutecs.Catalogs;
-using DATASCAN.Core.Model.Rocs;
-using DATASCAN.Core.Model.Rocs.Catalogs;
-using DATASCAN.Core.Model.Scanning;
 
 namespace DATASCAN.Core.Context
 {

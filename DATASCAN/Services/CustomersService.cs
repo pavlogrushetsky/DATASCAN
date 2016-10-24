@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DATASCAN.Core.Model;
+using DATASCAN.Core.Entities;
 using DATASCAN.Repositories;
 
 namespace DATASCAN.Services

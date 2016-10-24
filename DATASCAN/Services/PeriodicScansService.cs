@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using DATASCAN.Core.Model.Scanning;
+using DATASCAN.Core.Entities.Scanning;
 using DATASCAN.Repositories;
 
 namespace DATASCAN.Services

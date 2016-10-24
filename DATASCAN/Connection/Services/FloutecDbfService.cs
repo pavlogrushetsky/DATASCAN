@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DATASCAN.Core.Model.Floutecs;
+using DATASCAN.Core.Entities.Floutecs;
 using DATASCAN.Repositories;
 
 namespace DATASCAN.Connection.Services

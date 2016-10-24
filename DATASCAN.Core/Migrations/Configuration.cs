@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using DATASCAN.Core.Context;
-using DATASCAN.Core.Model.Floutecs.Catalogs;
-using DATASCAN.Core.Model.Rocs.Catalogs;
+using DATASCAN.Core.Entities.Floutecs.Catalogs;
+using DATASCAN.Core.Entities.Rocs.Catalogs;
 
 namespace DATASCAN.Core.Migrations
 {

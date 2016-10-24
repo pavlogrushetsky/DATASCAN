@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using DATASCAN.Core.Context;
-using DATASCAN.Core.Model.Common;
+using DATASCAN.Core.Entities.Common;
 
 namespace DATASCAN.Repositories
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using DATASCAN.Core.Model.Rocs;
+using DATASCAN.Core.Entities.Rocs;
 using DATASCAN.Properties;
 
 namespace DATASCAN.View.Forms
