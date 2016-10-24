@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using DATASCAN.Model.Floutecs;
+using DATASCAN.Core.Model.Floutecs;
 using DATASCAN.Properties;
 
 namespace DATASCAN.View.Forms

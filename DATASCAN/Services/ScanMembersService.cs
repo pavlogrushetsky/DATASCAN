@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
-using DATASCAN.Model;
-using DATASCAN.Model.Floutecs;
-using DATASCAN.Model.Rocs;
-using DATASCAN.Model.Scanning;
+using DATASCAN.Core.Model.Scanning;
 using DATASCAN.Repositories;
 
 namespace DATASCAN.Services

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
-using DATASCAN.Model.Floutecs;
+using DATASCAN.Core.Model.Floutecs;
 using DATASCAN.Repositories.Extensions;
 
 namespace DATASCAN.Repositories

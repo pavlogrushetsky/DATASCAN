@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using DATASCAN.Model;
-using DATASCAN.Model.Floutecs;
-using DATASCAN.Model.Rocs;
-using DATASCAN.Model.Scanning;
+using DATASCAN.Core.Model;
+using DATASCAN.Core.Model.Floutecs;
+using DATASCAN.Core.Model.Rocs;
+using DATASCAN.Core.Model.Scanning;
 
 namespace DATASCAN.View.Extensions
 {

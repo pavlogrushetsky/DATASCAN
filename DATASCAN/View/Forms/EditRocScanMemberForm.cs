@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using DATASCAN.Model.Scanning;
+using DATASCAN.Core.Model.Scanning;
 
 namespace DATASCAN.View.Forms
 {

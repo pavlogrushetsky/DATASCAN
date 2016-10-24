@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
-using DATASCAN.Model.Rocs;
+using DATASCAN.Core.Model.Rocs;
 
 namespace DATASCAN.Connection.Services
 {

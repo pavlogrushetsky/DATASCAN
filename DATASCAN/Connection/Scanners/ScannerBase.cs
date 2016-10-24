@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DATASCAN.Model;
-using DATASCAN.Model.Scanning;
+using DATASCAN.Core.Model;
+using DATASCAN.Core.Model.Scanning;
 using DATASCAN.View.Controls;
 
 namespace DATASCAN.Connection.Scanners

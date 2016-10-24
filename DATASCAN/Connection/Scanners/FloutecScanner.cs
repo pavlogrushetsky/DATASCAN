@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using DATASCAN.Connection.Services;
+using DATASCAN.Core.Model;
+using DATASCAN.Core.Model.Floutecs;
+using DATASCAN.Core.Model.Scanning;
 using DATASCAN.Infrastructure.Logging;
-using DATASCAN.Model;
-using DATASCAN.Model.Floutecs;
-using DATASCAN.Model.Scanning;
 using DATASCAN.Services;
 using DATASCAN.View.Controls;
 

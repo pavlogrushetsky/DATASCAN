@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using DATASCAN.Context;
-using DATASCAN.Model.Common;
+using DATASCAN.Core.Context;
+using DATASCAN.Core.Model.Common;
 
 namespace DATASCAN.Repositories
 {

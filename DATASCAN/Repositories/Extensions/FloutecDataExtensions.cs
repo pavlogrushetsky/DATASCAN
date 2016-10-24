@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Globalization;
 using System.Text;
-using DATASCAN.Model.Floutecs;
+using DATASCAN.Core.Model.Floutecs;
 
 namespace DATASCAN.Repositories.Extensions
 {

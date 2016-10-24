@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using DATASCAN.Model.Common;
+using DATASCAN.Core.Model.Common;
 using DATASCAN.Repositories;
 
 namespace DATASCAN.Services

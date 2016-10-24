@@ -2,7 +2,7 @@
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using DATASCAN.Context;
+using DATASCAN.Core.Context;
 
 namespace DATASCAN.Services
 {

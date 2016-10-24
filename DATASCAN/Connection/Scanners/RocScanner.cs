@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using DATASCAN.Connection.Services;
+using DATASCAN.Core.Model;
+using DATASCAN.Core.Model.Rocs;
+using DATASCAN.Core.Model.Scanning;
 using DATASCAN.Infrastructure.Settings;
-using DATASCAN.Model;
-using DATASCAN.Model.Rocs;
-using DATASCAN.Model.Scanning;
 using DATASCAN.View.Controls;
 
 namespace DATASCAN.Connection.Scanners

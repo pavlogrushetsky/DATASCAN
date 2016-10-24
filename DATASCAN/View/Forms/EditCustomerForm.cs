@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
 using System.Windows.Forms;
-using DATASCAN.Model;
+using DATASCAN.Core.Model;
 using DATASCAN.Properties;
 
 namespace DATASCAN.View.Forms

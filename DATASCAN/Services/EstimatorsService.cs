@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using DATASCAN.Model;
-using DATASCAN.Model.Rocs;
+using DATASCAN.Core.Model;
+using DATASCAN.Core.Model.Rocs;
 using DATASCAN.Repositories;
 
 namespace DATASCAN.Services

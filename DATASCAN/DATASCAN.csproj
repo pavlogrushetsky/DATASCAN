@@ -65,87 +65,11 @@
     <Compile Include="Connection\Services\FloutecDbfService.cs" />
     <Compile Include="Connection\Services\RocGprsService.cs" />
     <Compile Include="Connection\TcpIp\TcpIpClient.cs" />
-    <Compile Include="Context\DataContext.cs" />
     <Compile Include="Infrastructure\Logging\LogEntry.cs" />
     <Compile Include="Infrastructure\Logging\Logger.cs" />
     <Compile Include="Infrastructure\Logging\LogStatus.cs" />
     <Compile Include="Infrastructure\Logging\LogType.cs" />
     <Compile Include="Infrastructure\Settings\Settings.cs" />
-    <Compile Include="Migrations\201609051849594_Initial.cs" />
-    <Compile Include="Migrations\201609051849594_Initial.Designer.cs">
-      <DependentUpon>201609051849594_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609091636241_AddedEstimatorsGroups.cs" />
-    <Compile Include="Migrations\201609091636241_AddedEstimatorsGroups.Designer.cs">
-      <DependentUpon>201609091636241_AddedEstimatorsGroups.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.cs" />
-    <Compile Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.Designer.cs">
-      <DependentUpon>201609091704352_AddedNameToEstimatorsGroup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609191842505_AddedScanViaGPRSToEstimators.cs" />
-    <Compile Include="Migrations\201609191842505_AddedScanViaGPRSToEstimators.Designer.cs">
-      <DependentUpon>201609191842505_AddedScanViaGPRSToEstimators.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609211725242_RemovedRequiredForRocAddress.cs" />
-    <Compile Include="Migrations\201609211725242_RemovedRequiredForRocAddress.Designer.cs">
-      <DependentUpon>201609211725242_RemovedRequiredForRocAddress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610021643516_EditedScansModel.cs" />
-    <Compile Include="Migrations\201610021643516_EditedScansModel.Designer.cs">
-      <DependentUpon>201610021643516_EditedScansModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610041735219_MadeScanPeriodEntityBase.cs" />
-    <Compile Include="Migrations\201610041735219_MadeScanPeriodEntityBase.Designer.cs">
-      <DependentUpon>201610041735219_MadeScanPeriodEntityBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610061845015_AddedScanMembers.cs" />
-    <Compile Include="Migrations\201610061845015_AddedScanMembers.Designer.cs">
-      <DependentUpon>201610061845015_AddedScanMembers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610181707051_MovedDateLastScannedToScanBase.cs" />
-    <Compile Include="Migrations\201610181707051_MovedDateLastScannedToScanBase.Designer.cs">
-      <DependentUpon>201610181707051_MovedDateLastScannedToScanBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Model\Common\CatalogBase.cs" />
-    <Compile Include="Model\Common\DataRecordBase.cs" />
-    <Compile Include="Model\Common\EntityBase.cs" />
-    <Compile Include="Model\Customer.cs" />
-    <Compile Include="Model\EstimatorBase.cs" />
-    <Compile Include="Model\EstimatorsGroup.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecAlarmTypes.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecInterTypes.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecParamTypes.cs" />
-    <Compile Include="Model\Floutecs\Catalogs\FloutecSensorTypes.cs" />
-    <Compile Include="Model\Floutecs\Common\FloutecDataBase.cs" />
-    <Compile Include="Model\Floutecs\Floutec.cs" />
-    <Compile Include="Model\Floutecs\FloutecIdentData.cs" />
-    <Compile Include="Model\Floutecs\FloutecAlarmData.cs" />
-    <Compile Include="Model\Floutecs\FloutecInterData.cs" />
-    <Compile Include="Model\Floutecs\FloutecInstantData.cs" />
-    <Compile Include="Model\Floutecs\FloutecHourlyData.cs" />
-    <Compile Include="Model\Floutecs\FloutecMeasureLine.cs" />
-    <Compile Include="Model\MeasurePointBase.cs" />
-    <Compile Include="Model\Rocs\Catalogs\Roc809AlarmCodes.cs" />
-    <Compile Include="Model\Rocs\Catalogs\Roc809AlarmTypes.cs" />
-    <Compile Include="Model\Rocs\Catalogs\Roc809EventCodes.cs" />
-    <Compile Include="Model\Rocs\Catalogs\Roc809EventTypes.cs" />
-    <Compile Include="Model\Rocs\Common\Roc809PeriodicDataBase.cs" />
-    <Compile Include="Model\Rocs\Roc809.cs" />
-    <Compile Include="Model\Rocs\Roc809AlarmData.cs" />
-    <Compile Include="Model\Rocs\Roc809DailyData.cs" />
-    <Compile Include="Model\Rocs\Roc809EventData.cs" />
-    <Compile Include="Model\Rocs\Roc809MeasurePoint.cs" />
-    <Compile Include="Model\Rocs\Roc809MinuteData.cs" />
-    <Compile Include="Model\Rocs\Roc809PeriodicData.cs" />
-    <Compile Include="Model\Scanning\FloutecScanMember.cs" />
-    <Compile Include="Model\Scanning\RocScanMember.cs" />
-    <Compile Include="Model\Scanning\ScanMemberBase.cs" />
-    <Compile Include="Model\Scanning\ScheduledScan.cs" />
-    <Compile Include="Model\Scanning\PeriodicScan.cs" />
-    <Compile Include="Model\Scanning\ScanBase.cs" />
-    <Compile Include="Model\Scanning\ScanPeriod.cs" />
     <Compile Include="Repositories\DataRecordRepository.cs" />
     <Compile Include="Repositories\DbfRepository.cs" />
     <Compile Include="Repositories\EntityRepository.cs" />
@@ -251,33 +175,6 @@
     <Compile Include="View\Forms\ServerSettingsForm.Designer.cs">
       <DependentUpon>ServerSettingsForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Migrations\201609051849594_Initial.resx">
-      <DependentUpon>201609051849594_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609091636241_AddedEstimatorsGroups.resx">
-      <DependentUpon>201609091636241_AddedEstimatorsGroups.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609091704352_AddedNameToEstimatorsGroup.resx">
-      <DependentUpon>201609091704352_AddedNameToEstimatorsGroup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609191842505_AddedScanViaGPRSToEstimators.resx">
-      <DependentUpon>201609191842505_AddedScanViaGPRSToEstimators.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609211725242_RemovedRequiredForRocAddress.resx">
-      <DependentUpon>201609211725242_RemovedRequiredForRocAddress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610021643516_EditedScansModel.resx">
-      <DependentUpon>201610021643516_EditedScansModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610041735219_MadeScanPeriodEntityBase.resx">
-      <DependentUpon>201610041735219_MadeScanPeriodEntityBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610061845015_AddedScanMembers.resx">
-      <DependentUpon>201610061845015_AddedScanMembers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610181707051_MovedDateLastScannedToScanBase.resx">
-      <DependentUpon>201610181707051_MovedDateLastScannedToScanBase.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -385,6 +282,12 @@
     <Content Include="Resources\Images\Sensor.png" />
     <Content Include="Resources\Images\Settings.png" />
     <Content Include="Resources\Images\ScheduledScan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DATASCAN.Core\DATASCAN.Core.csproj">
+      <Project>{49d81ad9-8758-4ba0-be18-1a3c2a6d9792}</Project>
+      <Name>DATASCAN.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATASCAN.Model.Floutecs;
+using DATASCAN.Core.Model.Floutecs;
 using DATASCAN.Repositories;
 using DATASCAN.Repositories.Extensions;
 

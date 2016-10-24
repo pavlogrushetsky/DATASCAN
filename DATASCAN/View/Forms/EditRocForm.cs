@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using DATASCAN.Model.Rocs;
+using DATASCAN.Core.Model.Rocs;
 using DATASCAN.Properties;
 
 namespace DATASCAN.View.Forms
