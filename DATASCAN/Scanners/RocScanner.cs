@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
-using DATASCAN.Connection.Services;
 using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Rocs;
 using DATASCAN.Core.Entities.Scanning;
 using DATASCAN.Infrastructure.Settings;
+using DATASCAN.Services;
 using DATASCAN.View.Controls;
 
-namespace DATASCAN.Connection.Scanners
+namespace DATASCAN.Scanners
 {
     public class RocScanner : ScannerBase
     {

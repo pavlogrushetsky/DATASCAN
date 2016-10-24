@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using DATASCAN.Core.Entities.Floutecs;
 using DATASCAN.DataAccess.Repositories;
 
-namespace DATASCAN.Connection.Services
+namespace DATASCAN.Services
 {
     public class FloutecDbfService
     {

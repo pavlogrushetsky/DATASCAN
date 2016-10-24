@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
-namespace DATASCAN.Connection.Serial
+namespace DATASCAN.Communication.Utilities
 {
     public class SerialPortFixer : IDisposable
     {

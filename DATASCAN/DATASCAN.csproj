@@ -59,19 +59,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection\Common\Crc16.cs" />
-    <Compile Include="Connection\Serial\SerialPortFixer.cs" />
-    <Compile Include="Connection\Scanners\ScannerBase.cs" />
-    <Compile Include="Connection\Services\FloutecDbfService.cs" />
-    <Compile Include="Connection\Services\RocGprsService.cs" />
-    <Compile Include="Connection\TcpIp\TcpIpClient.cs" />
+    <Compile Include="Scanners\ScannerBase.cs" />
     <Compile Include="Infrastructure\Logging\LogEntry.cs" />
     <Compile Include="Infrastructure\Logging\Logger.cs" />
     <Compile Include="Infrastructure\Logging\LogStatus.cs" />
     <Compile Include="Infrastructure\Logging\LogType.cs" />
     <Compile Include="Infrastructure\Settings\Settings.cs" />
-    <Compile Include="Connection\Scanners\FloutecScanner.cs" />
-    <Compile Include="Connection\Scanners\RocScanner.cs" />
+    <Compile Include="Scanners\FloutecScanner.cs" />
+    <Compile Include="Scanners\RocScanner.cs" />
+    <Compile Include="Services\FloutecDbfService.cs" />
+    <Compile Include="Services\RocGprsService.cs" />
     <Compile Include="View\Common\NativeMethods.cs" />
     <Compile Include="View\Controls\LogListView.cs">
       <SubType>Component</SubType>
@@ -270,6 +267,10 @@
     <Content Include="Resources\Images\ScheduledScan.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DATASCAN.Communication\DATASCAN.Communication.csproj">
+      <Project>{3d087314-8558-4c78-88a8-fb5f57b6484c}</Project>
+      <Name>DATASCAN.Communication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DATASCAN.Core\DATASCAN.Core.csproj">
       <Project>{49d81ad9-8758-4ba0-be18-1a3c2a6d9792}</Project>
       <Name>DATASCAN.Core</Name>

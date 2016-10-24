@@ -4,7 +4,7 @@ using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Scanning;
 using DATASCAN.View.Controls;
 
-namespace DATASCAN.Connection.Scanners
+namespace DATASCAN.Scanners
 {
     public abstract class ScannerBase
     {

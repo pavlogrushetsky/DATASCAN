@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DATASCAN.Core.Entities.Rocs;
 
-namespace DATASCAN.Connection.Services
+namespace DATASCAN.Services
 {
     public class RocGprsService
     {
