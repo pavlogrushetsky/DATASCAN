@@ -94,9 +94,9 @@ namespace DATASCAN.View.Forms
 
         private void btnDbfPath_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            var dialog = new FolderBrowserDialog();
 
-            DialogResult result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
 
             if (result == DialogResult.OK)
             {
@@ -225,7 +225,7 @@ namespace DATASCAN.View.Forms
 
         private void cbPort1_DropDown(object sender, EventArgs e)
         {
-            object item = cbPort1.SelectedItem;
+            var item = cbPort1.SelectedItem;
             cbPort1.Items.Clear();            
             cbPort1.Items.AddRange(_ports.Except(new List<object> { cbPort2.SelectedItem, cbPort3.SelectedItem }).ToArray());
             cbPort1.Items.Insert(0, "");
@@ -234,7 +234,7 @@ namespace DATASCAN.View.Forms
 
         private void cbPort2_DropDown(object sender, EventArgs e)
         {
-            object item = cbPort2.SelectedItem;
+            var item = cbPort2.SelectedItem;
             cbPort2.Items.Clear();
             cbPort2.Items.AddRange(_ports.Except(new List<object> { cbPort1.SelectedItem, cbPort3.SelectedItem }).ToArray());
             cbPort2.Items.Insert(0, "");
@@ -243,7 +243,7 @@ namespace DATASCAN.View.Forms
 
         private void cbPort3_DropDown(object sender, EventArgs e)
         {
-            object item = cbPort3.SelectedItem;
+            var item = cbPort3.SelectedItem;
             cbPort3.Items.Clear();
             cbPort3.Items.AddRange(_ports.Except(new List<object> { cbPort2.SelectedItem, cbPort1.SelectedItem }).ToArray());
             cbPort3.Items.Insert(0, "");
@@ -253,9 +253,9 @@ namespace DATASCAN.View.Forms
         private void btnTestConnection_Click(object sender, EventArgs e)
         {
             ResetPortsStatuses();
-            string port1 = cbPort1.SelectedItem?.ToString();
-            string port2 = cbPort2.SelectedItem?.ToString();
-            string port3 = cbPort3.SelectedItem?.ToString();
+            var port1 = cbPort1.SelectedItem?.ToString();
+            var port2 = cbPort2.SelectedItem?.ToString();
+            var port3 = cbPort3.SelectedItem?.ToString();
 
             if (!IsNullOrEmpty(port1))
                 TestConnection(port1, statusPort1, cbPort1);
@@ -272,7 +272,7 @@ namespace DATASCAN.View.Forms
             try
             {
                 SerialPortFixer.Execute(port);
-                using (SerialPort serialPort = new SerialPort
+                using (var serialPort = new SerialPort
                 {
                     PortName = port,
                     BaudRate = int.Parse(cbBaudrate.SelectedItem.ToString()),

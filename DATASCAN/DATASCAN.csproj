@@ -67,9 +67,8 @@
     <Compile Include="Infrastructure\Settings\Settings.cs" />
     <Compile Include="Scanners\FloutecScanner.cs" />
     <Compile Include="Scanners\RocScanner.cs" />
-    <Compile Include="Services\FloutecDbfService.cs" />
-    <Compile Include="Services\RocGprsService.cs" />
-    <Compile Include="Services\RocTcpIpService.cs" />
+    <Compile Include="Services\FloutecService.cs" />
+    <Compile Include="Services\RocService.cs" />
     <Compile Include="View\Common\NativeMethods.cs" />
     <Compile Include="View\Controls\LogListView.cs">
       <SubType>Component</SubType>

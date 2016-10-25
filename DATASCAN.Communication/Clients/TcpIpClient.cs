@@ -1,11 +1,11 @@
 ﻿using System.Net.Sockets;
 
-namespace DATASCAN.Communication.Interfaces
+namespace DATASCAN.Communication.Clients
 {
     /// <summary>
     /// Клиент для соединения с вычислителем ROC809
     /// </summary>
-    public class TcpIpClient
+    public class TcpIpClient : IClient
     {
         #region Конструктор и поля
 

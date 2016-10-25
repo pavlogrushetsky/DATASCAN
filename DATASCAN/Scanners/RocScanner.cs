@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Ports;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Rocs;
 using DATASCAN.Core.Entities.Scanning;
-using DATASCAN.Infrastructure.Settings;
 using DATASCAN.Services;
 using DATASCAN.View.Controls;
 
@@ -13,7 +10,7 @@ namespace DATASCAN.Scanners
 {
     public class RocScanner : ScannerBase
     {
-        private RocGprsService _gprsService;
+        private RocService _service;
 
         public RocScanner(LogListView log) : base(log)
         {
@@ -25,14 +22,7 @@ namespace DATASCAN.Scanners
             _connection = connection;
             _members = members.ToList();
             _estimators = estimators.ToList();
-
-            var port = Settings.COMPort1;
-            var baudrate = string.IsNullOrEmpty(Settings.Baudrate) ? 19200 : int.Parse(Settings.Baudrate);
-            var dataBits = string.IsNullOrEmpty(Settings.DataBits) ? 8 : int.Parse(Settings.DataBits);
-            var stopBits = string.IsNullOrEmpty(Settings.StopBits) ? StopBits.One : (StopBits) Enum.Parse(typeof (StopBits), Settings.StopBits);
-            var parity = string.IsNullOrEmpty(Settings.Parity) ? Parity.Even : (Parity) Enum.Parse(typeof (Parity), Settings.Parity); 
-
-            _gprsService = new RocGprsService(port, baudrate, parity, dataBits, stopBits);
+            _service = new RocService();
 
             _members.ForEach(m =>
             {
@@ -52,23 +42,23 @@ namespace DATASCAN.Scanners
             });
         }
 
-        private void ProcessPoint(RocScanMember member, Roc809 floutec, Roc809MeasurePoint point)
+        private void ProcessPoint(RocScanMember member, Roc809 roc, Roc809MeasurePoint point)
         {
             if (member.ScanEventData)
-                ScanEventData(floutec, point);
+                ScanEventData(roc);
             if (member.ScanAlarmData)
-                ScanAlarmData(floutec, point);
+                ScanAlarmData(roc);
             if (member.ScanMinuteData)
-                ScanMinuteData(floutec, point);
+                ScanMinuteData(roc, point);
             if (member.ScanPeriodicData)
-                ScanPeriodicData(floutec, point);
+                ScanPeriodicData(roc, point);
             if (member.ScanDailyData)
-                ScanDailyData(floutec, point);
+                ScanDailyData(roc, point);
         }
 
-        private async void ScanEventData(Roc809 roc, Roc809MeasurePoint point)
+        private async void ScanEventData(Roc809 roc)
         {
-            await _gprsService.GetEventData(roc, point, data =>
+            await _service.GetEventData(roc, data =>
             {
 
             }, ex =>
@@ -77,24 +67,48 @@ namespace DATASCAN.Scanners
             });
         }
 
-        private async void ScanAlarmData(Roc809 roc, Roc809MeasurePoint point)
+        private async void ScanAlarmData(Roc809 roc)
         {
+            await _service.GetAlarmData(roc, data =>
+            {
 
+            }, ex =>
+            {
+
+            });
         }
 
         private async void ScanMinuteData(Roc809 roc, Roc809MeasurePoint point)
         {
+            await _service.GetMinuteData(roc, point, data =>
+            {
 
+            }, ex =>
+            {
+
+            });
         }
 
         private async void ScanPeriodicData(Roc809 roc, Roc809MeasurePoint point)
         {
+            await _service.GetPeriodicData(roc, point, data =>
+            {
 
+            }, ex =>
+            {
+
+            });
         }
 
         private async void ScanDailyData(Roc809 roc, Roc809MeasurePoint point)
         {
+            await _service.GetDailyData(roc, point, data =>
+            {
 
+            }, ex =>
+            {
+
+            });
         }
     }
 }

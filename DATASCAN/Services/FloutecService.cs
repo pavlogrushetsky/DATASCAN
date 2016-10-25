@@ -6,11 +6,11 @@ using DATASCAN.DataAccess.Repositories;
 
 namespace DATASCAN.Services
 {
-    public class FloutecDbfService
+    public class FloutecService
     {
         private readonly string _connection;
 
-        public FloutecDbfService(string connection)
+        public FloutecService(string connection)
         {
             _connection = connection;
         }

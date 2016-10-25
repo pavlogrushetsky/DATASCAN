@@ -62,6 +62,7 @@
     <Compile Include="Services\GroupsService.cs" />
     <Compile Include="Services\MeasurePointsService.cs" />
     <Compile Include="Services\PeriodicScansService.cs" />
+    <Compile Include="Services\RocDataService.cs" />
     <Compile Include="Services\ScanMembersService.cs" />
     <Compile Include="Services\ScheduledScansService.cs" />
   </ItemGroup>

@@ -14,7 +14,7 @@ namespace DATASCAN.Scanners
     public class FloutecScanner : ScannerBase
     {
         private string _dbfConnection;
-        private FloutecDbfService _dbfService;
+        private FloutecService _service;
         private FloutecDataService _dataService;
 
         public FloutecScanner(LogListView log) : base(log)
@@ -27,7 +27,7 @@ namespace DATASCAN.Scanners
             _members = members.ToList();
             _estimators = estimators.ToList();
             _dbfConnection = Infrastructure.Settings.Settings.DbfPath;
-            _dbfService = new FloutecDbfService(_dbfConnection);
+            _service = new FloutecService(_dbfConnection);
             _dataService = new FloutecDataService(_connection);
 
             _members.ForEach(m =>
@@ -64,7 +64,7 @@ namespace DATASCAN.Scanners
 
         private async void ScanIdentData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetIdentData(floutec.Address, line.Number, async data =>
+            await _service.GetIdentData(floutec.Address, line.Number, async data =>
             {
                 if (data == null)
                 {
@@ -94,7 +94,7 @@ namespace DATASCAN.Scanners
 
         private async void ScanInterData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetInterData(floutec.Address, line.Number, async data =>
+            await _service.GetInterData(floutec.Address, line.Number, async data =>
             {
                 if (data == null || !data.Any())
                 {
@@ -128,7 +128,7 @@ namespace DATASCAN.Scanners
 
         private async void ScanAlarmData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetAlarmData(floutec.Address, line.Number, async data =>
+            await _service.GetAlarmData(floutec.Address, line.Number, async data =>
             {
                 if (data == null || !data.Any())
                 {
@@ -162,7 +162,7 @@ namespace DATASCAN.Scanners
 
         private async void ScanHourlyData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetHourlyData(floutec.Address, line.Number, async data =>
+            await _service.GetHourlyData(floutec.Address, line.Number, async data =>
             {
                 if (data == null || !data.Any())
                 {
@@ -196,7 +196,7 @@ namespace DATASCAN.Scanners
 
         private async void ScanInstantData(Floutec floutec, FloutecMeasureLine line)
         {
-            await _dbfService.GetInstantData(floutec.Address, line.Number, async data =>
+            await _service.GetInstantData(floutec.Address, line.Number, async data =>
             {
                 if (data == null)
                 {

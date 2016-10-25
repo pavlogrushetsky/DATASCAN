@@ -45,32 +45,32 @@ namespace DATASCAN.Infrastructure.Settings
         /// </summary>
         public static void Get()
         {
-            string fullPath = Path.Combine(_filePath, _fileName);
+            var fullPath = Path.Combine(_filePath, _fileName);
 
             if (File.Exists(fullPath))
             {
-                using (FileStream fileStream = new FileStream(fullPath, FileMode.Open))
+                using (var fileStream = new FileStream(fullPath, FileMode.Open))
                 {
-                    BinaryFormatter formatter = new BinaryFormatter();
+                    var formatter = new BinaryFormatter();
 
-                    Hashtable settings = formatter.Deserialize(fileStream) as Hashtable;
+                    var settings = formatter.Deserialize(fileStream) as Hashtable;
 
-                    if (settings != null)
-                    {
-                        ServerName = settings["ServerName"]?.ToString() ?? "";
-                        DatabaseName = settings["DatabaseName"]?.ToString() ?? "";
-                        UserName = settings["UserName"]?.ToString() ?? "";
-                        UserPassword = settings["UserPassword"]?.ToString() ?? "";
-                        ConnectionTimeout = settings["ConnectionTimeout"]?.ToString() ?? "";
-                        COMPort1 = settings["COMPort1"]?.ToString() ?? "";
-                        COMPort2 = settings["COMPort2"]?.ToString() ?? "";
-                        COMPort3 = settings["COMPort3"]?.ToString() ?? "";
-                        Baudrate = settings["Baudrate"]?.ToString() ?? "";
-                        Parity = settings["Parity"]?.ToString() ?? "";
-                        DataBits = settings["DataBits"]?.ToString() ?? "";
-                        StopBits = settings["StopBits"]?.ToString() ?? "";
-                        DbfPath = settings["DbfPath"]?.ToString() ?? "";
-                    }
+                    if (settings == null)
+                        return;
+
+                    ServerName = settings["ServerName"]?.ToString() ?? "";
+                    DatabaseName = settings["DatabaseName"]?.ToString() ?? "";
+                    UserName = settings["UserName"]?.ToString() ?? "";
+                    UserPassword = settings["UserPassword"]?.ToString() ?? "";
+                    ConnectionTimeout = settings["ConnectionTimeout"]?.ToString() ?? "";
+                    COMPort1 = settings["COMPort1"]?.ToString() ?? "";
+                    COMPort2 = settings["COMPort2"]?.ToString() ?? "";
+                    COMPort3 = settings["COMPort3"]?.ToString() ?? "";
+                    Baudrate = settings["Baudrate"]?.ToString() ?? "";
+                    Parity = settings["Parity"]?.ToString() ?? "";
+                    DataBits = settings["DataBits"]?.ToString() ?? "";
+                    StopBits = settings["StopBits"]?.ToString() ?? "";
+                    DbfPath = settings["DbfPath"]?.ToString() ?? "";
                 }
             }
             else
@@ -84,7 +84,7 @@ namespace DATASCAN.Infrastructure.Settings
         /// </summary>
         public static void Save()
         {
-            Hashtable settings = new Hashtable
+            var settings = new Hashtable
             {
                 { "ServerName", ServerName },
                 { "DatabaseName", DatabaseName },
@@ -104,9 +104,9 @@ namespace DATASCAN.Infrastructure.Settings
             if (!Directory.Exists(_filePath))
                 Directory.CreateDirectory(_filePath);
 
-            using (FileStream fileStream = new FileStream(Path.Combine(_filePath, _fileName), FileMode.Create))
+            using (var fileStream = new FileStream(Path.Combine(_filePath, _fileName), FileMode.Create))
             {
-                BinaryFormatter formatter = new BinaryFormatter();
+                var formatter = new BinaryFormatter();
 
                 formatter.Serialize(fileStream, settings);
             }
