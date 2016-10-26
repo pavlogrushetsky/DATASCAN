@@ -54,6 +54,10 @@
     <Compile Include="Migrations\201610241656182_InitialMigration.Designer.cs">
       <DependentUpon>201610241656182_InitialMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610261811274_RemovedDateLastUpdated.cs" />
+    <Compile Include="Migrations\201610261811274_RemovedDateLastUpdated.Designer.cs">
+      <DependentUpon>201610261811274_RemovedDateLastUpdated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Entities\Common\CatalogBase.cs" />
     <Compile Include="Entities\Common\DataRecordBase.cs" />
@@ -102,6 +106,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201610241656182_InitialMigration.resx">
       <DependentUpon>201610241656182_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610261811274_RemovedDateLastUpdated.resx">
+      <DependentUpon>201610261811274_RemovedDateLastUpdated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

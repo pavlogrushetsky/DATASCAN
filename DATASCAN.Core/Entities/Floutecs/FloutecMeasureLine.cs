@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,36 +15,6 @@ namespace DATASCAN.Core.Entities.Floutecs
         /// </summary>
         [Required]
         public int SensorType { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления часовых данных
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateHourlyDataLastUpdated { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления мгновенных данных
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateInstantDataLastUpdated { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления данных идентификации
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateIdentDataLastUpdated { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления данных вмешательств
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateInterDataLastUpdated { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления данных аварий
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateAlarmDataLastUpdated { get; set; }
 
         /// <summary>
         /// Коллекция часовых данных

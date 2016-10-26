@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
+using System.Threading;
 using DATASCAN.Communication.Clients;
+using DATASCAN.Communication.Common;
 using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Rocs;
 using DATASCAN.Core.Entities.Scanning;
 using DATASCAN.DataAccess.Services;
 using DATASCAN.Infrastructure.Logging;
+using DATASCAN.Infrastructure.Settings;
 using DATASCAN.Services;
 using DATASCAN.View.Controls;
 
@@ -71,11 +75,62 @@ namespace DATASCAN.Scanners
                 ScanDailyData(roc, point);
         }
 
+        private string GetFreeSerialPort()
+        {
+            var ports = new List<string>();
+            var statuses = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(Settings.COMPort1))
+                ports.Add(Settings.COMPort1);
+            if (!string.IsNullOrEmpty(Settings.COMPort2))
+                ports.Add(Settings.COMPort2);
+            if (!string.IsNullOrEmpty(Settings.COMPort3))
+                ports.Add(Settings.COMPort3);
+
+            ports.ForEach(p =>
+            {
+                try
+                {
+                    SerialPortFixer.Execute(p);
+                    using (var port = new SerialPort
+                    {
+                        PortName = p,
+                        BaudRate = int.Parse(Settings.Baudrate),
+                        DataBits = int.Parse(Settings.DataBits),
+                        StopBits = (StopBits) Enum.Parse(typeof (StopBits), Settings.StopBits),
+                        Parity = (Parity) Enum.Parse(typeof (Parity), Settings.Parity),
+                        Handshake = Handshake.None,
+                        ReadTimeout = 500,
+                        WriteTimeout = 500
+                    })
+                    {
+                        if (!port.IsOpen)
+                            port.Open();
+
+                        port.WriteLine(@"ATQ0V1E0" + "\r\n");
+                        Thread.Sleep(500);
+
+                        var status = port.ReadExisting();
+                        if (!statuses.ContainsKey(p))
+                            statuses.Add(p, status);
+                        else
+                            statuses[p] = status;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+            });
+
+            return "";
+        }
+
         private async void ScanEventData(Roc809 roc)
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
 
             var client = new TcpIpClient(roc.Address, roc.Port);
+            GetFreeSerialPort();
 
             await _service.GetEventData(client, roc, async data =>
             {                

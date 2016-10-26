@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,24 +15,6 @@ namespace DATASCAN.Core.Entities.Rocs
         /// </summary>
         [Required]
         public int HistSegment { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления минутных данных
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateMinuteDataLastUpdated { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления периодических данных
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DatePeriodicDataLastUpdated { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления суточных данных
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateDailyDataLastUpdated { get; set; }
 
         /// <summary>
         /// Коллекция минутных данных

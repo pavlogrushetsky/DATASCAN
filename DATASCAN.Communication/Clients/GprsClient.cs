@@ -47,15 +47,6 @@ namespace DATASCAN.Communication.Clients
                 if (!port.IsOpen)
                     port.Open();
 
-                port.WriteLine(@"ATQ0V1E0" + "\r\n");
-                Thread.Sleep(500);
-
-                var status = port.ReadExisting();
-                if (!status.Contains("OK"))
-                {
-                    return new byte[] { };
-                }
-
                 port.WriteLine($@"ATDT{_phone}" + "\r\n");
                 Thread.Sleep(500);
 

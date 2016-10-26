@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -45,18 +44,6 @@ namespace DATASCAN.Core.Entities.Rocs
         /// </summary>
         [Required]
         public int HostGroup { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления данных аварий
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateAlarmDataLastUpdated { get; set; }
-
-        /// <summary>
-        /// Дата и время последнего обновления данных событий
-        /// </summary>
-        [Column(TypeName = "datetime2")]
-        public DateTime? DateEventDataLastUpdated { get; set; }
 
         /// <summary>
         /// Коллекция данных аварий
