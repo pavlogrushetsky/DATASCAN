@@ -1324,19 +1324,22 @@ namespace DATASCAN.View
                                 MessageBoxIcon.Warning,
                                 MessageBoxDefaultButton.Button2);
 
-            if (confirmResult == DialogResult.Yes)
-            {
-                Application.Exit();
-            }
+            if (confirmResult != DialogResult.Yes)
+                return;
+
+            notifyIcon.Visible = false;
+            notifyIcon.Icon = null;
+            notifyIcon.Dispose();
+            Application.Exit();
         }
 
         private void DATASCANForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                Hide();
-            }
+            if (e.CloseReason != CloseReason.UserClosing)
+                return;
+
+            e.Cancel = true;
+            Hide();
         }
 
         #endregion                
