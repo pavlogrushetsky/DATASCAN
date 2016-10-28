@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using DATASCAN.Communication.Clients;
 using DATASCAN.Communication.Common;
 using DATASCAN.Core.Entities;
@@ -21,6 +21,14 @@ namespace DATASCAN.Scanners
         private RocService _service;
         private RocDataService _dataService;
 
+        private int _baudRate;
+        private int _dataBits;
+        private StopBits _stopBits;
+        private Parity _parity;
+        private Handshake _handshake;
+        private int _readTimeout;
+        private int _writeTimeout;
+
         public RocScanner(LogListView log) : base(log)
         {
 
@@ -34,7 +42,15 @@ namespace DATASCAN.Scanners
             _service = new RocService();
             _dataService = new RocDataService(_connection);
 
-            _members.ForEach(m =>
+            _baudRate = int.Parse(Settings.Baudrate);
+            _dataBits = int.Parse(Settings.DataBits);
+            _stopBits = (StopBits) Enum.Parse(typeof (StopBits), Settings.StopBits);
+            _parity = (Parity) Enum.Parse(typeof (Parity), Settings.Parity);
+            _handshake = Handshake.None;
+            _readTimeout = 500;
+            _writeTimeout = 500;
+
+            _members.ForEach(async m =>
             {
                 var member = m as RocScanMember;
                 if (member == null)
@@ -42,9 +58,26 @@ namespace DATASCAN.Scanners
                 var roc = _estimators.SingleOrDefault(e => e.Id == member.EstimatorId) as Roc809;
                 if (roc == null)
                     return;
+
+                IClient client;
+
+                if (!roc.IsScannedViaGPRS)
+                    client = new TcpIpClient(roc.Address, roc.Port);
+                else
+                {
+                    var port = await GetFreeSerialPort();
+                    if (!string.IsNullOrEmpty(port))
+                        client = new GprsClient(roc.Phone, port, _baudRate, _parity, _dataBits, _stopBits);
+                    else
+                    { 
+                        Logger.Log(_log, new LogEntry { Message = "Помилка виділення СОМ-порта для опитування. Порти відсутні або зайняті", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                        return;
+                    }
+                }
+
                 if (member.ScanEventData || member.ScanAlarmData)
                 {
-                    ProcessRoc(member, roc);
+                    ProcessRoc(member, roc, client);
                 }
 
                 roc.MeasurePoints.Where(p => p.IsActive).ToList().ForEach(p =>
@@ -52,30 +85,30 @@ namespace DATASCAN.Scanners
                     var point = p as Roc809MeasurePoint;
                     if (point == null)
                         return;
-                    ProcessPoint(member, roc, point);
+                    ProcessPoint(member, roc, point, client);
                 });
             });
         }
 
-        private void ProcessRoc(RocScanMember member, Roc809 roc)
+        private void ProcessRoc(RocScanMember member, Roc809 roc, IClient client)
         {
             if (member.ScanEventData)
-                ScanEventData(roc);
+                ScanEventData(roc, client);
             if (member.ScanAlarmData)
-                ScanAlarmData(roc);
+                ScanAlarmData(roc, client);
         }
 
-        private void ProcessPoint(RocScanMember member, Roc809 roc, Roc809MeasurePoint point)
+        private void ProcessPoint(RocScanMember member, Roc809 roc, Roc809MeasurePoint point, IClient client)
         {            
             if (member.ScanMinuteData)
-                ScanMinuteData(roc, point);
+                ScanMinuteData(roc, point, client);
             if (member.ScanPeriodicData)
-                ScanPeriodicData(roc, point);
+                ScanPeriodicData(roc, point, client);
             if (member.ScanDailyData)
-                ScanDailyData(roc, point);
+                ScanDailyData(roc, point, client);
         }
 
-        private string GetFreeSerialPort()
+        private Task<string> GetFreeSerialPort()
         {
             var ports = new List<string>();
             var statuses = new Dictionary<string, string>();
@@ -86,51 +119,60 @@ namespace DATASCAN.Scanners
             if (!string.IsNullOrEmpty(Settings.COMPort3))
                 ports.Add(Settings.COMPort3);
 
-            ports.ForEach(p =>
+            var start = DateTime.Now;
+
+            return Task.Factory.StartNew(() =>
             {
-                try
+                do
                 {
-                    SerialPortFixer.Execute(p);
-                    using (var port = new SerialPort
+                    ports.ForEach(p =>
                     {
-                        PortName = p,
-                        BaudRate = int.Parse(Settings.Baudrate),
-                        DataBits = int.Parse(Settings.DataBits),
-                        StopBits = (StopBits) Enum.Parse(typeof (StopBits), Settings.StopBits),
-                        Parity = (Parity) Enum.Parse(typeof (Parity), Settings.Parity),
-                        Handshake = Handshake.None,
-                        ReadTimeout = 500,
-                        WriteTimeout = 500
-                    })
-                    {
-                        if (!port.IsOpen)
-                            port.Open();
+                        try
+                        {
+                            SerialPortFixer.Execute(p);
+                            using (var port = new SerialPort
+                            {
+                                PortName = p,
+                                BaudRate = _baudRate,
+                                DataBits = _dataBits,
+                                StopBits = _stopBits,
+                                Parity = _parity,
+                                Handshake = _handshake,
+                                ReadTimeout = _readTimeout,
+                                WriteTimeout = _writeTimeout
+                            })
+                            {
+                                if (!port.IsOpen)
+                                    port.Open();
 
-                        port.WriteLine(@"ATQ0V1E0" + "\r\n");
-                        Thread.Sleep(500);
+                                port.WriteLine(@"ATQ0V1E0" + "\r\n");
+                                Task.Delay(500);
 
-                        var status = port.ReadExisting();
-                        if (!statuses.ContainsKey(p))
-                            statuses.Add(p, status);
-                        else
-                            statuses[p] = status;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    
-                }
-            });
+                                var status = port.ReadExisting();
+                                if (!statuses.ContainsKey(p))
+                                    statuses.Add(p, status);
+                                else
+                                    statuses[p] = status;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // ignored
+                        }
+                    });
 
-            return "";
+                    Task.Delay(500);
+                } while (!statuses.ContainsValue("\r\nOK\r\n") || DateTime.Now < start.AddMilliseconds(500));
+
+                return statuses.ContainsValue("\r\nOK\r\n") 
+                    ? statuses.First(pair => pair.Value.Equals("\r\nOK\r\n")).Key 
+                    : "";
+            }, TaskCreationOptions.LongRunning);            
         }
 
-        private async void ScanEventData(Roc809 roc)
+        private async void ScanEventData(Roc809 roc, IClient client)
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
-
-            var client = new TcpIpClient(roc.Address, roc.Port);
-            GetFreeSerialPort();
 
             await _service.GetEventData(client, roc, async data =>
             {                
@@ -163,11 +205,9 @@ namespace DATASCAN.Scanners
             });
         }
 
-        private async void ScanAlarmData(Roc809 roc)
+        private async void ScanAlarmData(Roc809 roc, IClient client)
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
-
-            var client = new TcpIpClient(roc.Address, roc.Port);
 
             await _service.GetAlarmData(client, roc, async data =>
             {
@@ -200,11 +240,9 @@ namespace DATASCAN.Scanners
             });
         }
 
-        private async void ScanMinuteData(Roc809 roc, Roc809MeasurePoint point)
+        private async void ScanMinuteData(Roc809 roc, Roc809MeasurePoint point, IClient client)
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
-
-            var client = new TcpIpClient(roc.Address, roc.Port);
 
             await _service.GetMinuteData(client, roc, point, async data =>
             {
@@ -237,11 +275,9 @@ namespace DATASCAN.Scanners
             });
         }
 
-        private async void ScanPeriodicData(Roc809 roc, Roc809MeasurePoint point)
+        private async void ScanPeriodicData(Roc809 roc, Roc809MeasurePoint point, IClient client)
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
-
-            var client = new TcpIpClient(roc.Address, roc.Port);
 
             await _service.GetPeriodicData(client, roc, point, async data =>
             {
@@ -274,11 +310,9 @@ namespace DATASCAN.Scanners
             });
         }
 
-        private async void ScanDailyData(Roc809 roc, Roc809MeasurePoint point)
+        private async void ScanDailyData(Roc809 roc, Roc809MeasurePoint point, IClient client)
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
-
-            var client = new TcpIpClient(roc.Address, roc.Port);
 
             await _service.GetDailyData(client, roc, point, async data =>
             {
