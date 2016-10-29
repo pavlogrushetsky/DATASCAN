@@ -40,7 +40,7 @@ namespace DATASCAN.Communication.Protocols
 
             do
             {
-                var response = client.GetData(request);
+                var response = client.GetData(request).Result;
 
                 totalIndex = historyType == RocHistoryType.Minute ? 60 : response.GetInt16(9);
 
@@ -112,7 +112,7 @@ namespace DATASCAN.Communication.Protocols
 
             do
             {
-                var response = client.GetData(request);
+                var response = client.GetData(request).Result;
 
                 totalIndex = response.GetInt16(9);
                 var eventsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;
@@ -280,7 +280,7 @@ namespace DATASCAN.Communication.Protocols
             int totalIndex;
             do
             {
-                var response = client.GetData(request);
+                var response = client.GetData(request).Result;
 
                 totalIndex = response.GetInt16(9);
                 var alarmsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;

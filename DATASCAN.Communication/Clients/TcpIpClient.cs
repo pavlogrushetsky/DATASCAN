@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace DATASCAN.Communication.Clients
 {
@@ -35,24 +36,27 @@ namespace DATASCAN.Communication.Clients
         /// </summary>
         /// <param name="request">Массив байтов запроса</param>
         /// <returns>Массив байтов ответа</returns>
-        public byte[] GetData(byte[] request)
+        public Task<byte[]> GetData(byte[] request)
         {
-            // Если соединение не было установлено, то установить
-            if (!_client.Connected)
-                _client.Connect(_ip, _port);
+            return Task.Factory.StartNew(() =>
+            {
+                // Если соединение не было установлено, то установить
+                if (!_client.Connected)
+                    _client.Connect(_ip, _port);
 
-            // Получение потока
-            stream = _client.GetStream();
+                // Получение потока
+                stream = _client.GetStream();
 
-            // Запись запроса в поток
-            stream.Write(request, 0, request.Length);
-            stream.Flush();
+                // Запись запроса в поток
+                stream.Write(request, 0, request.Length);
+                stream.Flush();
 
-            // Чтение ответа из потока
-            var response = new byte[1024];
-            stream.Read(response, 0, response.Length);
+                // Чтение ответа из потока
+                var response = new byte[1024];
+                stream.Read(response, 0, response.Length);
 
-            return response;
+                return response;
+            });           
         }
     }
 }

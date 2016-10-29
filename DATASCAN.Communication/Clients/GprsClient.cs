@@ -1,5 +1,9 @@
-﻿using System.IO.Ports;
+﻿using System;
+using System.IO;
+using System.IO.Ports;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using DATASCAN.Communication.Common;
 
 namespace DATASCAN.Communication.Clients
@@ -29,8 +33,9 @@ namespace DATASCAN.Communication.Clients
             _writeTimeout = 500;
         }
 
-        public byte[] GetData(byte[] request)
+        public async Task<byte[]> GetData(byte[] request)
         {
+            var response = new byte[1024];
             SerialPortFixer.Execute(_port);
             using (var port = new SerialPort
             {
@@ -39,29 +44,69 @@ namespace DATASCAN.Communication.Clients
                 DataBits = _dataBits,
                 StopBits = _stopBits,
                 Parity = _parity,
-                Handshake = _handshake,
-                ReadTimeout = _readTimeout,
-                WriteTimeout = _writeTimeout
+                Handshake = Handshake.None,
+                //ReadTimeout = 500000,
+                //WriteTimeout = 500000,
+                //WriteBufferSize = 1024,
+                //ReadBufferSize = 1024
             })
             {
                 if (!port.IsOpen)
                     port.Open();
 
-                port.WriteLine($@"ATDT{_phone}" + "\r\n");
-                Thread.Sleep(500);
+                var stream = port.BaseStream;
+                var req = Encoding.ASCII.GetBytes(@"ATQ0V1E0" + "\r\n");
+                await stream.WriteAsync(req, 0, req.Length);
 
-                port.Write(request, 0, request.Length);
-                Thread.Sleep(500);
+                await stream.FlushAsync();
 
-                var response = new byte[1024];
-                port.Read(response, 0, response.Length);
-                Thread.Sleep(500);
+                var resp = new byte[1024];
+                var result = await stream.ReadAsync(resp, 0, resp.Length);
 
-                port.WriteLine(@"ATH0" + "\r\n");
-                Thread.Sleep(500);
+                //port.WriteLine(@"ATQ0V1E0" + "\r\n");
+                //Thread.Sleep(5000);
+                //var result = port.ReadExisting();
+
+                await stream.FlushAsync();
+
+                if (!Encoding.ASCII.GetString(resp).Contains("OK"))
+                    return response;
+
+                //await stream.FlushAsync();
+
+                req = Encoding.ASCII.GetBytes($@"ATDT{_phone}" + "\r\n");
+                await stream.WriteAsync(req, 0, req.Length);
+                await stream.FlushAsync();
+                result = await stream.ReadAsync(resp, 0, resp.Length);
+                await stream.FlushAsync();
+
+                //port.WriteLine($@"ATDT{_phone}" + "\r\n");
+                //Thread.Sleep(5000);
+
+                //var status = port.ReadExisting();
+
+                //if (!status.Contains("CONNECT"))
+                //return response;
+
+                if (!Encoding.ASCII.GetString(resp).Contains("CONNECT"))
+                    return response;
+
+                //await stream.FlushAsync();
+
+                
+
+                stream.Write(request, 0, request.Length);
+                await stream.FlushAsync();
+
+
+                var read = await stream.ReadAsync(response, 0, 5);
+                await stream.FlushAsync();
+
+                req = Encoding.ASCII.GetBytes(@"ATH0" + "\r\n");
+                await stream.WriteAsync(req, 0, req.Length);
             }
 
-            return new byte[] {};
+            return response;
         }
     }
 }
