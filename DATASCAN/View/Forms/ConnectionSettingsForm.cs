@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
@@ -29,6 +30,14 @@ namespace DATASCAN.View.Forms
         private bool _stopBitsChanged;
 
         private bool _dbfPathChanged;
+
+        private bool _retriesChanged;
+
+        private bool _timeoutChanged;
+
+        private bool _writeDelayChanged;
+
+        private bool _readDelayChanged;
 
         private bool _changed;
 
@@ -88,6 +97,11 @@ namespace DATASCAN.View.Forms
 
             cbBaudrate.Items.AddRange(_baudrate.ToArray<object>());
             cbBaudrate.SelectedItem = Settings.Baudrate;
+
+            numRetries.Value = int.Parse(Settings.Retries);
+            numWriteDelay.Value = int.Parse(Settings.WriteDelay);
+            numReadDelay.Value = int.Parse(Settings.ReadDelay);
+            numTimeout.Value = int.Parse(Settings.Timeout);
 
             btnCancel.Select();
         }
@@ -188,6 +202,10 @@ namespace DATASCAN.View.Forms
                 Settings.Parity = cbParity.SelectedItem?.ToString();
                 Settings.StopBits = cbStopBits.SelectedItem?.ToString();
                 Settings.DataBits = cbDataBits.SelectedItem?.ToString();
+                Settings.Retries = numRetries.Value.ToString(CultureInfo.InvariantCulture);
+                Settings.WriteDelay = numWriteDelay.Value.ToString(CultureInfo.InvariantCulture);
+                Settings.ReadDelay = numReadDelay.Value.ToString(CultureInfo.InvariantCulture);
+                Settings.Timeout = numTimeout.Value.ToString(CultureInfo.InvariantCulture);
                 Settings.DbfPath = txtDbfPath.Text;
 
                 Settings.Save();
@@ -211,7 +229,8 @@ namespace DATASCAN.View.Forms
         private void SetChanged()
         {
             _changed = _dbfPathChanged || _baudrateChanged || _dataBitsChanged || _parityChanged || 
-                       _port1Changed || _port2Changed || _port3Changed || _stopBitsChanged;
+                       _port1Changed || _port2Changed || _port3Changed || _stopBitsChanged ||
+                       _retriesChanged || _writeDelayChanged || _readDelayChanged || _timeoutChanged;
 
             Text = _changed ? TITLE + " *" : TITLE;            
         }
@@ -305,6 +324,34 @@ namespace DATASCAN.View.Forms
             statusPort1.SetError(cbPort1, "");
             statusPort2.SetError(cbPort2, "");
             statusPort3.SetError(cbPort3, "");
+        }
+
+        private void numRetries_ValueChanged(object sender, EventArgs e)
+        {
+            _retriesChanged = !numRetries.Value.Equals(int.Parse(Settings.Retries));
+            SetChanged();
+            ResetPortsStatuses();
+        }
+
+        private void numWriteDelay_ValueChanged(object sender, EventArgs e)
+        {
+            _writeDelayChanged = !numWriteDelay.Value.Equals(int.Parse(Settings.WriteDelay));
+            SetChanged();
+            ResetPortsStatuses();
+        }
+
+        private void numReadDelay_ValueChanged(object sender, EventArgs e)
+        {
+            _readDelayChanged = !numReadDelay.Value.Equals(int.Parse(Settings.ReadDelay));
+            SetChanged();
+            ResetPortsStatuses();
+        }
+
+        private void numTimeout_ValueChanged(object sender, EventArgs e)
+        {
+            _timeoutChanged = !numTimeout.Value.Equals(int.Parse(Settings.Timeout));
+            SetChanged();
+            ResetPortsStatuses();
         }
     }
 }

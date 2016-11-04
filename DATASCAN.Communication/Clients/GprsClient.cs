@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO.Ports;
+﻿using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +15,12 @@ namespace DATASCAN.Communication.Clients
         private readonly int _dataBits;
         private readonly StopBits _stopBits;
         private readonly Handshake _handshake;
-        private readonly int _readTimeout;
-        private readonly int _writeTimeout;
+        private readonly int _timeout;
+        private readonly int _retries;
+        private readonly int _writeDelay;
+        private readonly int _readDelay;
 
-        public GprsClient(string phone, string port, int baudrate, Parity parity, int dataBits, StopBits stopBits)
+        public GprsClient(string phone, string port, int baudrate, Parity parity, int dataBits, StopBits stopBits, int retries, int timeout, int writeDelay, int readDelay)
         {
             _phone = phone;
             _port = port;
@@ -28,8 +29,10 @@ namespace DATASCAN.Communication.Clients
             _dataBits = dataBits;
             _stopBits = stopBits;
             _handshake = Handshake.None;
-            _readTimeout = 5000;
-            _writeTimeout = 5000;
+            _timeout = timeout;
+            _retries = retries;
+            _writeDelay = writeDelay;
+            _readDelay = readDelay;
         }
 
         public async Task<string> TestConnection()
@@ -48,12 +51,12 @@ namespace DATASCAN.Communication.Clients
                 StopBits = _stopBits,
                 Parity = _parity,
                 Handshake = _handshake,
-                WriteTimeout = _writeTimeout,
-                ReadTimeout = _readTimeout,
+                WriteTimeout = _timeout,
+                ReadTimeout = _timeout,
                 DtrEnable = true
             })
             {
-                await Task.Delay(1000);
+                await Task.Delay(_writeDelay);
 
                 if (!port.IsOpen)
                 {
@@ -63,7 +66,7 @@ namespace DATASCAN.Communication.Clients
                 var stream = port.BaseStream;
 
                 port.WriteLine(@"AT" + "\r\n");
-                await Task.Delay(1000);
+                await Task.Delay(_readDelay);
                 await stream.ReadAsync(response, 0, response.Length);
 
                 var status = Encoding.ASCII.GetString(response);
@@ -73,7 +76,7 @@ namespace DATASCAN.Communication.Clients
                 }
 
                 port.WriteLine(@"AT&FE0V1X1&D2&C1S0=0" + "\r\n");
-                await Task.Delay(1000);
+                await Task.Delay(_readDelay);
                 await stream.ReadAsync(response, 0, response.Length);
 
                 status = Encoding.ASCII.GetString(response);
@@ -83,13 +86,13 @@ namespace DATASCAN.Communication.Clients
                 }
 
                 port.WriteLine($@"ATDT{_phone}" + "\r\n");
-                await Task.Delay(1000);
+                await Task.Delay(_readDelay);
                 await stream.ReadAsync(response, 0, response.Length);
 
                 status = Encoding.ASCII.GetString(response);
 
                 port.WriteLine(@"ATH0" + "\r\n");
-                await Task.Delay(1000);
+                await Task.Delay(_writeDelay);
 
                 port.Close();
 
@@ -111,15 +114,15 @@ namespace DATASCAN.Communication.Clients
                     StopBits = _stopBits,
                     Parity = _parity,
                     Handshake = _handshake,
-                    WriteTimeout = _writeTimeout,
-                    ReadTimeout = _readTimeout,
+                    WriteTimeout = _timeout,
+                    ReadTimeout = _timeout,
                     DtrEnable = true
                 })
                 {
-                    var retries = 3;
+                    var retries = _retries;
                     do
                     {
-                        await Task.Delay(1000);
+                        await Task.Delay(_writeDelay);
 
                         if (!port.IsOpen)
                         {
@@ -129,7 +132,7 @@ namespace DATASCAN.Communication.Clients
                         var stream = port.BaseStream;
 
                         port.WriteLine(@"AT" + "\r\n");
-                        await Task.Delay(1000);
+                        await Task.Delay(_readDelay);
                         await stream.ReadAsync(response, 0, response.Length);
 
                         if (!Encoding.ASCII.GetString(response).Contains("OK"))
@@ -138,7 +141,7 @@ namespace DATASCAN.Communication.Clients
                         }
 
                         port.WriteLine(@"AT&FE0V1X1&D2&C1S0=0" + "\r\n");
-                        await Task.Delay(1000);
+                        await Task.Delay(_readDelay);
                         await stream.ReadAsync(response, 0, response.Length);
 
                         if (!Encoding.ASCII.GetString(response).Contains("OK"))
@@ -147,7 +150,7 @@ namespace DATASCAN.Communication.Clients
                         }
 
                         port.WriteLine($@"ATDT{_phone}" + "\r\n");
-                        await Task.Delay(1000);
+                        await Task.Delay(_readDelay);
                         await stream.ReadAsync(response, 0, response.Length);
 
                         if (!Encoding.ASCII.GetString(response).Contains("CONNECT"))
@@ -159,9 +162,9 @@ namespace DATASCAN.Communication.Clients
                         port.DiscardOutBuffer();
 
                         port.Write(request, 0, request.Length);
-                        await Task.Delay(1000);
+                        await Task.Delay(_readDelay);
                         var task = stream.ReadAsync(response, 0, response.Length);
-                        await Task.WhenAny(task, Task.Delay(10000));
+                        await Task.WhenAny(task, Task.Delay(_timeout));
 
                         if (response[0] != 0x00)
                             break;
@@ -169,7 +172,7 @@ namespace DATASCAN.Communication.Clients
                         port.DiscardInBuffer();
 
                         port.WriteLine(@"ATH0" + "\r\n");
-                        await Task.Delay(1000);
+                        await Task.Delay(_writeDelay);
 
                         port.Close();
 

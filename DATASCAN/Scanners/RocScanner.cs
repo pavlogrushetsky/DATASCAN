@@ -25,9 +25,10 @@ namespace DATASCAN.Scanners
         private int _dataBits;
         private StopBits _stopBits;
         private Parity _parity;
-        private Handshake _handshake;
-        private int _readTimeout;
-        private int _writeTimeout;
+        private int _readDelay;
+        private int _writeDelay;
+        private int _timeout;
+        private int _retries;
         private List<string> _ports; 
 
         public RocScanner(LogListView log) : base(log)
@@ -47,9 +48,10 @@ namespace DATASCAN.Scanners
             _dataBits = int.Parse(Settings.DataBits);
             _stopBits = (StopBits) Enum.Parse(typeof (StopBits), Settings.StopBits);
             _parity = (Parity) Enum.Parse(typeof (Parity), Settings.Parity);
-            _handshake = Handshake.None;
-            _readTimeout = 500;
-            _writeTimeout = 500;
+            _readDelay = int.Parse(Settings.ReadDelay);
+            _writeDelay = int.Parse(Settings.WriteDelay);
+            _timeout = int.Parse(Settings.Timeout);
+            _retries = int.Parse(Settings.Retries);
 
             _ports = new List<string>();
             if (!string.IsNullOrEmpty(Settings.COMPort1))
@@ -74,10 +76,10 @@ namespace DATASCAN.Scanners
                     client = new TcpIpClient(roc.Address, roc.Port);
                 else
                 {
-                    await _service.GetPort(_ports, roc.Phone, _baudRate, _parity, _dataBits, _stopBits, port =>
+                    await _service.GetPort(_ports, roc.Phone, _baudRate, _parity, _dataBits, _stopBits, _retries, _timeout, _writeDelay, _readDelay, port =>
                     {
                         if (!string.IsNullOrEmpty(port))
-                            client = new GprsClient(roc.Phone, port, _baudRate, _parity, _dataBits, _stopBits);
+                            client = new GprsClient(roc.Phone, port, _baudRate, _parity, _dataBits, _stopBits, _retries, _timeout, _writeDelay, _readDelay);
                         else
                             Logger.Log(_log, new LogEntry { Message = "Помилка виділення СОМ-порта для опитування. Порти відсутні або зайняті", Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
                     }, ex =>

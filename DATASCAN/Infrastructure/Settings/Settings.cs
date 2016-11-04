@@ -38,6 +38,14 @@ namespace DATASCAN.Infrastructure.Settings
 
         public static string StopBits { get; set; } = "One";
 
+        public static string Retries { get; set; } = "3";
+
+        public static string Timeout { get; set; } = "30";
+
+        public static string WriteDelay { get; set; } = "1";
+
+        public static string ReadDelay { get; set; } = "1";
+
         public static string DbfPath { get; set; } = @"C:\Dispatch\tabDbf";
 
         /// <summary>
@@ -70,6 +78,10 @@ namespace DATASCAN.Infrastructure.Settings
                     Parity = settings["Parity"]?.ToString() ?? "";
                     DataBits = settings["DataBits"]?.ToString() ?? "";
                     StopBits = settings["StopBits"]?.ToString() ?? "";
+                    Retries = settings["Retries"]?.ToString() ?? "";
+                    Timeout = settings["Timeout"]?.ToString() ?? "";
+                    WriteDelay = settings["WriteDelay"]?.ToString() ?? "";
+                    ReadDelay = settings["ReadDelay"]?.ToString() ?? "";
                     DbfPath = settings["DbfPath"]?.ToString() ?? "";
                 }
             }
@@ -98,6 +110,10 @@ namespace DATASCAN.Infrastructure.Settings
                 { "Parity", Parity },
                 { "DataBits", DataBits },
                 { "StopBits", StopBits },
+                { "Retries", Retries },
+                { "Timeout", Timeout },
+                { "WriteDelay", WriteDelay },
+                { "ReadDelay", ReadDelay },
                 { "DbfPath", DbfPath }
             };
 

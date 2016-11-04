@@ -12,7 +12,7 @@ namespace DATASCAN.Services
 {
     public class RocService
     {
-        public async Task GetPort(List<string> ports, string phone, int baudRate, Parity parity, int dataBits, StopBits stopBits, Action<string> onSuccess, Action<Exception> onException)
+        public async Task GetPort(List<string> ports, string phone, int baudRate, Parity parity, int dataBits, StopBits stopBits, int retries, int timeout, int writeDelay, int readDelay, Action<string> onSuccess, Action<Exception> onException)
         {
             await Task.Run(async () =>
             {
@@ -22,7 +22,7 @@ namespace DATASCAN.Services
                     return port;
 
                 var client = new GprsClient(phone, ports[0], baudRate, parity, dataBits, stopBits);
-                var retries = 3;
+                var _retries = 3;
                 do
                 {
                     var status = await client.TestConnection();
@@ -32,14 +32,14 @@ namespace DATASCAN.Services
                         break;
                     }
                     await Task.Delay(1000);
-                    retries--;
-                } while (retries > 0);
+                    _retries--;
+                } while (_retries > 0);
 
                 if (ports.Count <= 1)
                     return port;
 
                 client = new GprsClient(phone, ports[1], baudRate, parity, dataBits, stopBits);
-                retries = 3;
+                _retries = 3;
                 do
                 {
                     var status = await client.TestConnection();
@@ -49,14 +49,14 @@ namespace DATASCAN.Services
                         break;
                     }
                     await Task.Delay(1000);
-                    retries--;
-                } while (retries > 0);
+                    _retries--;
+                } while (_retries > 0);
 
                 if (ports.Count <= 2)
                     return port;
 
                 client = new GprsClient(phone, ports[2], baudRate, parity, dataBits, stopBits);
-                retries = 3;
+                _retries = 3;
                 do
                 {
                     var status = await client.TestConnection();
@@ -66,8 +66,8 @@ namespace DATASCAN.Services
                         break;
                     }
                     await Task.Delay(1000);
-                    retries--;
-                } while (retries > 0);
+                    _retries--;
+                } while (_retries > 0);
 
                 return port;
             }).ContinueWith(result =>

@@ -54,11 +54,23 @@
             this.statusPort1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.statusPort2 = new System.Windows.Forms.ErrorProvider(this.components);
             this.statusPort3 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.numRetries = new System.Windows.Forms.NumericUpDown();
+            this.lblRetries = new System.Windows.Forms.Label();
+            this.numWriteDelay = new System.Windows.Forms.NumericUpDown();
+            this.lblWriteDelay = new System.Windows.Forms.Label();
+            this.numReadDelay = new System.Windows.Forms.NumericUpDown();
+            this.lblReadDelay = new System.Windows.Forms.Label();
+            this.numTimeout = new System.Windows.Forms.NumericUpDown();
+            this.lblTimeout = new System.Windows.Forms.Label();
             this.gbDbf.SuspendLayout();
             this.gbGPRS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusPort1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusPort2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusPort3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRetries)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWriteDelay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numReadDelay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // gbDbf
@@ -103,6 +115,14 @@
             // 
             // gbGPRS
             // 
+            this.gbGPRS.Controls.Add(this.lblTimeout);
+            this.gbGPRS.Controls.Add(this.numTimeout);
+            this.gbGPRS.Controls.Add(this.lblReadDelay);
+            this.gbGPRS.Controls.Add(this.numReadDelay);
+            this.gbGPRS.Controls.Add(this.lblWriteDelay);
+            this.gbGPRS.Controls.Add(this.numWriteDelay);
+            this.gbGPRS.Controls.Add(this.lblRetries);
+            this.gbGPRS.Controls.Add(this.numRetries);
             this.gbGPRS.Controls.Add(this.btnTestConnection);
             this.gbGPRS.Controls.Add(this.lblSettings);
             this.gbGPRS.Controls.Add(this.lblStopBits);
@@ -119,7 +139,7 @@
             this.gbGPRS.Controls.Add(this.cbPort1);
             this.gbGPRS.Location = new System.Drawing.Point(13, 81);
             this.gbGPRS.Name = "gbGPRS";
-            this.gbGPRS.Size = new System.Drawing.Size(379, 203);
+            this.gbGPRS.Size = new System.Drawing.Size(379, 370);
             this.gbGPRS.TabIndex = 1;
             this.gbGPRS.TabStop = false;
             this.gbGPRS.Text = "GPRS";
@@ -263,7 +283,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(317, 306);
+            this.btnCancel.Location = new System.Drawing.Point(317, 476);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -273,7 +293,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(236, 306);
+            this.btnSave.Location = new System.Drawing.Point(236, 476);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 3;
@@ -299,11 +319,119 @@
             this.statusPort3.ContainerControl = this;
             this.statusPort3.Icon = ((System.Drawing.Icon)(resources.GetObject("statusPort3.Icon")));
             // 
+            // numRetries
+            // 
+            this.numRetries.Location = new System.Drawing.Point(332, 215);
+            this.numRetries.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numRetries.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numRetries.Name = "numRetries";
+            this.numRetries.Size = new System.Drawing.Size(41, 20);
+            this.numRetries.TabIndex = 16;
+            this.numRetries.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numRetries.ValueChanged += new System.EventHandler(this.numRetries_ValueChanged);
+            // 
+            // lblRetries
+            // 
+            this.lblRetries.AutoSize = true;
+            this.lblRetries.Location = new System.Drawing.Point(196, 217);
+            this.lblRetries.Name = "lblRetries";
+            this.lblRetries.Size = new System.Drawing.Size(86, 13);
+            this.lblRetries.TabIndex = 17;
+            this.lblRetries.Text = "Кількість спроб";
+            // 
+            // numWriteDelay
+            // 
+            this.numWriteDelay.Location = new System.Drawing.Point(332, 294);
+            this.numWriteDelay.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numWriteDelay.Name = "numWriteDelay";
+            this.numWriteDelay.Size = new System.Drawing.Size(41, 20);
+            this.numWriteDelay.TabIndex = 18;
+            this.numWriteDelay.ValueChanged += new System.EventHandler(this.numWriteDelay_ValueChanged);
+            // 
+            // lblWriteDelay
+            // 
+            this.lblWriteDelay.AutoSize = true;
+            this.lblWriteDelay.Location = new System.Drawing.Point(196, 296);
+            this.lblWriteDelay.Name = "lblWriteDelay";
+            this.lblWriteDelay.Size = new System.Drawing.Size(121, 13);
+            this.lblWriteDelay.TabIndex = 19;
+            this.lblWriteDelay.Text = "Затримка запиту, сек.";
+            // 
+            // numReadDelay
+            // 
+            this.numReadDelay.Location = new System.Drawing.Point(332, 333);
+            this.numReadDelay.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numReadDelay.Name = "numReadDelay";
+            this.numReadDelay.Size = new System.Drawing.Size(41, 20);
+            this.numReadDelay.TabIndex = 20;
+            this.numReadDelay.ValueChanged += new System.EventHandler(this.numReadDelay_ValueChanged);
+            // 
+            // lblReadDelay
+            // 
+            this.lblReadDelay.AutoSize = true;
+            this.lblReadDelay.Location = new System.Drawing.Point(196, 335);
+            this.lblReadDelay.Name = "lblReadDelay";
+            this.lblReadDelay.Size = new System.Drawing.Size(127, 13);
+            this.lblReadDelay.TabIndex = 21;
+            this.lblReadDelay.Text = "Затримка читання, сек.";
+            // 
+            // numTimeout
+            // 
+            this.numTimeout.Location = new System.Drawing.Point(332, 254);
+            this.numTimeout.Maximum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.numTimeout.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numTimeout.Name = "numTimeout";
+            this.numTimeout.Size = new System.Drawing.Size(41, 20);
+            this.numTimeout.TabIndex = 22;
+            this.numTimeout.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numTimeout.ValueChanged += new System.EventHandler(this.numTimeout_ValueChanged);
+            // 
+            // lblTimeout
+            // 
+            this.lblTimeout.AutoSize = true;
+            this.lblTimeout.Location = new System.Drawing.Point(196, 256);
+            this.lblTimeout.Name = "lblTimeout";
+            this.lblTimeout.Size = new System.Drawing.Size(130, 13);
+            this.lblTimeout.TabIndex = 23;
+            this.lblTimeout.Text = "Таймаут з\'єднання, сек.";
+            // 
             // ConnectionSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 341);
+            this.ClientSize = new System.Drawing.Size(404, 511);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.gbGPRS);
@@ -311,9 +439,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 380);
+            this.MaximumSize = new System.Drawing.Size(420, 550);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(420, 380);
+            this.MinimumSize = new System.Drawing.Size(420, 550);
             this.Name = "ConnectionSettingsForm";
             this.Text = "Налаштування підключення";
             this.gbDbf.ResumeLayout(false);
@@ -323,6 +451,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.statusPort1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusPort2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusPort3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRetries)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWriteDelay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numReadDelay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -353,5 +485,13 @@
         private System.Windows.Forms.ErrorProvider statusPort1;
         private System.Windows.Forms.ErrorProvider statusPort2;
         private System.Windows.Forms.ErrorProvider statusPort3;
+        private System.Windows.Forms.Label lblWriteDelay;
+        private System.Windows.Forms.NumericUpDown numWriteDelay;
+        private System.Windows.Forms.Label lblRetries;
+        private System.Windows.Forms.NumericUpDown numRetries;
+        private System.Windows.Forms.Label lblReadDelay;
+        private System.Windows.Forms.NumericUpDown numReadDelay;
+        private System.Windows.Forms.Label lblTimeout;
+        private System.Windows.Forms.NumericUpDown numTimeout;
     }
 }
