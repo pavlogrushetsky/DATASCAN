@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using DATASCAN.Communication.Clients;
 using DATASCAN.Communication.Common;
 using DATASCAN.Core.Entities.Rocs;
@@ -28,10 +29,10 @@ namespace DATASCAN.Communication.Protocols
             request[11] = 0x01;
             request[12] = 0x1e;
 
-            var crc = BitConverter.GetBytes(Crc16.Compute(request));
+            var crc = Crc16.Compute(request, 13);
 
-            request[13] = crc[1];
-            request[14] = crc[0];
+            request[13] = crc[0];
+            request[14] = crc[1];
 
             int startIndex = request.GetInt16(7);
             int totalIndex;
@@ -76,34 +77,34 @@ namespace DATASCAN.Communication.Protocols
                 request[7] = BitConverter.GetBytes(startIndex)[0];
                 request[8] = BitConverter.GetBytes(startIndex)[1];
 
-                crc = BitConverter.GetBytes(Crc16.Compute(request));
+                crc = Crc16.Compute(request, 13);
 
-                request[13] = crc[1];
-                request[14] = crc[0];
+                request[13] = crc[0];
+                request[14] = crc[1];
 
             } while (startIndex < totalIndex);
 
             return data.Distinct().ToList();
         }
 
-        public List<Roc809EventData> GetEventData(Roc809 roc, IClient client)
+        public async Task<List<Roc809EventData>> GetEventData(Roc809 roc, IClient client)
         {
             var request = new byte[11];
 
-            request[0] = (byte)roc.RocUnit;
-            request[1] = (byte)roc.RocGroup;
+            request[0] = 0xf0;//(byte)roc.RocUnit;
+            request[1] = 0xf0;//(byte)roc.RocGroup;
             request[2] = (byte)roc.HostUnit;
             request[3] = (byte)roc.HostGroup;
             request[4] = 0x77;
             request[5] = 0x03;
             request[6] = 0x0a;
-            request[7] = 0x01;
+            request[7] = 0xac;
             request[8] = 0x00;
 
-            var crc = BitConverter.GetBytes(Crc16.Compute(request));
+            var crc = Crc16.Compute(request, 9);
 
-            request[9] = crc[1];
-            request[10] = crc[0];
+            request[9] = crc[0];
+            request[10] = crc[1];
 
             int startIndex = request.GetInt16(7);
             int totalIndex;
@@ -112,7 +113,7 @@ namespace DATASCAN.Communication.Protocols
 
             do
             {
-                var response = client.GetData(request).Result;
+                var response = await client.GetData(request);
 
                 totalIndex = response.GetInt16(9);
                 var eventsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;
@@ -246,10 +247,10 @@ namespace DATASCAN.Communication.Protocols
                 request[7] = BitConverter.GetBytes(startIndex)[0];
                 request[8] = BitConverter.GetBytes(startIndex)[1];
 
-                crc = BitConverter.GetBytes(Crc16.Compute(request));
+                crc = Crc16.Compute(request, 9);
 
-                request[9] = crc[1];
-                request[10] = crc[0];
+                request[9] = crc[0];
+                request[10] = crc[1];
 
             } while (startIndex < totalIndex);
 
@@ -271,10 +272,10 @@ namespace DATASCAN.Communication.Protocols
             request[7] = 0x00;
             request[8] = 0x00;
 
-            var crc = BitConverter.GetBytes(Crc16.Compute(request));
+            var crc = Crc16.Compute(request, 9);
 
-            request[9] = crc[1];
-            request[10] = crc[0];
+            request[9] = crc[0];
+            request[10] = crc[1];
 
             int startIndex = request.GetInt16(7);
             int totalIndex;
@@ -332,10 +333,10 @@ namespace DATASCAN.Communication.Protocols
                 request[7] = BitConverter.GetBytes(startIndex)[0];
                 request[8] = BitConverter.GetBytes(startIndex)[1];
 
-                crc = BitConverter.GetBytes(Crc16.Compute(request));
+                crc = Crc16.Compute(request, 9);
 
-                request[9] = crc[1];
-                request[10] = crc[0];
+                request[9] = crc[0];
+                request[10] = crc[1];
 
             } while (startIndex < totalIndex);
 
