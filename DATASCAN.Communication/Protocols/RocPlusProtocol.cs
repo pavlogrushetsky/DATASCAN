@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DATASCAN.Communication.Clients;
 using DATASCAN.Communication.Common;
 using DATASCAN.Core.Entities.Rocs;
+// ReSharper disable RedundantCatchClause
 
 namespace DATASCAN.Communication.Protocols
 {
@@ -41,7 +42,7 @@ namespace DATASCAN.Communication.Protocols
 
             do
             {
-                var response = await client.GetData(request);
+                var response = await client.GetData(roc, request);
 
                 totalIndex = historyType == RocHistoryType.Minute ? 60 : response.GetInt16(9);
 
@@ -91,8 +92,8 @@ namespace DATASCAN.Communication.Protocols
         {
             var request = new byte[11];
 
-            request[0] = 0xf0;//(byte)roc.RocUnit;
-            request[1] = 0xf0;//(byte)roc.RocGroup;
+            request[0] = (byte)roc.RocUnit;
+            request[1] = (byte)roc.RocGroup;
             request[2] = (byte)roc.HostUnit;
             request[3] = (byte)roc.HostGroup;
             request[4] = 0x77;
@@ -113,7 +114,7 @@ namespace DATASCAN.Communication.Protocols
 
             do
             {
-                var response = await client.GetData(request);
+                var response = await client.GetData(roc, request);               
 
                 totalIndex = response.GetInt16(9);
                 var eventsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;
@@ -126,7 +127,6 @@ namespace DATASCAN.Communication.Protocols
                     var time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
 
                     record.Type = response[11 + offset];
-
 
                     record.Time = time.AddSeconds(response.GetUInt32(12 + offset));
 
@@ -279,9 +279,10 @@ namespace DATASCAN.Communication.Protocols
 
             int startIndex = request.GetInt16(7);
             int totalIndex;
+
             do
             {
-                var response = await client.GetData(request);
+                var response = await client.GetData(roc, request);
 
                 totalIndex = response.GetInt16(9);
                 var alarmsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;

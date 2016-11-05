@@ -47,7 +47,7 @@ namespace DATASCAN.Scanners
                 IClient _client;
 
                 if (!roc.IsScannedViaGPRS)
-                    _client = new TcpIpClient(roc.Address, roc.Port);
+                    _client = new TcpIpClient();
                 else                 
                     _client = _gprsClient;             
 
