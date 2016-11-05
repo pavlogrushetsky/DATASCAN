@@ -36,9 +36,6 @@ namespace DATASCAN.View
             this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConnection = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuLanguage = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuUkrainian = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuRussian = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.splHorizontal = new System.Windows.Forms.SplitContainer();
             this.splVertical = new System.Windows.Forms.SplitContainer();
@@ -49,19 +46,19 @@ namespace DATASCAN.View
             this.trvScans = new System.Windows.Forms.TreeView();
             this.imageScans = new System.Windows.Forms.ImageList(this.components);
             this.grpMessages = new System.Windows.Forms.GroupBox();
-            this.imgMessages = new System.Windows.Forms.ImageList(this.components);
-            this.status = new System.Windows.Forms.StatusStrip();
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.mnuNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.mnuExpand = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
             this.lstMessages = new DATASCAN.View.Controls.LogListView();
             this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colTimestamp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imgMessages = new System.Windows.Forms.ImageList(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.status = new System.Windows.Forms.StatusStrip();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.mnuNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuExpand = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDATASCAN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splHorizontal)).BeginInit();
             this.splHorizontal.Panel1.SuspendLayout();
@@ -74,8 +71,8 @@ namespace DATASCAN.View
             this.grpEstimators.SuspendLayout();
             this.grpScans.SuspendLayout();
             this.grpMessages.SuspendLayout();
-            this.mnuNotifyIcon.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.mnuNotifyIcon.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnuDATASCAN
@@ -93,8 +90,7 @@ namespace DATASCAN.View
             // 
             this.mnuSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuDatabase,
-            this.mnuConnection,
-            this.mnuLanguage});
+            this.mnuConnection});
             this.mnuSettings.Image = global::DATASCAN.Properties.Resources.Settings;
             this.mnuSettings.Name = "mnuSettings";
             this.mnuSettings.Size = new System.Drawing.Size(117, 20);
@@ -115,28 +111,6 @@ namespace DATASCAN.View
             this.mnuConnection.Size = new System.Drawing.Size(169, 22);
             this.mnuConnection.Text = "Підключення";
             this.mnuConnection.Click += new System.EventHandler(this.mnuConnection_Click);
-            // 
-            // mnuLanguage
-            // 
-            this.mnuLanguage.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuUkrainian,
-            this.mnuRussian});
-            this.mnuLanguage.Image = global::DATASCAN.Properties.Resources.Language;
-            this.mnuLanguage.Name = "mnuLanguage";
-            this.mnuLanguage.Size = new System.Drawing.Size(169, 22);
-            this.mnuLanguage.Text = "Мова інтерфейсу";
-            // 
-            // mnuUkrainian
-            // 
-            this.mnuUkrainian.Name = "mnuUkrainian";
-            this.mnuUkrainian.Size = new System.Drawing.Size(134, 22);
-            this.mnuUkrainian.Text = "Українська";
-            // 
-            // mnuRussian
-            // 
-            this.mnuRussian.Name = "mnuRussian";
-            this.mnuRussian.Size = new System.Drawing.Size(134, 22);
-            this.mnuRussian.Text = "Російська";
             // 
             // mnuAbout
             // 
@@ -261,6 +235,57 @@ namespace DATASCAN.View
             this.grpMessages.TabStop = false;
             this.grpMessages.Text = "Повідомлення";
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.lstMessages, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(878, 220);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // lstMessages
+            // 
+            this.lstMessages.BackColor = System.Drawing.SystemColors.Control;
+            this.lstMessages.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colStatus,
+            this.colType,
+            this.colTimestamp,
+            this.colMessage});
+            this.lstMessages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstMessages.FullRowSelect = true;
+            this.lstMessages.Location = new System.Drawing.Point(3, 3);
+            this.lstMessages.MultiSelect = false;
+            this.lstMessages.Name = "lstMessages";
+            this.lstMessages.Size = new System.Drawing.Size(872, 192);
+            this.lstMessages.SmallImageList = this.imgMessages;
+            this.lstMessages.TabIndex = 0;
+            this.lstMessages.UseCompatibleStateImageBehavior = false;
+            this.lstMessages.View = System.Windows.Forms.View.Details;
+            // 
+            // colStatus
+            // 
+            this.colStatus.Text = "Статус";
+            // 
+            // colType
+            // 
+            this.colType.Text = "Тип";
+            // 
+            // colTimestamp
+            // 
+            this.colTimestamp.Text = "Дата та час";
+            // 
+            // colMessage
+            // 
+            this.colMessage.Text = "Повідомлення";
+            // 
             // imgMessages
             // 
             this.imgMessages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgMessages.ImageStream")));
@@ -269,6 +294,16 @@ namespace DATASCAN.View
             this.imgMessages.Images.SetKeyName(1, "Ok.png");
             this.imgMessages.Images.SetKeyName(2, "Attention.png");
             this.imgMessages.Images.SetKeyName(3, "HighPriority.png");
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 198);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "label1";
+            this.label1.Visible = false;
             // 
             // status
             // 
@@ -308,67 +343,6 @@ namespace DATASCAN.View
             this.mnuExit.Text = "Вийти";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.lstMessages, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(878, 220);
-            this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 198);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "label1";
-            this.label1.Visible = false;
-            // 
-            // lstMessages
-            // 
-            this.lstMessages.BackColor = System.Drawing.SystemColors.Control;
-            this.lstMessages.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colStatus,
-            this.colType,
-            this.colTimestamp,
-            this.colMessage});
-            this.lstMessages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstMessages.FullRowSelect = true;
-            this.lstMessages.Location = new System.Drawing.Point(3, 3);
-            this.lstMessages.MultiSelect = false;
-            this.lstMessages.Name = "lstMessages";
-            this.lstMessages.Size = new System.Drawing.Size(872, 192);
-            this.lstMessages.SmallImageList = this.imgMessages;
-            this.lstMessages.TabIndex = 0;
-            this.lstMessages.UseCompatibleStateImageBehavior = false;
-            this.lstMessages.View = System.Windows.Forms.View.Details;
-            // 
-            // colStatus
-            // 
-            this.colStatus.Text = "Статус";
-            // 
-            // colType
-            // 
-            this.colType.Text = "Тип";
-            // 
-            // colTimestamp
-            // 
-            this.colTimestamp.Text = "Дата та час";
-            // 
-            // colMessage
-            // 
-            this.colMessage.Text = "Повідомлення";
-            // 
             // DATASCANForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -396,9 +370,9 @@ namespace DATASCAN.View
             this.grpEstimators.ResumeLayout(false);
             this.grpScans.ResumeLayout(false);
             this.grpMessages.ResumeLayout(false);
-            this.mnuNotifyIcon.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.mnuNotifyIcon.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -422,9 +396,6 @@ namespace DATASCAN.View
         private System.Windows.Forms.ImageList imgEstimators;
         private System.Windows.Forms.ImageList imageScans;
         private System.Windows.Forms.StatusStrip status;
-        private System.Windows.Forms.ToolStripMenuItem mnuLanguage;
-        private System.Windows.Forms.ToolStripMenuItem mnuUkrainian;
-        private System.Windows.Forms.ToolStripMenuItem mnuRussian;
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.ContextMenuStrip mnuNotifyIcon;
         private System.Windows.Forms.ToolStripMenuItem mnuExpand;

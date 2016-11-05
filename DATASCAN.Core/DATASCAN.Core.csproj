@@ -58,6 +58,10 @@
     <Compile Include="Migrations\201610261811274_RemovedDateLastUpdated.Designer.cs">
       <DependentUpon>201610261811274_RemovedDateLastUpdated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611051207281_RemovedRequiredForOperatorId.cs" />
+    <Compile Include="Migrations\201611051207281_RemovedRequiredForOperatorId.Designer.cs">
+      <DependentUpon>201611051207281_RemovedRequiredForOperatorId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Entities\Common\CatalogBase.cs" />
     <Compile Include="Entities\Common\DataRecordBase.cs" />
@@ -109,6 +113,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610261811274_RemovedDateLastUpdated.resx">
       <DependentUpon>201610261811274_RemovedDateLastUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611051207281_RemovedRequiredForOperatorId.resx">
+      <DependentUpon>201611051207281_RemovedRequiredForOperatorId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DATASCAN.Communication.Clients;
 using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Common;
 using DATASCAN.Core.Entities.Floutecs;
@@ -18,6 +20,7 @@ using DATASCAN.Scanners;
 using DATASCAN.View.Common;
 using DATASCAN.View.Extensions;
 using DATASCAN.View.Forms;
+using Settings = DATASCAN.Infrastructure.Settings.Settings;
 
 namespace DATASCAN.View
 {
@@ -47,6 +50,8 @@ namespace DATASCAN.View
         private List<PeriodicScan> _periodicScans = new List<PeriodicScan>();
         private List<ScheduledScan> _scheduledScans = new List<ScheduledScan>();
 
+        private readonly GprsClient _gprsClient;
+
         private const int SCAN_PERIOD_MS = 5000;
 
         public DATASCANForm()
@@ -60,6 +65,9 @@ namespace DATASCAN.View
 
             InitializeConnection();
 
+            _gprsClient = new GprsClient();
+            InitializeGprsClient();
+
             _contextService = new DataContextService(_sqlConnection);
             _entitiesService = new EntitiesService<EntityBase>(_sqlConnection);
             _estimatorsService = new EstimatorsService(_sqlConnection);
@@ -70,7 +78,7 @@ namespace DATASCAN.View
             _scheduledScansService = new ScheduledScansService(_sqlConnection);
             _scanMembersService = new ScanMembersService(_sqlConnection);
 
-            _rocScanner = new RocScanner(lstMessages);
+            _rocScanner = new RocScanner(lstMessages, _gprsClient);
             _floutecScanner = new FloutecScanner(lstMessages);
            
             UpdateData(true).ConfigureAwait(false);
@@ -88,7 +96,7 @@ namespace DATASCAN.View
         {
             try
             {
-                Infrastructure.Settings.Settings.Get();
+                Settings.Get();
             }
             catch (Exception ex)
             {
@@ -100,24 +108,47 @@ namespace DATASCAN.View
         {
             var connection = new SqlConnectionStringBuilder
             {
-                DataSource = Infrastructure.Settings.Settings.ServerName,
-                InitialCatalog = Infrastructure.Settings.Settings.DatabaseName,
+                DataSource = Settings.ServerName,
+                InitialCatalog = Settings.DatabaseName,
                 MultipleActiveResultSets = true,
-                ConnectTimeout = int.Parse(Infrastructure.Settings.Settings.ConnectionTimeout)
+                ConnectTimeout = int.Parse(Settings.ConnectionTimeout)
             };
 
-            if (string.IsNullOrEmpty(Infrastructure.Settings.Settings.UserName) || string.IsNullOrEmpty(Infrastructure.Settings.Settings.UserPassword))
+            if (string.IsNullOrEmpty(Settings.UserName) || string.IsNullOrEmpty(Settings.UserPassword))
             {
                 connection.IntegratedSecurity = true;
             }
             else
             {
                 connection.IntegratedSecurity = false;
-                connection.UserID = Infrastructure.Settings.Settings.UserName;
-                connection.Password = Infrastructure.Settings.Settings.UserPassword;
+                connection.UserID = Settings.UserName;
+                connection.Password = Settings.UserPassword;
             }
 
             _sqlConnection = connection.ToString();
+        }
+
+        private void InitializeGprsClient()
+        {
+            var ports = new List<string>();
+
+            if (!string.IsNullOrEmpty(Settings.COMPort1))
+                ports.Add(Settings.COMPort1);
+            if (!string.IsNullOrEmpty(Settings.COMPort2))
+                ports.Add(Settings.COMPort2);
+            if (!string.IsNullOrEmpty(Settings.COMPort3))
+                ports.Add(Settings.COMPort3);
+
+            _gprsClient.Ports = ports;
+
+            _gprsClient.Baudrate = int.Parse(Settings.Baudrate);
+            _gprsClient.DataBits = int.Parse(Settings.DataBits);
+            _gprsClient.StopBits = (StopBits)Enum.Parse(typeof(StopBits), Settings.StopBits);
+            _gprsClient.Parity = (Parity)Enum.Parse(typeof(Parity), Settings.Parity);
+            _gprsClient.ReadDelay = int.Parse(Settings.ReadDelay);
+            _gprsClient.WriteDelay = int.Parse(Settings.WriteDelay);
+            _gprsClient.Timeout = int.Parse(Settings.Timeout);
+            _gprsClient.Retries = int.Parse(Settings.Retries);            
         }
 
         private async Task UpdateData(bool initialize)
@@ -125,7 +156,7 @@ namespace DATASCAN.View
             status.Items[0].Visible = true;
             status.Items[2].Visible = true;
 
-            bool connected = await _contextService.TestConnection(initialize, ex => LogException(ex.Message));
+            var connected = await _contextService.TestConnection(initialize, ex => LogException(ex.Message));
 
             status.Items[0].Visible = false;
             status.Items[2].Visible = false;
@@ -1303,6 +1334,8 @@ namespace DATASCAN.View
             {
                 Logger.Log(lstMessages, new LogEntry { Message = "Налаштування підключення змінено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
             }
+
+            InitializeGprsClient();
         }
 
         private async void RefreshMenu_Click(object sender, EventArgs e)
@@ -1330,6 +1363,9 @@ namespace DATASCAN.View
             notifyIcon.Visible = false;
             notifyIcon.Icon = null;
             notifyIcon.Dispose();
+
+            _gprsClient.Dispose();
+
             Application.Exit();
         }
 
@@ -1598,6 +1634,6 @@ namespace DATASCAN.View
                     .Any(p => p > prev && p < next));
         }
 
-        #endregion
+        #endregion        
     }
 }

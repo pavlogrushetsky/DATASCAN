@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
-using System.Threading.Tasks;
 using DATASCAN.Communication.Clients;
-using DATASCAN.Communication.Common;
 using DATASCAN.Core.Entities;
 using DATASCAN.Core.Entities.Rocs;
 using DATASCAN.Core.Entities.Scanning;
 using DATASCAN.DataAccess.Services;
 using DATASCAN.Infrastructure.Logging;
-using DATASCAN.Infrastructure.Settings;
 using DATASCAN.Services;
 using DATASCAN.View.Controls;
 
@@ -20,20 +16,11 @@ namespace DATASCAN.Scanners
     {
         private RocService _service;
         private RocDataService _dataService;
+        private readonly GprsClient _gprsClient;
 
-        private int _baudRate;
-        private int _dataBits;
-        private StopBits _stopBits;
-        private Parity _parity;
-        private int _readDelay;
-        private int _writeDelay;
-        private int _timeout;
-        private int _retries;
-        private List<string> _ports; 
-
-        public RocScanner(LogListView log) : base(log)
+        public RocScanner(LogListView log, GprsClient gprsClient) : base(log)
         {
-
+            _gprsClient = gprsClient;
         }
 
         public override void Process(string connection, IEnumerable<ScanMemberBase> members, IEnumerable<EstimatorBase> estimators)
@@ -43,25 +30,8 @@ namespace DATASCAN.Scanners
             _estimators = estimators.ToList();
             _service = new RocService();
             _dataService = new RocDataService(_connection);
-
-            _baudRate = int.Parse(Settings.Baudrate);
-            _dataBits = int.Parse(Settings.DataBits);
-            _stopBits = (StopBits) Enum.Parse(typeof (StopBits), Settings.StopBits);
-            _parity = (Parity) Enum.Parse(typeof (Parity), Settings.Parity);
-            _readDelay = int.Parse(Settings.ReadDelay);
-            _writeDelay = int.Parse(Settings.WriteDelay);
-            _timeout = int.Parse(Settings.Timeout);
-            _retries = int.Parse(Settings.Retries);
-
-            _ports = new List<string>();
-            if (!string.IsNullOrEmpty(Settings.COMPort1))
-                _ports.Add(Settings.COMPort1);
-            if (!string.IsNullOrEmpty(Settings.COMPort2))
-                _ports.Add(Settings.COMPort2);
-            if (!string.IsNullOrEmpty(Settings.COMPort3))
-                _ports.Add(Settings.COMPort3);
-
-            _members.ForEach(async m =>
+            
+            _members.ForEach(m =>
             {
                 var member = m as RocScanMember;
                 if (member == null)
@@ -70,39 +40,25 @@ namespace DATASCAN.Scanners
                 if (roc == null)
                     return;
 
-                IClient client = null;
-
-                if (!roc.IsScannedViaGPRS)
-                    client = new TcpIpClient(roc.Address, roc.Port);
-                else
-                {
-                    await _service.GetPort(_ports, roc.Phone, _baudRate, _parity, _dataBits, _stopBits, _retries, _timeout, _writeDelay, _readDelay, port =>
-                    {
-                        if (!string.IsNullOrEmpty(port))
-                            client = new GprsClient(roc.Phone, port, _baudRate, _parity, _dataBits, _stopBits, _retries, _timeout, _writeDelay, _readDelay);
-                        else
-                            Logger.Log(_log, new LogEntry { Message = "Помилка виділення СОМ-порта для опитування. Порти відсутні або зайняті", Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    }, ex =>
-                    {
-                        Logger.Log(_log, new LogEntry { Message = "Помилка виділення СОМ-порта для опитування. Порти відсутні або зайняті", Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                        Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.System, Timestamp = DateTime.Now });
-                    });                        
-                }
-
-                if (client == null)
+                if (!(member.ScanAlarmData || member.ScanDailyData || member.ScanEventData ||
+                      member.ScanMinuteData || member.ScanPeriodicData))
                     return;
 
-                if (member.ScanEventData || member.ScanAlarmData)
-                {
-                    ProcessRoc(member, roc, client);
-                }
+                IClient _client;
+
+                if (!roc.IsScannedViaGPRS)
+                    _client = new TcpIpClient(roc.Address, roc.Port);
+                else                 
+                    _client = _gprsClient;             
+
+                ProcessRoc(member, roc, _client);
 
                 roc.MeasurePoints.Where(p => p.IsActive).ToList().ForEach(p =>
                 {
                     var point = p as Roc809MeasurePoint;
                     if (point == null)
                         return;
-                    ProcessPoint(member, roc, point, client);
+                    ProcessPoint(member, roc, point, _client);
                 });
             });
         }

@@ -27,7 +27,6 @@ namespace DATASCAN.Core.Entities.Rocs
         /// <summary>
         /// Идентификатор оператора
         /// </summary>
-        [Required]
         public string OperatorId { get; set; }
 
         /// <summary>

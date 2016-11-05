@@ -1,187 +1,154 @@
-﻿using System.IO.Ports;
-using System.Linq;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.IO.Ports;
 using System.Threading.Tasks;
-using DATASCAN.Communication.Common;
 
 namespace DATASCAN.Communication.Clients
 {
-    public class GprsClient : IClient
+    public class GprsClient : IClient, IDisposable
     {
-        private readonly string _phone;
-        private readonly string _port;
-        private readonly int _baudrate;
-        private readonly Parity _parity;
-        private readonly int _dataBits;
-        private readonly StopBits _stopBits;
-        private readonly Handshake _handshake;
-        private readonly int _timeout;
-        private readonly int _retries;
-        private readonly int _writeDelay;
-        private readonly int _readDelay;
+        public List<string> Ports { get; set; }
+        public int Baudrate { get; set; }
+        public Parity Parity { get; set; } 
+        public int DataBits { get; set; }
+        public StopBits StopBits { get; set; }
+        public int Timeout { get; set; }
+        public int Retries { get; set; }
+        public int WriteDelay { get; set; }
+        public int ReadDelay { get; set; }
 
-        public GprsClient(string phone, string port, int baudrate, Parity parity, int dataBits, StopBits stopBits, int retries, int timeout, int writeDelay, int readDelay)
-        {
-            _phone = phone;
-            _port = port;
-            _baudrate = baudrate;
-            _parity = parity;
-            _dataBits = dataBits;
-            _stopBits = stopBits;
-            _handshake = Handshake.None;
-            _timeout = timeout;
-            _retries = retries;
-            _writeDelay = writeDelay;
-            _readDelay = readDelay;
-        }
+        //public async Task<string> Connect()
+        //{
+        //    // Если порта нет в списке доступных - выход
+        //    if (!SerialPort.GetPortNames().Contains(_port))
+        //        return "";
 
-        public async Task<string> TestConnection()
-        {
-            var response = new byte[1024];
+        //    var response = new byte[1024];
 
-            if (!SerialPort.GetPortNames().Contains(_port))
-                return "";
+        //    // Создание экземпляра последовательного порта
+        //    SerialPortFixer.Execute(_port);
+        //    _serialPort = new SerialPort
+        //    {
+        //        PortName = _port,
+        //        BaudRate = _baudrate,
+        //        DataBits = _dataBits,
+        //        StopBits = _stopBits,
+        //        Parity = _parity,
+        //        Handshake = _handshake,
+        //        WriteTimeout = _timeout,
+        //        ReadTimeout = _timeout,
+        //        DtrEnable = true
+        //    };           
 
-            SerialPortFixer.Execute(_port);
-            using (var port = new SerialPort
-            {
-                PortName = _port,
-                BaudRate = _baudrate,
-                DataBits = _dataBits,
-                StopBits = _stopBits,
-                Parity = _parity,
-                Handshake = _handshake,
-                WriteTimeout = _timeout,
-                ReadTimeout = _timeout,
-                DtrEnable = true
-            })
-            {
-                await Task.Delay(_writeDelay);
+        //    // Если порт закрыт - открыть порт
+        //    if (!_serialPort.IsOpen)
+        //    {
+        //        _serialPort.Open();
+        //    }
 
-                if (!port.IsOpen)
-                {
-                    port.Open();
-                }
+        //    var retries = _retries;
+        //    var stream = _serialPort.BaseStream;
 
-                var stream = port.BaseStream;
+        //    // Цикл опроса до исчерпания количества попыток
+        //    do
+        //    {
+        //        // Активация модема 
+        //        await Task.Delay(_writeDelay);
+        //        _serialPort.WriteLine(@"AT" + "\r\n");
+        //        await Task.Delay(_readDelay);
+        //        var task = stream.ReadAsync(response, 0, response.Length);
+        //        await Task.WhenAny(task, Task.Delay(_timeout));
 
-                port.WriteLine(@"AT" + "\r\n");
-                await Task.Delay(_readDelay);
-                await stream.ReadAsync(response, 0, response.Length);
+        //        // Если статус не ОК - переход к следующей попытке
+        //        var status = Encoding.ASCII.GetString(response);
+        //        if (!status.Contains("OK"))
+        //        {
+        //            continue;
+        //        }
 
-                var status = Encoding.ASCII.GetString(response);
-                if (!status.Contains("OK"))
-                {
-                    return "";
-                }
+        //        // Инициализация модема
+        //        await Task.Delay(_writeDelay);
+        //        _serialPort.WriteLine(@"AT&FE0V1X1&D2&C1S0=0" + "\r\n");
+        //        await Task.Delay(_readDelay);
+        //        task = stream.ReadAsync(response, 0, response.Length);
+        //        await Task.WhenAny(task, Task.Delay(_timeout));
 
-                port.WriteLine(@"AT&FE0V1X1&D2&C1S0=0" + "\r\n");
-                await Task.Delay(_readDelay);
-                await stream.ReadAsync(response, 0, response.Length);
+        //        // Если статус не ОК - переход к следующей попытке
+        //        status = Encoding.ASCII.GetString(response);
+        //        if (!status.Contains("OK"))
+        //        {
+        //            continue;
+        //        }
 
-                status = Encoding.ASCII.GetString(response);
-                if (!status.Contains("OK"))
-                {
-                    return "";
-                }
+        //        // Установление соединения
+        //        await Task.Delay(_writeDelay);
+        //        _serialPort.WriteLine($@"ATDT{_phone}" + "\r\n");
+        //        await Task.Delay(_readDelay);
+        //        task = stream.ReadAsync(response, 0, response.Length);
+        //        await Task.WhenAny(task, Task.Delay(_timeout));
 
-                port.WriteLine($@"ATDT{_phone}" + "\r\n");
-                await Task.Delay(_readDelay);
-                await stream.ReadAsync(response, 0, response.Length);
+        //        // Если статус CONNECT  - выход из метода
+        //        status = Encoding.ASCII.GetString(response);
+        //        if (status.Contains("CONNECT"))
+        //        {
+        //            return "CONNECT";
+        //        }
 
-                status = Encoding.ASCII.GetString(response);
+        //        // Декремент количества попыток
+        //        retries--;
+        //    } while (retries > 0);
 
-                port.WriteLine(@"ATH0" + "\r\n");
-                await Task.Delay(_writeDelay);
+        //    // Если порт открыт - закрыть порт
+        //    if (_serialPort.IsOpen)
+        //    {
+        //        _serialPort.Close();
+        //    }
 
-                port.Close();
-
-                return status;
-            }
-        }
+        //    return "";
+        //}
 
         public async Task<byte[]> GetData(byte[] request)
         {
-            return await Task.Run(async () =>
-            {
-                var response = new byte[1024];
-                SerialPortFixer.Execute(_port);
-                using (var port = new SerialPort
-                {
-                    PortName = _port,
-                    BaudRate = _baudrate,
-                    DataBits = _dataBits,
-                    StopBits = _stopBits,
-                    Parity = _parity,
-                    Handshake = _handshake,
-                    WriteTimeout = _timeout,
-                    ReadTimeout = _timeout,
-                    DtrEnable = true
-                })
-                {
-                    var retries = _retries;
-                    do
-                    {
-                        await Task.Delay(_writeDelay);
+            //var response = new byte[1024];
 
-                        if (!port.IsOpen)
-                        {
-                            port.Open();
-                        }
+            //var retries = _retries;
+            //var stream = _serialPort.BaseStream;
+            //do
+            //{
+            //    await Task.Delay(_writeDelay);
 
-                        var stream = port.BaseStream;
+            //    _serialPort.DiscardInBuffer();
+            //    _serialPort.DiscardOutBuffer();
 
-                        port.WriteLine(@"AT" + "\r\n");
-                        await Task.Delay(_readDelay);
-                        await stream.ReadAsync(response, 0, response.Length);
+            //    _serialPort.Write(request, 0, request.Length);
+            //    await Task.Delay(_readDelay);
+            //    var task = stream.ReadAsync(response, 0, response.Length);
+            //    await Task.WhenAny(task, Task.Delay(_timeout));
 
-                        if (!Encoding.ASCII.GetString(response).Contains("OK"))
-                        {
-                            break;
-                        }
+            //    if (response[0] != 0x00)
+            //        break;
 
-                        port.WriteLine(@"AT&FE0V1X1&D2&C1S0=0" + "\r\n");
-                        await Task.Delay(_readDelay);
-                        await stream.ReadAsync(response, 0, response.Length);
+            //    _serialPort.DiscardInBuffer();
 
-                        if (!Encoding.ASCII.GetString(response).Contains("OK"))
-                        {
-                            break;
-                        }
+            //    //_serialPort.WriteLine(@"ATH0" + "\r\n");
+            //    //await Task.Delay(_writeDelay);
 
-                        port.WriteLine($@"ATDT{_phone}" + "\r\n");
-                        await Task.Delay(_readDelay);
-                        await stream.ReadAsync(response, 0, response.Length);
+            //    //_serialPort.Close();
 
-                        if (!Encoding.ASCII.GetString(response).Contains("CONNECT"))
-                        {
-                            break;
-                        }
+            //    retries--;
+            //} while (retries > 0);
 
-                        port.DiscardInBuffer();
-                        port.DiscardOutBuffer();
+            //return response;
 
-                        port.Write(request, 0, request.Length);
-                        await Task.Delay(_readDelay);
-                        var task = stream.ReadAsync(response, 0, response.Length);
-                        await Task.WhenAny(task, Task.Delay(_timeout));
+            return new byte[1024];
+        }
 
-                        if (response[0] != 0x00)
-                            break;
+        public void Dispose()
+        {
+            //if (_serialPort == null || !_serialPort.IsOpen) return;
 
-                        port.DiscardInBuffer();
-
-                        port.WriteLine(@"ATH0" + "\r\n");
-                        await Task.Delay(_writeDelay);
-
-                        port.Close();
-
-                        retries--;
-                    } while (retries > 0);                    
-                }
-
-                return response;
-            });            
+            //_serialPort.Close();
+            //_serialPort.Dispose();
         }
     }
 }

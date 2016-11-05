@@ -11,7 +11,7 @@ namespace DATASCAN.Communication.Protocols
 {
     public class RocPlusProtocol
     {
-        public List<ROC809PeriodicDataModel> GetPeriodicData(Roc809 roc, Roc809MeasurePoint point, RocHistoryType historyType, IClient client)
+        public async Task<List<ROC809PeriodicDataModel>> GetPeriodicData(Roc809 roc, Roc809MeasurePoint point, RocHistoryType historyType, IClient client)
         {
             var request = new byte[15];
 
@@ -41,7 +41,7 @@ namespace DATASCAN.Communication.Protocols
 
             do
             {
-                var response = client.GetData(request).Result;
+                var response = await client.GetData(request);
 
                 totalIndex = historyType == RocHistoryType.Minute ? 60 : response.GetInt16(9);
 
@@ -255,9 +255,9 @@ namespace DATASCAN.Communication.Protocols
             } while (startIndex < totalIndex);
 
             return data;
-        }
+        }       
 
-        public List<Roc809AlarmData> GetAlarmData(Roc809 roc, IClient client)
+        public async Task<List<Roc809AlarmData>> GetAlarmData(Roc809 roc, IClient client)
         {
             var request = new byte[11];
             var data = new List<Roc809AlarmData>();
@@ -281,7 +281,7 @@ namespace DATASCAN.Communication.Protocols
             int totalIndex;
             do
             {
-                var response = client.GetData(request).Result;
+                var response = await client.GetData(request);
 
                 totalIndex = response.GetInt16(9);
                 var alarmsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;
