@@ -62,6 +62,14 @@
     <Compile Include="Migrations\201611051207281_RemovedRequiredForOperatorId.Designer.cs">
       <DependentUpon>201611051207281_RemovedRequiredForOperatorId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611061512067_ChangedStringsCapasity.cs" />
+    <Compile Include="Migrations\201611061512067_ChangedStringsCapasity.Designer.cs">
+      <DependentUpon>201611061512067_ChangedStringsCapasity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611061549298_RemovedRequiredForStrings.cs" />
+    <Compile Include="Migrations\201611061549298_RemovedRequiredForStrings.Designer.cs">
+      <DependentUpon>201611061549298_RemovedRequiredForStrings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Entities\Common\CatalogBase.cs" />
     <Compile Include="Entities\Common\DataRecordBase.cs" />
@@ -116,6 +124,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611051207281_RemovedRequiredForOperatorId.resx">
       <DependentUpon>201611051207281_RemovedRequiredForOperatorId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611061512067_ChangedStringsCapasity.resx">
+      <DependentUpon>201611061512067_ChangedStringsCapasity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611061549298_RemovedRequiredForStrings.resx">
+      <DependentUpon>201611061549298_RemovedRequiredForStrings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

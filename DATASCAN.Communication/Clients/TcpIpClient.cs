@@ -9,6 +9,8 @@ namespace DATASCAN.Communication.Clients
     /// </summary>
     public class TcpIpClient : IClient
     {
+        public int Retries { get; set; }
+
         public async Task<byte[]> GetData(Roc809 roc, byte[] request)
         {
             var client = new TcpClient();

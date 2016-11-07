@@ -40,11 +40,13 @@ namespace DATASCAN.Infrastructure.Settings
 
         public static string Retries { get; set; } = "3";
 
-        public static string Timeout { get; set; } = "30";
+        public static string Timeout { get; set; } = "10";
 
         public static string WriteDelay { get; set; } = "1";
 
         public static string ReadDelay { get; set; } = "1";
+
+        public static string WaitingTime { get; set; } = "120";
 
         public static string DbfPath { get; set; } = @"C:\Dispatch\tabDbf";
 
@@ -83,6 +85,7 @@ namespace DATASCAN.Infrastructure.Settings
                     WriteDelay = settings["WriteDelay"]?.ToString() ?? "";
                     ReadDelay = settings["ReadDelay"]?.ToString() ?? "";
                     DbfPath = settings["DbfPath"]?.ToString() ?? "";
+                    WaitingTime = settings["WaitingTime"]?.ToString() ?? "";
                 }
             }
             else
@@ -114,7 +117,8 @@ namespace DATASCAN.Infrastructure.Settings
                 { "Timeout", Timeout },
                 { "WriteDelay", WriteDelay },
                 { "ReadDelay", ReadDelay },
-                { "DbfPath", DbfPath }
+                { "DbfPath", DbfPath },
+                { "WaitingTime", WaitingTime }
             };
 
             if (!Directory.Exists(_filePath))

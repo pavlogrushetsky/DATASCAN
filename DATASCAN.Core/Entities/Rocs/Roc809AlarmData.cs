@@ -54,15 +54,13 @@ namespace DATASCAN.Core.Entities.Rocs
         /// <summary>
         /// Значение
         /// </summary>
-        [Required]
-        [MaxLength(10)]
+        [MaxLength(20)]
         public string Value { get; set; }
 
         /// <summary>
         /// Описание
         /// </summary>
-        [Required]
-        [MaxLength(10)]
+        [MaxLength(20)]
         public string Description { get; set; }
 
         /// <summary>

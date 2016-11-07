@@ -137,9 +137,7 @@ namespace DATASCAN.View
             if (!string.IsNullOrEmpty(Settings.COMPort2))
                 ports.Add(Settings.COMPort2);
             if (!string.IsNullOrEmpty(Settings.COMPort3))
-                ports.Add(Settings.COMPort3);
-
-            _gprsClient.Ports = ports;
+                ports.Add(Settings.COMPort3);           
 
             _gprsClient.Baudrate = int.Parse(Settings.Baudrate);
             _gprsClient.DataBits = int.Parse(Settings.DataBits);
@@ -148,7 +146,9 @@ namespace DATASCAN.View
             _gprsClient.ReadDelay = int.Parse(Settings.ReadDelay);
             _gprsClient.WriteDelay = int.Parse(Settings.WriteDelay);
             _gprsClient.Timeout = int.Parse(Settings.Timeout);
-            _gprsClient.Retries = int.Parse(Settings.Retries);            
+            _gprsClient.Retries = int.Parse(Settings.Retries); 
+            _gprsClient.WaitingTime = int.Parse(Settings.WaitingTime);
+            _gprsClient.Ports = ports;
         }
 
         private async Task UpdateData(bool initialize)
@@ -1612,9 +1612,27 @@ namespace DATASCAN.View
             scansToProcess.ForEach(scan =>
             {
                 scan.DateLastScanned = DateTime.Now;                
-            });
+            });            
 
             await _entitiesService.Update(scansToProcess.OfType<EntityBase>().ToList(), null, ex => LogException(ex.Message));
+
+            if (trvScans.Nodes.Count > 0)
+            {
+                foreach (TreeNode node in trvScans.Nodes[0].Nodes)
+                {
+                    var scan = node.Tag as PeriodicScan;
+                    node.ToolTipText = scan.Info();
+                }
+            }
+
+            if (trvScans.Nodes.Count > 1)
+            {
+                foreach (TreeNode node in trvScans.Nodes[1].Nodes)
+                {
+                    var scan = node.Tag as ScheduledScan;
+                    node.ToolTipText = scan.Info();
+                }
+            }
         }
 
         private IEnumerable<PeriodicScan> GetPeriodicScansToProcess()

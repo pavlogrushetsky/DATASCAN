@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
-using DATASCAN.Communication.Common;
 using static System.String;
 using Settings = DATASCAN.Infrastructure.Settings.Settings;
 
@@ -38,6 +36,8 @@ namespace DATASCAN.View.Forms
         private bool _writeDelayChanged;
 
         private bool _readDelayChanged;
+
+        private bool _waitingTimeChanged;
 
         private bool _changed;
 
@@ -84,8 +84,6 @@ namespace DATASCAN.View.Forms
             cbPort3.SelectedItem = Settings.COMPort3;
             cbPort3.Enabled = cbPort3.Items.Count > 0;
 
-            EnableTestButton();
-
             cbParity.Items.AddRange(Enum.GetNames(typeof (Parity)).ToArray<object>());
             cbParity.SelectedItem = Settings.Parity;
 
@@ -102,6 +100,7 @@ namespace DATASCAN.View.Forms
             numWriteDelay.Value = int.Parse(Settings.WriteDelay);
             numReadDelay.Value = int.Parse(Settings.ReadDelay);
             numTimeout.Value = int.Parse(Settings.Timeout);
+            numWaitingTime.Value = int.Parse(Settings.WaitingTime);
 
             btnCancel.Select();
         }
@@ -131,64 +130,44 @@ namespace DATASCAN.View.Forms
                 _port1Changed = !cbPort1.SelectedItem.Equals(Settings.COMPort1);
                 SetChanged();
             }
-
-            EnableTestButton();
-
-            statusPort1.SetError(cbPort1, "");
         }
 
         private void cbPort2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbPort2.SelectedItem != null)
-            {
-                _port2Changed = !cbPort2.SelectedItem.Equals(Settings.COMPort2);
-                SetChanged();
-            }
-
-            EnableTestButton();
-
-            statusPort2.SetError(cbPort2, "");
+            if (cbPort2.SelectedItem == null) return;
+            _port2Changed = !cbPort2.SelectedItem.Equals(Settings.COMPort2);
+            SetChanged();
         }
 
         private void cbPort3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbPort3.SelectedItem != null)
-            {
-                _port3Changed = !cbPort3.SelectedItem.Equals(Settings.COMPort3);
-                SetChanged();
-            }
-
-            EnableTestButton();
-
-            statusPort3.SetError(cbPort3, "");
+            if (cbPort3.SelectedItem == null) return;
+            _port3Changed = !cbPort3.SelectedItem.Equals(Settings.COMPort3);
+            SetChanged();
         }
 
         private void cbBaudrate_SelectedIndexChanged(object sender, EventArgs e)
         {
             _baudrateChanged = !cbBaudrate.SelectedItem.Equals(Settings.Baudrate);
             SetChanged();
-            ResetPortsStatuses();
         }
 
         private void cbParity_SelectedIndexChanged(object sender, EventArgs e)
         {
             _parityChanged = !cbParity.SelectedItem.Equals(Settings.Parity);
             SetChanged();
-            ResetPortsStatuses();
         }
 
         private void cbDataBits_SelectedIndexChanged(object sender, EventArgs e)
         {
             _dataBitsChanged = !cbDataBits.SelectedItem.Equals(Settings.DataBits);
             SetChanged();
-            ResetPortsStatuses();
         }
 
         private void cbStopBits_SelectedIndexChanged(object sender, EventArgs e)
         {
             _stopBitsChanged = !cbStopBits.SelectedItem.Equals(Settings.StopBits);
             SetChanged();
-            ResetPortsStatuses();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -206,6 +185,7 @@ namespace DATASCAN.View.Forms
                 Settings.WriteDelay = numWriteDelay.Value.ToString(CultureInfo.InvariantCulture);
                 Settings.ReadDelay = numReadDelay.Value.ToString(CultureInfo.InvariantCulture);
                 Settings.Timeout = numTimeout.Value.ToString(CultureInfo.InvariantCulture);
+                Settings.WaitingTime = numWaitingTime.Value.ToString(CultureInfo.InvariantCulture);
                 Settings.DbfPath = txtDbfPath.Text;
 
                 Settings.Save();
@@ -230,16 +210,10 @@ namespace DATASCAN.View.Forms
         {
             _changed = _dbfPathChanged || _baudrateChanged || _dataBitsChanged || _parityChanged || 
                        _port1Changed || _port2Changed || _port3Changed || _stopBitsChanged ||
-                       _retriesChanged || _writeDelayChanged || _readDelayChanged || _timeoutChanged;
+                       _retriesChanged || _writeDelayChanged || _readDelayChanged || _timeoutChanged ||
+                       _waitingTimeChanged;
 
             Text = _changed ? TITLE + " *" : TITLE;            
-        }
-
-        private void EnableTestButton()
-        {
-            btnTestConnection.Enabled = cbPort1.SelectedIndex > 0 ||
-                                        cbPort2.SelectedIndex > 0 ||
-                                        cbPort3.SelectedIndex > 0;
         }
 
         private void cbPort1_DropDown(object sender, EventArgs e)
@@ -269,89 +243,34 @@ namespace DATASCAN.View.Forms
             cbPort3.SelectedItem = item;
         }
 
-        private void btnTestConnection_Click(object sender, EventArgs e)
-        {
-            ResetPortsStatuses();
-            var port1 = cbPort1.SelectedItem?.ToString();
-            var port2 = cbPort2.SelectedItem?.ToString();
-            var port3 = cbPort3.SelectedItem?.ToString();
-
-            if (!IsNullOrEmpty(port1))
-                TestConnection(port1, statusPort1, cbPort1);
-
-            if (!IsNullOrEmpty(port2))
-                TestConnection(port2, statusPort2, cbPort2);
-
-            if (!IsNullOrEmpty(port3))
-                TestConnection(port3, statusPort3, cbPort3);
-        }
-
-        private void TestConnection(string port, ErrorProvider stat, ComboBox cb)
-        {
-            try
-            {
-                SerialPortFixer.Execute(port);
-                using (var serialPort = new SerialPort
-                {
-                    PortName = port,
-                    BaudRate = int.Parse(cbBaudrate.SelectedItem.ToString()),
-                    DataBits = int.Parse(cbDataBits.SelectedItem.ToString()),
-                    StopBits = (StopBits) Enum.Parse(typeof (StopBits), (string) cbStopBits.SelectedItem),
-                    Parity = (Parity) Enum.Parse(typeof (Parity), (string) cbParity.SelectedItem),
-                    Handshake = Handshake.None,
-                    ReadTimeout = 500,
-                    WriteTimeout = 500                    
-                })
-                {
-                    serialPort.Open();
-                    serialPort.WriteLine(@"ATQ0V1E0" + "\r\n");
-                    Thread.Sleep(500);
-                    string result = serialPort.ReadExisting();
-                    if (!result.Contains("OK"))
-                    {
-                        stat.SetError(cb, "Помилка встановлення з'єднання");
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                stat.SetError(cb, "Помилка встановлення з'єднання");
-            }
-        }
-
-        private void ResetPortsStatuses()
-        {
-            statusPort1.SetError(cbPort1, "");
-            statusPort2.SetError(cbPort2, "");
-            statusPort3.SetError(cbPort3, "");
-        }
-
         private void numRetries_ValueChanged(object sender, EventArgs e)
         {
             _retriesChanged = !numRetries.Value.Equals(int.Parse(Settings.Retries));
             SetChanged();
-            ResetPortsStatuses();
         }
 
         private void numWriteDelay_ValueChanged(object sender, EventArgs e)
         {
             _writeDelayChanged = !numWriteDelay.Value.Equals(int.Parse(Settings.WriteDelay));
             SetChanged();
-            ResetPortsStatuses();
         }
 
         private void numReadDelay_ValueChanged(object sender, EventArgs e)
         {
             _readDelayChanged = !numReadDelay.Value.Equals(int.Parse(Settings.ReadDelay));
             SetChanged();
-            ResetPortsStatuses();
         }
 
         private void numTimeout_ValueChanged(object sender, EventArgs e)
         {
             _timeoutChanged = !numTimeout.Value.Equals(int.Parse(Settings.Timeout));
             SetChanged();
-            ResetPortsStatuses();
+        }
+
+        private void numWaitingTime_ValueChanged(object sender, EventArgs e)
+        {
+            _waitingTimeChanged = !numWaitingTime.Value.Equals(int.Parse(Settings.WaitingTime));
+            SetChanged();
         }
     }
 }

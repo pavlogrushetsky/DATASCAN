@@ -40,9 +40,40 @@ namespace DATASCAN.Communication.Protocols
 
             var data = new List<ROC809PeriodicDataModel>();
 
+            var gprsClient = client as GprsClient;
+            if (gprsClient != null)
+            {
+                await gprsClient.Connect(roc.Phone);
+            }
+
             do
             {
-                var response = await client.GetData(roc, request);
+                byte[] response;
+                var retries = client.Retries;
+                var valid = false;
+                do
+                {
+                    response = await client.GetData(roc, request);
+
+                    var responseCrc = Crc16.Compute(response, 6 + response[5]);
+
+                    if (response[6 + response[5]] == responseCrc[0] &&
+                        response[6 + response[5] + 1] == responseCrc[1])
+                    {
+                        valid = true;
+                        break;
+                    }
+
+                    retries--;
+                } while (retries > 0);
+
+                if (!valid)
+                {
+                    if (gprsClient != null)
+                        await gprsClient.Disconnect(roc.Phone);
+
+                    throw new Exception("Помилка читання даних через GPRS. Дані не є консистентними");
+                }
 
                 totalIndex = historyType == RocHistoryType.Minute ? 60 : response.GetInt16(9);
 
@@ -85,6 +116,10 @@ namespace DATASCAN.Communication.Protocols
 
             } while (startIndex < totalIndex);
 
+            if (gprsClient != null)
+            {
+                await gprsClient.Disconnect(roc.Phone);
+            }
             return data.Distinct().ToList();
         }
 
@@ -99,7 +134,7 @@ namespace DATASCAN.Communication.Protocols
             request[4] = 0x77;
             request[5] = 0x03;
             request[6] = 0x0a;
-            request[7] = 0xac;
+            request[7] = 0x01;
             request[8] = 0x00;
 
             var crc = Crc16.Compute(request, 9);
@@ -112,9 +147,40 @@ namespace DATASCAN.Communication.Protocols
 
             var data = new List<Roc809EventData>();
 
+            var gprsClient = client as GprsClient;
+            if (gprsClient != null)
+            {
+                await gprsClient.Connect(roc.Phone);
+            }
+
             do
             {
-                var response = await client.GetData(roc, request);               
+                byte[] response;
+                var retries = client.Retries;
+                var valid = false;
+                do
+                {
+                    response = await client.GetData(roc, request);
+
+                    var responseCrc = Crc16.Compute(response, 6 + response[5]);
+
+                    if (response[6 + response[5]] == responseCrc[0] &&
+                        response[6 + response[5] + 1] == responseCrc[1])
+                    {
+                        valid = true;
+                        break;
+                    }
+
+                    retries--;
+                } while (retries > 0);
+
+                if (!valid)
+                {
+                    if (gprsClient != null)
+                        await gprsClient.Disconnect(roc.Phone);
+
+                    throw new Exception("Помилка читання даних через GPRS. Дані не є консистентними");
+                }
 
                 totalIndex = response.GetInt16(9);
                 var eventsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;
@@ -212,7 +278,7 @@ namespace DATASCAN.Communication.Protocols
                             break;
                         case 2:
                             record.Code = response[16 + offset];
-                            record.Description = response.GetString(17 + offset, 16);
+                            record.Description = response.GetASCII(17 + offset, 16);
                             break;
                         case 3:
                             record.FST = response[16 + offset];
@@ -221,7 +287,7 @@ namespace DATASCAN.Communication.Protocols
                         case 4:
                             record.OperatorId = response.GetASCII(16 + offset, 3);
                             record.Code = response[19 + offset];
-                            record.Description = response.GetString(20 + offset, 13);
+                            record.Description = response.GetASCII(20 + offset, 13);
                             break;
                         case 5:
                             record.Value = time.AddSeconds(response.GetUInt32(16 + offset)).ToString("dd.MM.yyyy HH:mm:ss");
@@ -254,6 +320,10 @@ namespace DATASCAN.Communication.Protocols
 
             } while (startIndex < totalIndex);
 
+            if (gprsClient != null)
+            {
+                await gprsClient.Disconnect(roc.Phone);
+            }
             return data;
         }       
 
@@ -280,9 +350,40 @@ namespace DATASCAN.Communication.Protocols
             int startIndex = request.GetInt16(7);
             int totalIndex;
 
+            var gprsClient = client as GprsClient;
+            if (gprsClient != null)
+            {
+                await gprsClient.Connect(roc.Phone);
+            }
+
             do
             {
-                var response = await client.GetData(roc, request);
+                byte[] response;
+                var retries = client.Retries;
+                var valid = false;
+                do
+                {
+                    response = await client.GetData(roc, request);
+
+                    var responseCrc = Crc16.Compute(response, 6 + response[5]);
+
+                    if (response[6 + response[5]] == responseCrc[0] &&
+                        response[6 + response[5] + 1] == responseCrc[1])
+                    {
+                        valid = true;
+                        break;
+                    }
+
+                    retries--;
+                } while (retries > 0);
+
+                if (!valid)
+                {
+                    if (gprsClient != null)
+                        await gprsClient.Disconnect(roc.Phone);
+
+                    throw new Exception("Помилка читання даних через GPRS. Дані не є консистентними");
+                }
 
                 totalIndex = response.GetInt16(9);
                 var alarmsToProcess = totalIndex - startIndex >= 10 ? 10 : totalIndex - startIndex;
@@ -309,19 +410,19 @@ namespace DATASCAN.Communication.Protocols
                             record.T = response[17 + offset];
                             record.L = response[18 + offset];
                             record.P = response[19 + offset];
-                            record.Description = response.GetString(20 + offset, 10);
+                            record.Description = response.GetASCII(20 + offset, 10);
                             record.Value = response.GetSingle(30 + offset).ToString(CultureInfo.InvariantCulture);
                             break;
                         case 2:
                             record.FST = response[16 + offset];
-                            record.Description = response.GetString(17 + offset, 13);
+                            record.Description = response.GetASCII(17 + offset, 13);
                             record.Value = response.GetSingle(30 + offset).ToString(CultureInfo.InvariantCulture);
                             break;
                         case 3:
-                            record.Description = response.GetString(16 + offset, 18);
+                            record.Description = response.GetASCII(16 + offset, 18);
                             break;
                         case 4:
-                            record.Description = response.GetString(16 + offset, 14);
+                            record.Description = response.GetASCII(16 + offset, 14);
                             record.Value = response.GetSingle(30 + offset).ToString(CultureInfo.InvariantCulture);
                             break;
                     }
@@ -341,6 +442,10 @@ namespace DATASCAN.Communication.Protocols
 
             } while (startIndex < totalIndex);
 
+            if (gprsClient != null)
+            {
+                await gprsClient.Disconnect(roc.Phone);
+            }
             return data;
         }
     }
