@@ -41,10 +41,10 @@ namespace DATASCAN.Communication.Clients
         {
             public SerialPort Port { get; set; }
             public string Phone { get; set; } = "";
-            public Status Status { get; set; }
+            public PortStatus Status { get; set; }
         }
 
-        internal enum Status
+        internal enum PortStatus
         {
             OK,
             CONNECTING,
@@ -52,7 +52,7 @@ namespace DATASCAN.Communication.Clients
         }
 
         private void Validate(List<string> ports)
-        {
+        {        
             ports.ForEach(port =>
             {
                 Task.Run(async () =>
@@ -107,9 +107,9 @@ namespace DATASCAN.Communication.Clients
                         var status = Encoding.ASCII.GetString(response);
                         if (status.Contains("OK"))
                         {
-                            _statuses[port].Status = Status.OK;
+                            _statuses[port].Status = PortStatus.OK;
                         }
-                    }                    
+                    }                  
                 });
             });
         }
@@ -118,18 +118,18 @@ namespace DATASCAN.Communication.Clients
         {
             var now = DateTime.Now;
 
-            while (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != Status.OK))
+            while (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != PortStatus.OK))
             {
                 await Task.Delay(1000);
             }
 
-            var portName = _statuses.FirstOrDefault(s => s.Value.Status == Status.OK).Key;
+            var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.OK).Key;
 
             if (string.IsNullOrEmpty(portName))
                 throw new Exception("Помилка виділення СОМ-порту. Порти відсутні або зайняті");
 
             _statuses[portName].Phone = phone;
-            _statuses[portName].Status = Status.CONNECTING;
+            _statuses[portName].Status = PortStatus.CONNECTING;
 
             var port = _statuses[portName].Port;
 
@@ -173,7 +173,7 @@ namespace DATASCAN.Communication.Clients
                 if (status.Contains("CONNECT"))
                 {
                     _statuses[portName].Phone = phone;
-                    _statuses[portName].Status = Status.CONNECTED;
+                    _statuses[portName].Status = PortStatus.CONNECTED;
                     return;
                 }
 
@@ -187,7 +187,7 @@ namespace DATASCAN.Communication.Clients
 
         public async Task Disconnect(string phone)
         {
-            var portName = _statuses.FirstOrDefault(s => s.Value.Status == Status.CONNECTED && s.Value.Phone.Equals(phone)).Key;
+            var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.CONNECTED && s.Value.Phone.Equals(phone)).Key;
 
             if (string.IsNullOrEmpty(portName))
                 return;
@@ -211,12 +211,12 @@ namespace DATASCAN.Communication.Clients
                 port.Close();
 
             _statuses[portName].Phone = "";
-            _statuses[portName].Status = Status.OK;
+            _statuses[portName].Status = PortStatus.OK;
         }      
 
         public async Task<byte[]> GetData(Roc809 roc, byte[] request)
         {
-            var portName = _statuses.FirstOrDefault(s => s.Value.Status == Status.CONNECTED && s.Value.Phone.Equals(roc.Phone)).Key;
+            var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.CONNECTED && s.Value.Phone.Equals(roc.Phone)).Key;
 
             if (string.IsNullOrEmpty(portName))
                 return new byte[1024];
@@ -261,6 +261,6 @@ namespace DATASCAN.Communication.Clients
 
                 port.Dispose();
             }
-        }
+        } 
     }
 }

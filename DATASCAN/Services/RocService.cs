@@ -51,11 +51,7 @@ namespace DATASCAN.Services
 
         public async Task GetMinuteData(IClient client, Roc809 roc, Roc809MeasurePoint point, Action<List<Roc809MinuteData>> onSuccess, Action<Exception> onException)
         {
-            await _rocPlusProtocol.GetPeriodicData(roc, point, RocHistoryType.Minute, client)
-            .ContinueWith(result =>
-            {
-                return result.Result.Select(d => new Roc809MinuteData { Period = d.DatePeriod, Value = d.Value }).ToList();
-            })        
+            await _rocPlusProtocol.GetPeriodicData(roc, point, RocHistoryType.Minute, client)       
             .ContinueWith(result =>
             {
                 if (result.Exception != null)
@@ -64,18 +60,14 @@ namespace DATASCAN.Services
                 }
                 else
                 {
-                    onSuccess?.Invoke(result.Result);
+                    onSuccess?.Invoke(result.Result.Select(d => new Roc809MinuteData { Period = d.DatePeriod, Value = d.Value }).ToList());
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }        
 
         public async Task GetPeriodicData(IClient client, Roc809 roc, Roc809MeasurePoint point, Action<List<Roc809PeriodicData>> onSuccess, Action<Exception> onException)
         {
-            await _rocPlusProtocol.GetPeriodicData(roc, point, RocHistoryType.Periodic, client)
-            .ContinueWith(result => 
-            {
-                return result.Result.Select(d => new Roc809PeriodicData { Period = d.DatePeriod, Value = d.Value }).ToList();
-            })                
+            await _rocPlusProtocol.GetPeriodicData(roc, point, RocHistoryType.Periodic, client)              
             .ContinueWith(result =>
             {
                 if (result.Exception != null)
@@ -84,18 +76,14 @@ namespace DATASCAN.Services
                 }
                 else
                 {
-                    onSuccess?.Invoke(result.Result);
+                    onSuccess?.Invoke(result.Result.Select(d => new Roc809PeriodicData { Period = d.DatePeriod, Value = d.Value }).ToList());
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public async Task GetDailyData(IClient client, Roc809 roc, Roc809MeasurePoint point, Action<List<Roc809DailyData>> onSuccess, Action<Exception> onException)
         {
-            await _rocPlusProtocol.GetPeriodicData(roc, point, RocHistoryType.Daily, client)
-            .ContinueWith(result =>
-            {
-                return result.Result.Select(d => new Roc809DailyData { Period = d.DatePeriod, Value = d.Value }).ToList();
-            })                
+            await _rocPlusProtocol.GetPeriodicData(roc, point, RocHistoryType.Daily, client)               
             .ContinueWith(result =>
             {
                 if (result.Exception != null)
@@ -104,7 +92,7 @@ namespace DATASCAN.Services
                 }
                 else
                 {
-                    onSuccess?.Invoke(result.Result);
+                    onSuccess?.Invoke(result.Result.Select(d => new Roc809DailyData { Period = d.DatePeriod, Value = d.Value }).ToList());
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }

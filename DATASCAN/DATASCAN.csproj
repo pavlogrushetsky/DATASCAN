@@ -243,6 +243,7 @@
     <Content Include="Resources\Icons\Settings.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
+    <Content Include="Resources\Images\Wait.png" />
     <Content Include="Resources\Images\Language.png" />
     <Content Include="Resources\Images\Progress.gif" />
     <Content Include="Resources\Images\RemovePeriod.png" />

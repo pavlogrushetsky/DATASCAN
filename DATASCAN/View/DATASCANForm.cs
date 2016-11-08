@@ -52,6 +52,7 @@ namespace DATASCAN.View
 
         private readonly GprsClient _gprsClient;
 
+        private readonly Timer _timer;
         private const int SCAN_PERIOD_MS = 5000;
 
         public DATASCANForm()
@@ -83,9 +84,13 @@ namespace DATASCAN.View
            
             UpdateData(true).ConfigureAwait(false);
 
-            var timer = new Timer { Interval = SCAN_PERIOD_MS };
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            var args = Environment.GetCommandLineArgs();
+
+            _timer = new Timer { Interval = SCAN_PERIOD_MS };
+            _timer.Tick += Timer_Tick;
+            
+            if (args.Contains("start"))
+                mnuRun_Click(this, new EventArgs());
         }        
 
         #endregion
@@ -570,9 +575,11 @@ namespace DATASCAN.View
                 FillScheduledScans(scheduledScansNode);
             }
 
+            trvScans.KeyDown += TrvScans_KeyDown;
+
             trvScans.Nodes.SetExpansionState(savedExpansionState);
             trvScans.EndUpdate();
-        }        
+        }       
 
         private void FillPeriodicScans(TreeNode scansGroup)
         {
@@ -1307,9 +1314,52 @@ namespace DATASCAN.View
             await UpdateData(false);
         }
 
+        private void TrvScans_KeyDown(object sender, KeyEventArgs e)
+        {
+            var node = trvScans.SelectedNode;
+
+            var scan = node?.Tag as ScanBase;
+
+            if (scan == null)
+                return;
+
+            var floutecMembers = scan.Members.Where(m => m is FloutecScanMember).ToList();
+            var rocMembers = scan.Members.Where(m => m is RocScanMember).ToList();
+
+            if (floutecMembers.Any())
+            {
+                _floutecScanner.Process(_sqlConnection, floutecMembers, _estimators);
+            }
+
+            if (rocMembers.Any())
+            {
+                _rocScanner.Process(_sqlConnection, rocMembers, _estimators);
+            }
+        }
+
         #endregion        
 
         #region Form event handlers
+
+        private void mnuRun_Click(object sender, EventArgs e)
+        {
+            mnuRun.Visible = false;
+            mnuPause.Visible = true;
+
+            _timer.Start();
+
+            Logger.Log(lstMessages, new LogEntry { Message = "Опитування запущено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+        }
+
+        private void mnuPause_Click(object sender, EventArgs e)
+        {
+            mnuPause.Visible = false;
+            mnuRun.Visible = true;            
+
+            _timer.Stop();
+
+            Logger.Log(lstMessages, new LogEntry { Message = "Опитування призупинено", Status = LogStatus.Info, Type = LogType.System, Timestamp = DateTime.Now });
+        }
 
         private async void mnuDatabase_Click(object sender, EventArgs e)
         {
@@ -1625,13 +1675,13 @@ namespace DATASCAN.View
                 }
             }
 
-            if (trvScans.Nodes.Count > 1)
+            if (trvScans.Nodes.Count <= 1)
+                return;
+
+            foreach (TreeNode node in trvScans.Nodes[1].Nodes)
             {
-                foreach (TreeNode node in trvScans.Nodes[1].Nodes)
-                {
-                    var scan = node.Tag as ScheduledScan;
-                    node.ToolTipText = scan.Info();
-                }
+                var scan = node.Tag as ScheduledScan;
+                node.ToolTipText = scan.Info();
             }
         }
 
@@ -1652,6 +1702,6 @@ namespace DATASCAN.View
                     .Any(p => p > prev && p < next));
         }
 
-        #endregion        
+        #endregion       
     }
 }
