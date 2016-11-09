@@ -35,7 +35,17 @@ namespace DATASCAN.Communication.Clients
         public int ReadDelay { get; set; }
         public int WaitingTime { get; set; }
 
+        public string Status { get; private set; }
+
         private readonly Dictionary<string, ModemStatus> _statuses = new Dictionary<string,ModemStatus>();
+
+        public event EventHandler StatusChanged;
+
+        protected virtual void OnStatusChanged(EventArgs e)
+        {
+            var handler = StatusChanged;
+            handler?.Invoke(this, e);
+        }
 
         internal class ModemStatus
         {
@@ -51,14 +61,22 @@ namespace DATASCAN.Communication.Clients
             CONNECTED
         }
 
+        private void SetStatus(string message)
+        {
+            Status = message;
+            OnStatusChanged(EventArgs.Empty);
+        }
+
         private void Validate(List<string> ports)
-        {        
+        {
+            SetStatus("Перевірка портів");
             ports.ForEach(port =>
             {
                 Task.Run(async () =>
                 {
                     if (!SerialPort.GetPortNames().Contains(port))
                     {
+                        SetStatus($"Порт {port} відсутній у системі");
                         return;
                     }
 
@@ -86,10 +104,11 @@ namespace DATASCAN.Communication.Clients
                     serialPort.Handshake = Handshake.None;
                     serialPort.WriteTimeout = Timeout*1000;
                     serialPort.ReadTimeout = Timeout*1000;
-                    serialPort.DtrEnable = true;  
-                                         
+                    serialPort.DtrEnable = true;
+
                     if (!serialPort.IsOpen)
                     {
+                        SetStatus($"Відкриття порту {port}");
                         serialPort.Open();
 
                         var response = new byte[1024];
@@ -98,24 +117,35 @@ namespace DATASCAN.Communication.Clients
                         serialPort.DiscardInBuffer();
                         serialPort.DiscardOutBuffer();
 
-                        await Task.Delay(WriteDelay * 1000);
+                        await Task.Delay(WriteDelay*1000);
+                        SetStatus($"{port}: <= AT");
                         serialPort.WriteLine(@"AT" + "\r\n");
-                        await Task.Delay(ReadDelay * 1000);
-                        var task = stream.ReadAsync(response, 0, response.Length);
-                        await Task.WhenAny(task, Task.Delay(Timeout * 1000));
+                        await Task.Delay(ReadDelay*1000);
+                        var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
+                        {
+                            if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
+                                SetStatus($"{port}: Отримано {result.Result} байтів");
+                        });
+                        await Task.WhenAny(task, Task.Delay(Timeout*1000));
 
                         var status = Encoding.ASCII.GetString(response);
+                        SetStatus($"{port}: => {status}");                        
                         if (status.Contains("OK"))
                         {
                             _statuses[port].Status = PortStatus.OK;
                         }
-                    }                  
+                    }
+                    else
+                    {
+                        SetStatus($"Порт {port} уже відкритий");
+                    }
                 });
             });
         }
 
         public async Task Connect(string phone)
         {
+            SetStatus($"Запит на встановлення зв'язку по телефону {phone}...");
             var now = DateTime.Now;
 
             while (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != PortStatus.OK))
@@ -126,8 +156,12 @@ namespace DATASCAN.Communication.Clients
             var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.OK).Key;
 
             if (string.IsNullOrEmpty(portName))
+            {
+                SetStatus($"Зв'язок по телефону {phone} не встановлено");
                 throw new Exception("Помилка виділення СОМ-порту. Порти відсутні або зайняті");
+            }
 
+            SetStatus($"Зв'язок по телефону {phone} встановлено через порт {portName}");
             _statuses[portName].Phone = phone;
             _statuses[portName].Status = PortStatus.CONNECTING;
 
@@ -135,8 +169,11 @@ namespace DATASCAN.Communication.Clients
 
             if (!port.IsOpen)
             {
+                SetStatus($"Відкриття порту {port.PortName}");
                 port.Open();
             }
+
+            SetStatus($"Порт {port.PortName} уже відкритий");
 
             var retries = Retries;
             var stream = port.BaseStream;
@@ -149,27 +186,39 @@ namespace DATASCAN.Communication.Clients
                 port.DiscardOutBuffer();
 
                 await Task.Delay(WriteDelay * 1000);
+                SetStatus($"{port.PortName}: <= AT&FE0V1X1&D2&C1S0=0");
                 port.WriteLine(@"AT&FE0V1X1&D2&C1S0=0" + "\r\n");
                 await Task.Delay(ReadDelay * 1000);
-                var task = stream.ReadAsync(response, 0, response.Length);
-                await Task.WhenAny(task, Task.Delay(Timeout * 1000));
+                var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
+                {
+                    if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
+                        SetStatus($"{port.PortName}: Отримано {result.Result} байтів");
+                });                 
+                await Task.WhenAny(task, Task.Delay(Timeout * 1000));                
 
                 var status = Encoding.ASCII.GetString(response);
+                SetStatus($"{port.PortName}: => {status}");
                 if (!status.Contains("OK"))
                 {
                     continue;
-                }
+                }               
 
                 port.DiscardInBuffer();
                 port.DiscardOutBuffer();
 
                 await Task.Delay(WriteDelay * 1000);
+                SetStatus($"{port.PortName}: <= ATDT{phone}");
                 port.WriteLine($@"ATDT{phone}" + "\r\n");
                 await Task.Delay(ReadDelay * 1000);
-                task = stream.ReadAsync(response, 0, response.Length);
+                task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
+                {
+                    if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
+                        SetStatus($"{port.PortName}: Отримано {result.Result} байтів");
+                }); 
                 await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
                 status = Encoding.ASCII.GetString(response);
+                SetStatus($"{port.PortName}: => {status}");
                 if (status.Contains("CONNECT"))
                 {
                     _statuses[portName].Phone = phone;
@@ -187,6 +236,7 @@ namespace DATASCAN.Communication.Clients
 
         public async Task Disconnect(string phone)
         {
+            SetStatus($"Зупинка зв'язку по телефону {phone}...");
             var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.CONNECTED && s.Value.Phone.Equals(phone)).Key;
 
             if (string.IsNullOrEmpty(portName))
@@ -202,13 +252,21 @@ namespace DATASCAN.Communication.Clients
             port.DiscardOutBuffer();
 
             await Task.Delay(WriteDelay * 1000);
+            SetStatus($"{port.PortName}: <= ATH0");
             port.WriteLine(@"ATH0" + "\r\n");
             await Task.Delay(ReadDelay * 1000);
-            var task = stream.ReadAsync(response, 0, response.Length);
+            var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
+            {
+                if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
+                    SetStatus($"{port}: Отримано {result.Result} байтів");
+            }); 
             await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
             if (port.IsOpen)
+            {
+                SetStatus($"Закриття порту {port.PortName}");
                 port.Close();
+            }
 
             _statuses[portName].Phone = "";
             _statuses[portName].Status = PortStatus.OK;

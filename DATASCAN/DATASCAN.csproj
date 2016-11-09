@@ -152,6 +152,12 @@
     <Compile Include="View\Forms\EditScheduledScanForm.Designer.cs">
       <DependentUpon>EditScheduledScanForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\ModemDiagnosticsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\ModemDiagnosticsForm.Designer.cs">
+      <DependentUpon>ModemDiagnosticsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\ServerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -204,6 +210,9 @@
     <EmbeddedResource Include="View\Forms\EditScheduledScanForm.resx">
       <DependentUpon>EditScheduledScanForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\ModemDiagnosticsForm.resx">
+      <DependentUpon>ModemDiagnosticsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\ServerSettingsForm.resx">
       <DependentUpon>ServerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -228,6 +237,7 @@
     <Content Include="Resources\Icons\ConnectionSettings.ico" />
     <Content Include="Resources\Icons\Info.ico" />
     <Content Include="Resources\Icons\Ok.ico" />
+    <Content Include="Resources\Icons\RS-232.ico" />
     <Content Include="Resources\Icons\Scan.ico" />
     <Content Include="Resources\Icons\Customer.ico" />
     <Content Include="Resources\Icons\DatabaseSettings.ico" />
@@ -243,6 +253,7 @@
     <Content Include="Resources\Icons\Settings.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
+    <Content Include="Resources\Images\RS-232.png" />
     <Content Include="Resources\Images\Wait.png" />
     <Content Include="Resources\Images\Language.png" />
     <Content Include="Resources\Images\Progress.gif" />

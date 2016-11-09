@@ -39,6 +39,7 @@ namespace DATASCAN.View
             this.mnuDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splHorizontal = new System.Windows.Forms.SplitContainer();
             this.splVertical = new System.Windows.Forms.SplitContainer();
             this.grpEstimators = new System.Windows.Forms.GroupBox();
@@ -56,6 +57,7 @@ namespace DATASCAN.View
             this.mnuNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuExpand = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModemStatus = new System.Windows.Forms.ToolStripMenuItem();
             this.lstMessages = new DATASCAN.View.Controls.LogListView();
             this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -83,7 +85,9 @@ namespace DATASCAN.View
             this.mnuRun,
             this.mnuPause,
             this.mnuSettings,
-            this.mnuAbout});
+            this.mnuModemStatus,
+            this.mnuAbout,
+            this.toolStripMenuItem1});
             this.mnuDATASCAN.Location = new System.Drawing.Point(0, 0);
             this.mnuDATASCAN.Name = "mnuDATASCAN";
             this.mnuDATASCAN.Size = new System.Drawing.Size(884, 24);
@@ -139,6 +143,11 @@ namespace DATASCAN.View
             this.mnuAbout.Name = "mnuAbout";
             this.mnuAbout.Size = new System.Drawing.Size(115, 20);
             this.mnuAbout.Text = "Про програму";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
             // 
             // splHorizontal
             // 
@@ -328,6 +337,14 @@ namespace DATASCAN.View
             this.mnuExit.Text = "Вийти";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
+            // mnuModemStatus
+            // 
+            this.mnuModemStatus.Image = global::DATASCAN.Properties.Resources.RS_2321;
+            this.mnuModemStatus.Name = "mnuModemStatus";
+            this.mnuModemStatus.Size = new System.Drawing.Size(205, 20);
+            this.mnuModemStatus.Text = "Статус послідовного з\'єднання";
+            this.mnuModemStatus.Click += new System.EventHandler(this.mnuModemStatus_Click);
+            // 
             // lstMessages
             // 
             this.lstMessages.BackColor = System.Drawing.SystemColors.Control;
@@ -430,6 +447,8 @@ namespace DATASCAN.View
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem mnuRun;
         private System.Windows.Forms.ToolStripMenuItem mnuPause;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem mnuModemStatus;
     }
 }
 

@@ -52,8 +52,10 @@ namespace DATASCAN.View
 
         private readonly GprsClient _gprsClient;
 
+        private readonly ModemDiagnosticsForm modemDiagnosticsForm;
+
         private readonly Timer _timer;
-        private const int SCAN_PERIOD_MS = 5000;
+        private const int SCAN_PERIOD_MS = 5000;       
 
         public DATASCANForm()
         {
@@ -68,6 +70,9 @@ namespace DATASCAN.View
 
             _gprsClient = new GprsClient();
             InitializeGprsClient();
+
+            modemDiagnosticsForm = new ModemDiagnosticsForm(_gprsClient);
+            modemDiagnosticsForm.FormClosing += ModemDiagnosticsForm_FormClosing;
 
             _contextService = new DataContextService(_sqlConnection);
             _entitiesService = new EntitiesService<EntityBase>(_sqlConnection);
@@ -91,8 +96,8 @@ namespace DATASCAN.View
             
             if (args.Contains("start"))
                 mnuRun_Click(this, new EventArgs());
-        }        
-
+        }
+        
         #endregion
 
         #region Setup
@@ -1335,6 +1340,24 @@ namespace DATASCAN.View
             {
                 _rocScanner.Process(_sqlConnection, rocMembers, _estimators);
             }
+
+            if (trvScans.Nodes.Count > 0)
+            {
+                foreach (TreeNode n in trvScans.Nodes[0].Nodes)
+                {
+                    var s = n.Tag as PeriodicScan;
+                    n.ToolTipText = s.Info();
+                }
+            }
+
+            if (trvScans.Nodes.Count <= 1)
+                return;
+
+            foreach (TreeNode n in trvScans.Nodes[1].Nodes)
+            {
+                var s = n.Tag as ScheduledScan;
+                n.ToolTipText = s.Info();
+            }
         }
 
         #endregion        
@@ -1426,6 +1449,22 @@ namespace DATASCAN.View
 
             e.Cancel = true;
             Hide();
+        }
+
+        private void mnuModemStatus_Click(object sender, EventArgs e)
+        {           
+            modemDiagnosticsForm.Show();
+            if (modemDiagnosticsForm.WindowState == FormWindowState.Minimized)
+                modemDiagnosticsForm.WindowState = FormWindowState.Normal;
+        }
+
+        private void ModemDiagnosticsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason != CloseReason.UserClosing)
+                return;
+
+            e.Cancel = true;
+            modemDiagnosticsForm.Hide();
         }
 
         #endregion                
@@ -1702,6 +1741,6 @@ namespace DATASCAN.View
                     .Any(p => p > prev && p < next));
         }
 
-        #endregion       
+        #endregion        
     }
 }
