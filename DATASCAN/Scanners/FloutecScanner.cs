@@ -64,11 +64,13 @@ namespace DATASCAN.Scanners
 
         private async void ScanIdentData(Floutec floutec, FloutecMeasureLine line)
         {
+            Logger.Log(_log, new LogEntry { Message = $"Опитування даних ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} ...", Status = LogStatus.Info, Type = LogType.Floutec });
+
             await _service.GetIdentData(floutec.Address, line.Number, async data =>
             {
                 if (data == null)
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec });
                     return;
                 }
 
@@ -78,27 +80,29 @@ namespace DATASCAN.Scanners
                 await _dataService.SaveIdentData(data, saved =>
                 {
                     Logger.Log(_log,
-                        saved ? new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now }
-                              : new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} не змінилися", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                        saved ? new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено", Status = LogStatus.Success, Type = LogType.Floutec }
+                              : new LogEntry { Message = $"Дані ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} не змінилися", Status = LogStatus.Success, Type = LogType.Floutec });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних ідентифікації нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
             });                                    
         }
 
         private async void ScanInterData(Floutec floutec, FloutecMeasureLine line)
         {
+            Logger.Log(_log, new LogEntry { Message = $"Опитування даних втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} ...", Status = LogStatus.Info, Type = LogType.Floutec });
+
             await _service.GetInterData(floutec.Address, line.Number, async data =>
             {
                 if (data == null || !data.Any())
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec });
                     return;
                 }
 
@@ -112,27 +116,29 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Floutec }
+                            : new LogEntry { Message = $"Нові дані втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Success, Type = LogType.Floutec });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних втручань нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
             });
         }
 
         private async void ScanAlarmData(Floutec floutec, FloutecMeasureLine line)
         {
+            Logger.Log(_log, new LogEntry { Message = $"Опитування даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} ...", Status = LogStatus.Info, Type = LogType.Floutec });
+
             await _service.GetAlarmData(floutec.Address, line.Number, async data =>
             {
                 if (data == null || !data.Any())
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Дані аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Дані аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec });
                     return;
                 }
 
@@ -146,27 +152,29 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Дані аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові дані аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Дані аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Floutec }
+                            : new LogEntry { Message = $"Нові дані аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Success, Type = LogType.Floutec });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
             });
         }
 
         private async void ScanHourlyData(Floutec floutec, FloutecMeasureLine line)
         {
+            Logger.Log(_log, new LogEntry { Message = $"Опитування годинних даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} ...", Status = LogStatus.Info, Type = LogType.Floutec });
+
             await _service.GetHourlyData(floutec.Address, line.Number, async data =>
             {
                 if (data == null || !data.Any())
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Годинні дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Годинні дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec });
                     return;
                 }
 
@@ -180,27 +188,29 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Годинні дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові годинні дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Годинні дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Floutec }
+                            : new LogEntry { Message = $"Нові годинні дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних аварій нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання годинних даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання годинних даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
             });
         }
 
         private async void ScanInstantData(Floutec floutec, FloutecMeasureLine line)
         {
+            Logger.Log(_log, new LogEntry { Message = $"Опитування миттєвих даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} ...", Status = LogStatus.Info, Type = LogType.Floutec });
+
             await _service.GetInstantData(floutec.Address, line.Number, async data =>
             {
                 if (data == null)
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Миттєві дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Миттєві дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec });
                     return;
                 }
 
@@ -210,17 +220,17 @@ namespace DATASCAN.Scanners
                 await _dataService.SaveInstantData(data, saved =>
                 {
                     Logger.Log(_log,
-                        saved ? new LogEntry { Message = $"Миттєві дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now }
-                              : new LogEntry { Message = $"Нові миттєві дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Success, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                        saved ? new LogEntry { Message = $"Миттєві дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} успішно оновлено", Status = LogStatus.Success, Type = LogType.Floutec }
+                              : new LogEntry { Message = $"Нові миттєві дані нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address} відсутні", Status = LogStatus.Warning, Type = LogType.Floutec });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження миттєвих даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження миттєвих даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання миттєвих даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання миттєвих даних нитки №{line.Number} обчислювача ФЛОУТЕК з адресою {floutec.Address}", Status = LogStatus.Error, Type = LogType.Floutec });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Floutec });
             });
         }
     }

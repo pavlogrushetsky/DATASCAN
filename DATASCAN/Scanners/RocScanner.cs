@@ -85,11 +85,13 @@ namespace DATASCAN.Scanners
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
 
+            Logger.Log(_log, new LogEntry { Message = $"Опитування даних подій обчислювача ROC809 з {s} ...", Status = LogStatus.Info, Type = LogType.Roc });
+
             await _service.GetEventData(client, roc, async data =>
             {                
                 if (data == null || !data.Any())
                 {                    
-                    Logger.Log(_log, new LogEntry { Message = $"Дані подій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Дані подій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                     return;
                 }
 
@@ -102,17 +104,17 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Дані подій обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові дані подій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Дані подій обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc }
+                            : new LogEntry { Message = $"Нові дані подій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Success, Type = LogType.Roc });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних подій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних подій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних подій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних подій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
             });
         }
 
@@ -120,11 +122,13 @@ namespace DATASCAN.Scanners
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
 
+            Logger.Log(_log, new LogEntry { Message = $"Опитування даних аварій обчислювача ROC809 з {s} ...", Status = LogStatus.Info, Type = LogType.Roc });
+
             await _service.GetAlarmData(client, roc, async data =>
             {
                 if (data == null || !data.Any())
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Дані аварій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Дані аварій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                     return;
                 }
 
@@ -137,17 +141,17 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Дані аварій обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові дані аварій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Дані аварій обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc }
+                            : new LogEntry { Message = $"Нові дані аварій обчислювача ROC809 з {s} відсутні", Status = LogStatus.Success, Type = LogType.Roc });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних аварій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження даних аварій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних аварій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання даних аварій обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
             });
         }
 
@@ -155,11 +159,13 @@ namespace DATASCAN.Scanners
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
 
+            Logger.Log(_log, new LogEntry { Message = $"Опитування хвилинних даних обчислювача ROC809 з {s} ...", Status = LogStatus.Info, Type = LogType.Roc });
+
             await _service.GetMinuteData(client, roc, point, async data =>
             {
                 if (data == null || !data.Any())
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Хвилинні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Хвилинні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                     return;
                 }
 
@@ -172,17 +178,17 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Хвилинні дані точки №{point.Number} обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові хвилинні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Хвилинні дані точки №{point.Number} обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc }
+                            : new LogEntry { Message = $"Нові хвилинні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження хвилинних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження хвилинних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання хвилинних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання хвилинних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
             });
         }
 
@@ -190,11 +196,13 @@ namespace DATASCAN.Scanners
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
 
+            Logger.Log(_log, new LogEntry { Message = $"Опитування періодичних даних обчислювача ROC809 з {s} ...", Status = LogStatus.Info, Type = LogType.Roc });
+
             await _service.GetPeriodicData(client, roc, point, async data =>
             {
                 if (data == null || !data.Any())
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Періодичні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Періодичні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                     return;
                 }
 
@@ -207,17 +215,17 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Періодичні дані точки №{point.Number} обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові періодичні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Періодичні дані точки №{point.Number} обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc }
+                            : new LogEntry { Message = $"Нові періодичні дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження періодичних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження періодичних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання періодичних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання періодичних даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
             });
         }
 
@@ -225,11 +233,13 @@ namespace DATASCAN.Scanners
         {
             var s = roc.IsScannedViaGPRS ? $"телефоном {roc.Phone}" : $"адресою {roc.Address}";
 
+            Logger.Log(_log, new LogEntry { Message = $"Опитування добових даних обчислювача ROC809 з {s} ...", Status = LogStatus.Info, Type = LogType.Roc });
+
             await _service.GetDailyData(client, roc, point, async data =>
             {
                 if (data == null || !data.Any())
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Добові дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Добові дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                     return;
                 }
 
@@ -242,17 +252,17 @@ namespace DATASCAN.Scanners
                 {
                     Logger.Log(_log,
                         saved > 0
-                            ? new LogEntry { Message = $"Добові дані точки №{point.Number} обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now }
-                            : new LogEntry { Message = $"Нові добові дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Success, Type = LogType.Roc, Timestamp = DateTime.Now });
+                            ? new LogEntry { Message = $"Добові дані точки №{point.Number} обчислювача ROC809 з {s} успішно оновлено. Додано записів: {saved}", Status = LogStatus.Success, Type = LogType.Roc }
+                            : new LogEntry { Message = $"Нові добові дані точки №{point.Number} обчислювача ROC809 з {s} відсутні", Status = LogStatus.Warning, Type = LogType.Roc });
                 }, ex =>
                 {
-                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження добових даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                    Logger.Log(_log, new LogEntry { Message = $"Помилка збереження добових даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                    Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
                 });
             }, ex =>
             {
-                Logger.Log(_log, new LogEntry { Message = $"Помилка читання добових даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
-                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc, Timestamp = DateTime.Now });
+                Logger.Log(_log, new LogEntry { Message = $"Помилка читання добових даних точки №{point.Number} обчислювача ROC809 з {s}", Status = LogStatus.Error, Type = LogType.Roc });
+                Logger.Log(_log, new LogEntry { Message = ex.Message, Status = LogStatus.Error, Type = LogType.Roc });
             });
         }
     }

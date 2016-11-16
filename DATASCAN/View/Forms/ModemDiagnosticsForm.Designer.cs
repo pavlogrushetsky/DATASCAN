@@ -120,7 +120,7 @@
             this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "ModemDiagnosticsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Статус послідовного з\'єднання";
+            this.Text = "Статус зв\'язку по модему";
             this.mnuModemMessages.ResumeLayout(false);
             this.mnuModemMessages.PerformLayout();
             this.ResumeLayout(false);

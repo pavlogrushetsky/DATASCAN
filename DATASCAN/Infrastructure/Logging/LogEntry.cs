@@ -20,7 +20,7 @@ namespace DATASCAN.Infrastructure.Logging
         /// <summary>
         /// Дата и время возникновения
         /// </summary>
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp => DateTime.Now;
 
         /// <summary>
         /// Сообщение
