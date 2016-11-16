@@ -292,4 +292,28 @@
   <data name="RS_2321" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\images\rs-232.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="IncomingData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\incomingdata.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OutgoingData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\outgoingdata.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Phone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\phone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PhoneDisconnected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\phonedisconnected.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Trash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\trash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CallTransfer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\calltransfer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EndCall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\endcall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Phone1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\icons\phone.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

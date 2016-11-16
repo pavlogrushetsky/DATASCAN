@@ -1454,6 +1454,7 @@ namespace DATASCAN.View
         private void mnuModemStatus_Click(object sender, EventArgs e)
         {           
             modemDiagnosticsForm.Show();
+            modemDiagnosticsForm.BringToFront();
             if (modemDiagnosticsForm.WindowState == FormWindowState.Minimized)
                 modemDiagnosticsForm.WindowState = FormWindowState.Normal;
         }

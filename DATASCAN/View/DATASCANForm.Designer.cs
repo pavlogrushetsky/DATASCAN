@@ -38,6 +38,7 @@ namespace DATASCAN.View
             this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConnection = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModemStatus = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splHorizontal = new System.Windows.Forms.SplitContainer();
@@ -50,6 +51,11 @@ namespace DATASCAN.View
             this.imageScans = new System.Windows.Forms.ImageList(this.components);
             this.grpMessages = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lstMessages = new DATASCAN.View.Controls.LogListView();
+            this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colTimestamp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imgMessages = new System.Windows.Forms.ImageList(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.status = new System.Windows.Forms.StatusStrip();
@@ -57,12 +63,6 @@ namespace DATASCAN.View
             this.mnuNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuExpand = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuModemStatus = new System.Windows.Forms.ToolStripMenuItem();
-            this.lstMessages = new DATASCAN.View.Controls.LogListView();
-            this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colTimestamp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mnuDATASCAN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splHorizontal)).BeginInit();
             this.splHorizontal.Panel1.SuspendLayout();
@@ -136,6 +136,14 @@ namespace DATASCAN.View
             this.mnuConnection.Size = new System.Drawing.Size(169, 22);
             this.mnuConnection.Text = "Підключення";
             this.mnuConnection.Click += new System.EventHandler(this.mnuConnection_Click);
+            // 
+            // mnuModemStatus
+            // 
+            this.mnuModemStatus.Image = global::DATASCAN.Properties.Resources.Phone;
+            this.mnuModemStatus.Name = "mnuModemStatus";
+            this.mnuModemStatus.Size = new System.Drawing.Size(174, 20);
+            this.mnuModemStatus.Text = "Статус зв\'язку по модему";
+            this.mnuModemStatus.Click += new System.EventHandler(this.mnuModemStatus_Click);
             // 
             // mnuAbout
             // 
@@ -280,6 +288,42 @@ namespace DATASCAN.View
             this.tableLayoutPanel1.Size = new System.Drawing.Size(878, 220);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
+            // lstMessages
+            // 
+            this.lstMessages.BackColor = System.Drawing.SystemColors.Control;
+            this.lstMessages.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colStatus,
+            this.colType,
+            this.colTimestamp,
+            this.colMessage});
+            this.lstMessages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstMessages.FullRowSelect = true;
+            this.lstMessages.Location = new System.Drawing.Point(3, 3);
+            this.lstMessages.MultiSelect = false;
+            this.lstMessages.Name = "lstMessages";
+            this.lstMessages.Size = new System.Drawing.Size(872, 192);
+            this.lstMessages.SmallImageList = this.imgMessages;
+            this.lstMessages.TabIndex = 0;
+            this.lstMessages.UseCompatibleStateImageBehavior = false;
+            this.lstMessages.View = System.Windows.Forms.View.Details;
+            // 
+            // colStatus
+            // 
+            this.colStatus.Text = "Статус";
+            // 
+            // colType
+            // 
+            this.colType.Text = "Тип";
+            // 
+            // colTimestamp
+            // 
+            this.colTimestamp.Text = "Дата та час";
+            // 
+            // colMessage
+            // 
+            this.colMessage.Text = "Повідомлення";
+            // 
             // imgMessages
             // 
             this.imgMessages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgMessages.ImageStream")));
@@ -336,50 +380,6 @@ namespace DATASCAN.View
             this.mnuExit.Size = new System.Drawing.Size(137, 22);
             this.mnuExit.Text = "Вийти";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
-            // 
-            // mnuModemStatus
-            // 
-            this.mnuModemStatus.Image = global::DATASCAN.Properties.Resources.RS_2321;
-            this.mnuModemStatus.Name = "mnuModemStatus";
-            this.mnuModemStatus.Size = new System.Drawing.Size(205, 20);
-            this.mnuModemStatus.Text = "Статус послідовного з\'єднання";
-            this.mnuModemStatus.Click += new System.EventHandler(this.mnuModemStatus_Click);
-            // 
-            // lstMessages
-            // 
-            this.lstMessages.BackColor = System.Drawing.SystemColors.Control;
-            this.lstMessages.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colStatus,
-            this.colType,
-            this.colTimestamp,
-            this.colMessage});
-            this.lstMessages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstMessages.FullRowSelect = true;
-            this.lstMessages.Location = new System.Drawing.Point(3, 3);
-            this.lstMessages.MultiSelect = false;
-            this.lstMessages.Name = "lstMessages";
-            this.lstMessages.Size = new System.Drawing.Size(872, 192);
-            this.lstMessages.SmallImageList = this.imgMessages;
-            this.lstMessages.TabIndex = 0;
-            this.lstMessages.UseCompatibleStateImageBehavior = false;
-            this.lstMessages.View = System.Windows.Forms.View.Details;
-            // 
-            // colStatus
-            // 
-            this.colStatus.Text = "Статус";
-            // 
-            // colType
-            // 
-            this.colType.Text = "Тип";
-            // 
-            // colTimestamp
-            // 
-            this.colTimestamp.Text = "Дата та час";
-            // 
-            // colMessage
-            // 
-            this.colMessage.Text = "Повідомлення";
             // 
             // DATASCANForm
             // 

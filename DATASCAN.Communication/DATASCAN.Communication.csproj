@@ -45,6 +45,8 @@
     <Compile Include="Clients\GprsClient.cs" />
     <Compile Include="Clients\IClient.cs" />
     <Compile Include="Clients\TcpIpClient.cs" />
+    <Compile Include="Common\ModemLogEntry.cs" />
+    <Compile Include="Common\ModemStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\RocPeriodicDataModel.cs" />
     <Compile Include="Protocols\RocPlusProtocolExtensions.cs" />

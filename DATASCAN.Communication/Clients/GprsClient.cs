@@ -35,7 +35,7 @@ namespace DATASCAN.Communication.Clients
         public int ReadDelay { get; set; }
         public int WaitingTime { get; set; }
 
-        public string Status { get; private set; }
+        public ModemLogEntry Status { get; private set; }
 
         private readonly Dictionary<string, ModemStatus> _statuses = new Dictionary<string,ModemStatus>();
 
@@ -61,22 +61,22 @@ namespace DATASCAN.Communication.Clients
             CONNECTED
         }
 
-        private void SetStatus(string message)
+        private void SetStatus(ModemLogEntry status)
         {
-            Status = message;
+            Status = status;
             OnStatusChanged(EventArgs.Empty);
         }
 
         private void Validate(List<string> ports)
         {
-            SetStatus("Перевірка портів");
+            SetStatus(new ModemLogEntry { Message = "Перевірка портів", Status = Common.ModemStatus.INFO });
             ports.ForEach(port =>
             {
                 Task.Run(async () =>
                 {
                     if (!SerialPort.GetPortNames().Contains(port))
                     {
-                        SetStatus($"Порт {port} відсутній у системі");
+                        SetStatus(new ModemLogEntry { Message = "Порт відсутній у системі", Status = Common.ModemStatus.ERROR, Port = port });
                         return;
                     }
 
@@ -108,7 +108,7 @@ namespace DATASCAN.Communication.Clients
 
                     if (!serialPort.IsOpen)
                     {
-                        SetStatus($"Відкриття порту {port}");
+                        SetStatus(new ModemLogEntry { Message = "Відкриття порту", Status = Common.ModemStatus.INFO, Port = port });
                         serialPort.Open();
 
                         var response = new byte[1024];
@@ -118,18 +118,18 @@ namespace DATASCAN.Communication.Clients
                         serialPort.DiscardOutBuffer();
 
                         await Task.Delay(WriteDelay*1000);
-                        SetStatus($"{port}: <= AT");
+                        SetStatus(new ModemLogEntry { Message = "AT", Status = Common.ModemStatus.SEND, Port = port });
                         serialPort.WriteLine(@"AT" + "\r\n");
                         await Task.Delay(ReadDelay*1000);
                         var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
                         {
                             if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                                SetStatus($"{port}: Отримано {result.Result} байтів");
+                                SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port });
                         });
                         await Task.WhenAny(task, Task.Delay(Timeout*1000));
 
                         var status = Encoding.ASCII.GetString(response);
-                        SetStatus($"{port}: => {status}");                        
+                        SetStatus(new ModemLogEntry { Message = $"{status}", Status = Common.ModemStatus.RECEIVE, Port = port });                       
                         if (status.Contains("OK"))
                         {
                             _statuses[port].Status = PortStatus.OK;
@@ -137,7 +137,7 @@ namespace DATASCAN.Communication.Clients
                     }
                     else
                     {
-                        SetStatus($"Порт {port} уже відкритий");
+                        SetStatus(new ModemLogEntry { Message = "Порт відкрито", Status = Common.ModemStatus.INFO, Port = port });
                     }
                 });
             });
@@ -145,11 +145,16 @@ namespace DATASCAN.Communication.Clients
 
         public async Task Connect(string phone)
         {
-            SetStatus($"Запит на встановлення зв'язку по телефону {phone}...");
+            SetStatus(new ModemLogEntry { Message = $"Запит на встановлення зв'язку по телефону {phone}...", Status = Common.ModemStatus.INFO });
             var now = DateTime.Now;
 
-            while (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != PortStatus.OK))
+            if (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != PortStatus.OK))
             {
+                SetStatus(new ModemLogEntry { Message = $"Очікування з'єднання по телефону {phone}...", Status = Common.ModemStatus.WAIT });
+            }           
+
+            while (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != PortStatus.OK))
+            {               
                 await Task.Delay(1000);
             }
 
@@ -157,11 +162,11 @@ namespace DATASCAN.Communication.Clients
 
             if (string.IsNullOrEmpty(portName))
             {
-                SetStatus($"Зв'язок по телефону {phone} не встановлено");
+                SetStatus(new ModemLogEntry { Message = $"Зв'язок по телефону {phone} не встановлено", Status = Common.ModemStatus.ERROR });
                 throw new Exception("Помилка виділення СОМ-порту. Порти відсутні або зайняті");
             }
 
-            SetStatus($"Зв'язок по телефону {phone} встановлено через порт {portName}");
+            SetStatus(new ModemLogEntry { Message = $"Встановлення зв'язку по телефону {phone}...", Status = Common.ModemStatus.CALLING, Port = portName});
             _statuses[portName].Phone = phone;
             _statuses[portName].Status = PortStatus.CONNECTING;
 
@@ -169,11 +174,11 @@ namespace DATASCAN.Communication.Clients
 
             if (!port.IsOpen)
             {
-                SetStatus($"Відкриття порту {port.PortName}");
+                SetStatus(new ModemLogEntry { Message = "Відкриття порту", Status = Common.ModemStatus.INFO, Port = port.PortName });
                 port.Open();
             }
 
-            SetStatus($"Порт {port.PortName} уже відкритий");
+            SetStatus(new ModemLogEntry { Message = "Порт відкрито", Status = Common.ModemStatus.INFO, Port = port.PortName });
 
             var retries = Retries;
             var stream = port.BaseStream;
@@ -186,18 +191,18 @@ namespace DATASCAN.Communication.Clients
                 port.DiscardOutBuffer();
 
                 await Task.Delay(WriteDelay * 1000);
-                SetStatus($"{port.PortName}: <= AT&FE0V1X1&D2&C1S0=0");
+                SetStatus(new ModemLogEntry { Message = "AT&FE0V1X1&D2&C1S0=0", Status = Common.ModemStatus.SEND, Port = port.PortName });
                 port.WriteLine(@"AT&FE0V1X1&D2&C1S0=0" + "\r\n");
                 await Task.Delay(ReadDelay * 1000);
                 var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
                 {
                     if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                        SetStatus($"{port.PortName}: Отримано {result.Result} байтів");
+                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
                 });                 
                 await Task.WhenAny(task, Task.Delay(Timeout * 1000));                
 
                 var status = Encoding.ASCII.GetString(response);
-                SetStatus($"{port.PortName}: => {status}");
+                SetStatus(new ModemLogEntry { Message = $"{status}", Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
                 if (!status.Contains("OK"))
                 {
                     continue;
@@ -207,20 +212,21 @@ namespace DATASCAN.Communication.Clients
                 port.DiscardOutBuffer();
 
                 await Task.Delay(WriteDelay * 1000);
-                SetStatus($"{port.PortName}: <= ATDT{phone}");
+                SetStatus(new ModemLogEntry { Message = $"ATDT{phone}", Status = Common.ModemStatus.SEND, Port = port.PortName });
                 port.WriteLine($@"ATDT{phone}" + "\r\n");
                 await Task.Delay(ReadDelay * 1000);
                 task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
                 {
                     if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                        SetStatus($"{port.PortName}: Отримано {result.Result} байтів");
+                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
                 }); 
                 await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
                 status = Encoding.ASCII.GetString(response);
-                SetStatus($"{port.PortName}: => {status}");
+                SetStatus(new ModemLogEntry { Message = $"{status}", Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
                 if (status.Contains("CONNECT"))
                 {
+                    SetStatus(new ModemLogEntry { Message = $"Зв'язок по телефону {phone} встановлено", Status = Common.ModemStatus.CONNECTED });
                     _statuses[portName].Phone = phone;
                     _statuses[portName].Status = PortStatus.CONNECTED;
                     return;
@@ -236,7 +242,7 @@ namespace DATASCAN.Communication.Clients
 
         public async Task Disconnect(string phone)
         {
-            SetStatus($"Зупинка зв'язку по телефону {phone}...");
+            SetStatus(new ModemLogEntry { Message = $"Завершення зв'язку по телефону {phone}...", Status = Common.ModemStatus.ENDCALL });
             var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.CONNECTED && s.Value.Phone.Equals(phone)).Key;
 
             if (string.IsNullOrEmpty(portName))
@@ -252,19 +258,21 @@ namespace DATASCAN.Communication.Clients
             port.DiscardOutBuffer();
 
             await Task.Delay(WriteDelay * 1000);
-            SetStatus($"{port.PortName}: <= ATH0");
+            SetStatus(new ModemLogEntry { Message = "ATH0", Status = Common.ModemStatus.SEND, Port = port.PortName });
             port.WriteLine(@"ATH0" + "\r\n");
             await Task.Delay(ReadDelay * 1000);
             var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
             {
                 if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                    SetStatus($"{port}: Отримано {result.Result} байтів");
+                    SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
             }); 
             await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
+            SetStatus(new ModemLogEntry { Message = $"Зв'язок по телефону {phone} завершено", Status = Common.ModemStatus.DISCONNECTED, Port = portName });
+
             if (port.IsOpen)
             {
-                SetStatus($"Закриття порту {port.PortName}");
+                SetStatus(new ModemLogEntry { Message = "Порт закрито", Status = Common.ModemStatus.INFO, Port = port.PortName });
                 port.Close();
             }
 
@@ -292,13 +300,19 @@ namespace DATASCAN.Communication.Clients
                 port.DiscardOutBuffer();
 
                 await Task.Delay(WriteDelay * 1000);
+                SetStatus(new ModemLogEntry { Message = BytesToString(request), Status = Common.ModemStatus.SEND, Port = port.PortName });
                 port.Write(request, 0, request.Length);
                 await Task.Delay(ReadDelay * 1000);
-                var task = stream.ReadAsync(response, 0, response.Length);
+                var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
+                {
+                    if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
+                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
+                });
                 await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
                 if (task.IsCompleted && !task.IsCanceled && !task.IsFaulted)
                 {
+                    SetStatus(new ModemLogEntry { Message = BytesToString(response), Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
                     return response;
                 }
 
@@ -308,6 +322,11 @@ namespace DATASCAN.Communication.Clients
             await Disconnect(roc.Phone);
 
             throw new Exception("Таймаут читання даних через GPRS");
+        }
+
+        private static string BytesToString(byte[] bytes)
+        {
+            return BitConverter.ToString(bytes).Replace("-", " ").ToUpper();
         }
 
         public void Dispose()

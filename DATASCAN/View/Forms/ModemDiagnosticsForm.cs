@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using DATASCAN.Communication.Clients;
+using DATASCAN.Communication.Common;
 
 namespace DATASCAN.View.Forms
 {
@@ -15,7 +16,7 @@ namespace DATASCAN.View.Forms
             InitializeComponent();
 
             _gprsClient = gprsClient;
-            gprsClient.StatusChanged += GprsClient_StatusChanged;
+            _gprsClient.StatusChanged += GprsClient_StatusChanged;
         }
 
         private void GprsClient_StatusChanged(object sender, EventArgs e)
@@ -23,10 +24,70 @@ namespace DATASCAN.View.Forms
             if (InvokeRequired)
             {
                 Invoke(new EventArgsDelegate(GprsClient_StatusChanged), sender, e);
-                return;
+            }
+            else
+            {
+                UpdateStatus(_gprsClient.Status);
+            }
+        }
+
+        private void UpdateStatus(ModemLogEntry status)
+        {
+            var item = new ListViewItem(new[]
+                {
+                    "",
+                    status.Timestamp.ToString("dd.MM.yyyy HH:mm:ss"),
+                    status.Port,
+                    status.Message
+                });
+
+            switch (status.Status)
+            {
+                case ModemStatus.CALLING:
+                    item.ImageIndex = 0;
+                    item.StateImageIndex = 0;
+                    break;
+                case ModemStatus.CONNECTED:
+                    item.ImageIndex = 1;
+                    item.StateImageIndex = 1;
+                    break;
+                case ModemStatus.DISCONNECTED:
+                    item.ImageIndex = 2;
+                    item.StateImageIndex = 2;
+                    break;
+                case ModemStatus.ENDCALL:
+                    item.ImageIndex = 3;
+                    item.StateImageIndex = 3;
+                    break;
+                case ModemStatus.ERROR:
+                    item.ImageIndex = 4;
+                    item.StateImageIndex = 4;
+                    break;
+                case ModemStatus.RECEIVE:
+                    item.ImageIndex = 5;
+                    item.StateImageIndex = 5;
+                    break;
+                case ModemStatus.SEND:
+                    item.ImageIndex = 6;
+                    item.StateImageIndex = 6;
+                    break;
+                case ModemStatus.WAIT:
+                    item.ImageIndex = 7;
+                    item.StateImageIndex = 7;
+                    break;
+                case ModemStatus.INFO:
+                    break;
             }
 
-            lstModemMessages.Items.Add(_gprsClient.Status);
+            lstModemMessages.BeginUpdate();
+            lstModemMessages.Items.Add(item);
+            lstModemMessages.Items[lstModemMessages.Items.Count - 1].EnsureVisible();
+            lstModemMessages.EndUpdate();
+        }
+
+        private void mnuClear_Click(object sender, EventArgs e)
+        {
+            lstModemMessages.Items.Clear();
         }
     }
 }

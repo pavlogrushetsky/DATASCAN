@@ -237,6 +237,7 @@
     <Content Include="Resources\Icons\ConnectionSettings.ico" />
     <Content Include="Resources\Icons\Info.ico" />
     <Content Include="Resources\Icons\Ok.ico" />
+    <Content Include="Resources\Icons\Phone.ico" />
     <Content Include="Resources\Icons\RS-232.ico" />
     <Content Include="Resources\Icons\Scan.ico" />
     <Content Include="Resources\Icons\Customer.ico" />
@@ -253,7 +254,14 @@
     <Content Include="Resources\Icons\Settings.ico" />
     <Content Include="Resources\Images\Attention.png" />
     <Content Include="Resources\Images\Business.png" />
+    <Content Include="Resources\Images\CallTransfer.png" />
+    <Content Include="Resources\Images\EndCall.png" />
+    <Content Include="Resources\Images\IncomingData.png" />
+    <Content Include="Resources\Images\OutgoingData.png" />
+    <Content Include="Resources\Images\Phone.png" />
+    <Content Include="Resources\Images\PhoneDisconnected.png" />
     <Content Include="Resources\Images\RS-232.png" />
+    <Content Include="Resources\Images\Trash.png" />
     <Content Include="Resources\Images\Wait.png" />
     <Content Include="Resources\Images\Language.png" />
     <Content Include="Resources\Images\Progress.gif" />

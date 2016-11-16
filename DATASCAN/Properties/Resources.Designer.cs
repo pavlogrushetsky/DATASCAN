@@ -194,6 +194,16 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CallTransfer {
+            get {
+                object obj = ResourceManager.GetObject("CallTransfer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ConnectionSettings {
             get {
                 object obj = ResourceManager.GetObject("ConnectionSettings", resourceCulture);
@@ -309,6 +319,16 @@ namespace DATASCAN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EndCall {
+            get {
+                object obj = ResourceManager.GetObject("EndCall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Error {
@@ -364,6 +384,16 @@ namespace DATASCAN.Properties {
         internal static System.Drawing.Bitmap HighPriority {
             get {
                 object obj = ResourceManager.GetObject("HighPriority", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IncomingData {
+            get {
+                object obj = ResourceManager.GetObject("IncomingData", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -450,6 +480,16 @@ namespace DATASCAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap OutgoingData {
+            get {
+                object obj = ResourceManager.GetObject("OutgoingData", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PeriodicScan {
             get {
                 object obj = ResourceManager.GetObject("PeriodicScan", resourceCulture);
@@ -464,6 +504,36 @@ namespace DATASCAN.Properties {
             get {
                 object obj = ResourceManager.GetObject("PeriodicScan1", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Phone {
+            get {
+                object obj = ResourceManager.GetObject("Phone", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Phone1 {
+            get {
+                object obj = ResourceManager.GetObject("Phone1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PhoneDisconnected {
+            get {
+                object obj = ResourceManager.GetObject("PhoneDisconnected", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -603,6 +673,16 @@ namespace DATASCAN.Properties {
         internal static string SettingsMsg {
             get {
                 return ResourceManager.GetString("SettingsMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Trash {
+            get {
+                object obj = ResourceManager.GetObject("Trash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

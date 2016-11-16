@@ -68,7 +68,7 @@ namespace DATASCAN.Infrastructure.Logging
                     break;
             }
 
-            ListViewItem item = new ListViewItem(new[]
+            var item = new ListViewItem(new[]
             {
                 "",
                 type,
