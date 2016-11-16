@@ -1,14 +1,13 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DATASCAN")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Програма для опитування промислових обчислювачів витрати рідин та газу і збереження отриманих даних на сервері баз даних")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("ТОВ \"ІПП Тріада\"")]
 [assembly: AssemblyProduct("DATASCAN")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]

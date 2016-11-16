@@ -151,6 +151,7 @@ namespace DATASCAN.View
             this.mnuAbout.Name = "mnuAbout";
             this.mnuAbout.Size = new System.Drawing.Size(115, 20);
             this.mnuAbout.Text = "Про програму";
+            this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // toolStripMenuItem1
             // 

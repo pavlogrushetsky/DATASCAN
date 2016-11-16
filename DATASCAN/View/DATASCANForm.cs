@@ -1367,6 +1367,12 @@ namespace DATASCAN.View
 
         #region Form event handlers
 
+        private void mnuAbout_Click(object sender, EventArgs e)
+        {
+            var aboutForm = new AboutForm();
+            aboutForm.ShowDialog();
+        }
+
         private void mnuRun_Click(object sender, EventArgs e)
         {
             mnuRun.Visible = false;
