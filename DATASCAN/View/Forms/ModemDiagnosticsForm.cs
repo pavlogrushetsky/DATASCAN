@@ -16,6 +16,7 @@ namespace DATASCAN.View.Forms
             InitializeComponent();
 
             _gprsClient = gprsClient;
+
             _gprsClient.StatusChanged += GprsClient_StatusChanged;
         }
 
@@ -33,6 +34,9 @@ namespace DATASCAN.View.Forms
 
         private void UpdateStatus(ModemLogEntry status)
         {
+            if (lstModemMessages == null)
+                return;
+
             var item = new ListViewItem(new[]
                 {
                     "",
@@ -77,7 +81,7 @@ namespace DATASCAN.View.Forms
                     break;
                 case ModemStatus.INFO:
                     break;
-            }
+            }            
 
             lstModemMessages.BeginUpdate();
             lstModemMessages.Items.Add(item);

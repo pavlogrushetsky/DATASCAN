@@ -47,14 +47,14 @@ namespace DATASCAN.Communication.Clients
             handler?.Invoke(this, e);
         }
 
-        internal class ModemStatus
+        private class ModemStatus
         {
             public SerialPort Port { get; set; }
             public string Phone { get; set; } = "";
             public PortStatus Status { get; set; }
         }
 
-        internal enum PortStatus
+        private enum PortStatus
         {
             OK,
             CONNECTING,
@@ -148,17 +148,17 @@ namespace DATASCAN.Communication.Clients
             SetStatus(new ModemLogEntry { Message = $"Запит на встановлення зв'язку по телефону {phone}...", Status = Common.ModemStatus.INFO });
             var now = DateTime.Now;
 
-            if (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != PortStatus.OK))
+            if (now.AddSeconds(WaitingTime) > DateTime.Now && (_statuses.All(s => s.Value.Status != PortStatus.OK) || _statuses.Values.Any(v => v.Phone.Equals(phone))))
             {
                 SetStatus(new ModemLogEntry { Message = $"Очікування з'єднання по телефону {phone}...", Status = Common.ModemStatus.WAIT });
             }           
 
-            while (now.AddSeconds(WaitingTime) > DateTime.Now && _statuses.All(s => s.Value.Status != PortStatus.OK))
+            while (now.AddSeconds(WaitingTime) > DateTime.Now && (_statuses.All(s => s.Value.Status != PortStatus.OK) || _statuses.Values.Any(v => v.Phone.Equals(phone))))
             {               
                 await Task.Delay(1000);
             }
 
-            var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.OK).Key;
+            var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.OK && !s.Value.Phone.Equals(phone)).Key;
 
             if (string.IsNullOrEmpty(portName))
             {
@@ -243,7 +243,7 @@ namespace DATASCAN.Communication.Clients
         public async Task Disconnect(string phone)
         {
             SetStatus(new ModemLogEntry { Message = $"Завершення зв'язку по телефону {phone}...", Status = Common.ModemStatus.ENDCALL });
-            var portName = _statuses.FirstOrDefault(s => s.Value.Status == PortStatus.CONNECTED && s.Value.Phone.Equals(phone)).Key;
+            var portName = _statuses.FirstOrDefault(s => s.Value.Phone.Equals(phone)).Key;
 
             if (string.IsNullOrEmpty(portName))
                 return;

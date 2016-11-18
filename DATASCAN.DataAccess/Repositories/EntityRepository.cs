@@ -35,7 +35,7 @@ namespace DATASCAN.DataAccess.Repositories
         /// </summary>
         public IQueryable<Entity> GetAll()
         {
-            return _context.Set<Entity>();
+            return _context.Set<Entity>().AsNoTracking();
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace DATASCAN.DataAccess.Repositories
         /// </summary>
         public Entity Get(int id)
         {
-            return _context.Set<Entity>().SingleOrDefault(e => e.Id == id);
+            return _context.Set<Entity>().AsNoTracking().SingleOrDefault(e => e.Id == id);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace DATASCAN.DataAccess.Repositories
         }
 
         public void Dispose()
-        {
+        {            
             Dispose(true);
             GC.SuppressFinalize(this);
         }

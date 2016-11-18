@@ -96,6 +96,8 @@ namespace DATASCAN.View
             
             if (args.Contains("start"))
                 mnuRun_Click(this, new EventArgs());
+
+            trvScans.KeyPress += TrvScans_KeyPress;
         }
         
         #endregion
@@ -578,9 +580,7 @@ namespace DATASCAN.View
                 scheduledScansNode.ContextMenuStrip = ScheduledScansContextMenu();
 
                 FillScheduledScans(scheduledScansNode);
-            }
-
-            trvScans.KeyDown += TrvScans_KeyDown;
+            }            
 
             trvScans.Nodes.SetExpansionState(savedExpansionState);
             trvScans.EndUpdate();
@@ -1019,7 +1019,7 @@ namespace DATASCAN.View
 
             if (point == null) return;
 
-            DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити вимірювальну точку {point} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            var result = MessageBox.Show($"Ви дійсно бажаєте видалити вимірювальну точку {point} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
             if (result != DialogResult.Yes) return;
 
@@ -1039,7 +1039,7 @@ namespace DATASCAN.View
 
             if (customer == null) return;
 
-            DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити замовника {customer} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            var result = MessageBox.Show($"Ви дійсно бажаєте видалити замовника {customer} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
             if (result != DialogResult.Yes) return;
 
@@ -1059,7 +1059,7 @@ namespace DATASCAN.View
 
             if (@group == null) return;
 
-            DialogResult result = MessageBox.Show($"Ви дійсно бажаєте видалити групу обчислювачів {@group} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            var result = MessageBox.Show($"Ви дійсно бажаєте видалити групу обчислювачів {@group} з бази даних без можливості відновлення?", "Видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
             if (result != DialogResult.Yes) return;
 
@@ -1319,13 +1319,16 @@ namespace DATASCAN.View
             await UpdateData(false);
         }
 
-        private async void TrvScans_KeyDown(object sender, KeyEventArgs e)
+        private async void TrvScans_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (e.Handled)
+                return;
+
             var node = trvScans.SelectedNode;
 
             var scan = node?.Tag as ScanBase;
 
-            if (scan == null || e.KeyCode != Keys.Enter)
+            if (scan == null || e.KeyChar != (char)13)
                 return;
 
             var floutecMembers = scan.Members.Where(m => m is FloutecScanMember).ToList();
@@ -1342,9 +1345,9 @@ namespace DATASCAN.View
             }
 
             scan.DateLastScanned = DateTime.Now;
-            await _entitiesService.Update(scan, null, ex => LogException(ex.Message));
+            await _entitiesService.Update((EntityBase)scan, null, ex => LogException(ex.Message));
 
-            if (trvScans.Nodes.Count > 0)
+            if (trvScans.Nodes.Count == 1)
             {
                 foreach (TreeNode n in trvScans.Nodes[0].Nodes)
                 {
@@ -1353,14 +1356,16 @@ namespace DATASCAN.View
                 }
             }
 
-            if (trvScans.Nodes.Count <= 1)
-                return;
-
-            foreach (TreeNode n in trvScans.Nodes[1].Nodes)
+            if (trvScans.Nodes.Count == 2)
             {
-                var s = n.Tag as ScheduledScan;
-                n.ToolTipText = s.Info();
+                foreach (TreeNode n in trvScans.Nodes[1].Nodes)
+                {
+                    var s = n.Tag as ScheduledScan;
+                    n.ToolTipText = s.Info();
+                }
             }
+
+            e.Handled = true;
         }
 
         #endregion        

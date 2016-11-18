@@ -20,7 +20,8 @@ namespace DATASCAN.Core.Context
         /// </summary>
         public DataContext() : base("DATASCAN")
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Configuration>("DATASCAN"));
+            Configuration.ProxyCreationEnabled = false;
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Configuration>("DATASCAN"));            
         }
 
         /// <summary>
@@ -30,6 +31,7 @@ namespace DATASCAN.Core.Context
         /// <param name="initialize"><see cref="DbConnection"/>Инициализировать базу данных</param>
         public DataContext(DbConnection connection, bool initialize) : base(connection, true)
         {
+            Configuration.ProxyCreationEnabled = false;
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Configuration>(true));
             Database.Initialize(initialize);
         }
