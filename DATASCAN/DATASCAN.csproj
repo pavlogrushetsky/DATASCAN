@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>DATASCAN.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -243,6 +246,7 @@
     <Folder Include="Resources\Cursors\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DATASCAN.ico" />
     <Content Include="Resources\Icons\ConnectionSettings.ico" />
     <Content Include="Resources\Icons\Info.ico" />
     <Content Include="Resources\Icons\Ok.ico" />

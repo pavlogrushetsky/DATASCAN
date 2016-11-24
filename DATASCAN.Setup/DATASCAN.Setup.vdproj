@@ -87,6 +87,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C74B1F24BBE445FB8C19CD49221CB395"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
         "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
         "MsmSig" = "8:_UNDEFINED"
@@ -188,6 +194,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -404,6 +418,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C74B1F24BBE445FB8C19CD49221CB395"
+            {
+            "SourcePath" = "8:..\\DATASCAN\\Resources\\Icons\\DATASCAN.ico"
+            "TargetName" = "8:DATASCAN.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FB271E049A8336FE126B38A9312B2B5A"
             {
             "AssemblyRegister" = "3:1"
@@ -491,15 +525,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DATASCAN"
-        "ProductCode" = "8:{9E8B776F-E00D-44D3-BA83-342E625DA505}"
-        "PackageCode" = "8:{46D9A26C-2519-42B5-8FE3-DB2D820B7EF5}"
+        "ProductCode" = "8:{E06FFBD9-B25F-40B3-A5B8-B944CB2BE518}"
+        "PackageCode" = "8:{0F23CCC5-3E32-433A-B7B2-D4D8ED6DC6F0}"
         "UpgradeCode" = "8:{04CD8C48-FBC6-483B-BE01-FC26A10AE915}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:LLC Triada"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
