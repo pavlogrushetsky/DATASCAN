@@ -141,16 +141,7 @@ namespace DATASCAN.View
         }
 
         private void InitializeGprsClient()
-        {
-            var ports = new List<string>();
-
-            if (!string.IsNullOrEmpty(Settings.COMPort1))
-                ports.Add(Settings.COMPort1);
-            if (!string.IsNullOrEmpty(Settings.COMPort2))
-                ports.Add(Settings.COMPort2);
-            if (!string.IsNullOrEmpty(Settings.COMPort3))
-                ports.Add(Settings.COMPort3);           
-
+        {           
             _gprsClient.Baudrate = int.Parse(Settings.Baudrate);
             _gprsClient.DataBits = int.Parse(Settings.DataBits);
             _gprsClient.StopBits = (StopBits)Enum.Parse(typeof(StopBits), Settings.StopBits);
@@ -160,7 +151,7 @@ namespace DATASCAN.View
             _gprsClient.Timeout = int.Parse(Settings.Timeout);
             _gprsClient.Retries = int.Parse(Settings.Retries); 
             _gprsClient.WaitingTime = int.Parse(Settings.WaitingTime);
-            _gprsClient.Ports = ports;
+            _gprsClient.Ports = Settings.COMPorts;
         }
 
         private async Task UpdateData(bool initialize)
@@ -1428,6 +1419,7 @@ namespace DATASCAN.View
 
         private async void RefreshMenu_Click(object sender, EventArgs e)
         {
+            InitializeConnection();
             await UpdateData(false);
         }
 

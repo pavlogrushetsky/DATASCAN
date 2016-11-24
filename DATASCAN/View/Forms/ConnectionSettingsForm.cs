@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
 using System.Windows.Forms;
-using static System.String;
 using Settings = DATASCAN.Infrastructure.Settings.Settings;
 
 // ReSharper disable UnusedParameter.Local
@@ -13,11 +13,7 @@ namespace DATASCAN.View.Forms
 {
     public partial class ConnectionSettingsForm : Form
     {
-        private bool _port1Changed;
-
-        private bool _port2Changed;
-
-        private bool _port3Changed;
+        private bool _portsChanged;
 
         private bool _baudrateChanged;
 
@@ -62,27 +58,34 @@ namespace DATASCAN.View.Forms
 
             txtDbfPath.Text = Settings.DbfPath;
 
-            _ports = SerialPort.GetPortNames().ToList();
-            if (!IsNullOrEmpty(Settings.COMPort1) && !_ports.Contains(Settings.COMPort1))
-                _ports.Add(Settings.COMPort1);
-            if (!IsNullOrEmpty(Settings.COMPort2) && !_ports.Contains(Settings.COMPort2))
-                _ports.Add(Settings.COMPort2);
-            if (!IsNullOrEmpty(Settings.COMPort3) && !_ports.Contains(Settings.COMPort3))
-                _ports.Add(Settings.COMPort3);
+            var addPortTooltip = new ToolTip();
+            addPortTooltip.SetToolTip(btnAddPort, "Додати порт");
+
+            var removePortTooltip = new ToolTip();
+            removePortTooltip.SetToolTip(btnRemovePort, "Видалити порт");
+
+            _ports = SerialPort.GetPortNames().ToList();            
             _ports.Sort((s1, s2) => int.Parse(s1.Substring(3, s1.Length - 3)).CompareTo(int.Parse(s2.Substring(3, s2.Length - 3))));
-            _ports.ToList().Insert(0, "");
 
-            cbPort1.Items.AddRange(_ports.ToArray<object>());
-            cbPort1.SelectedItem = Settings.COMPort1;
-            cbPort1.Enabled = cbPort1.Items.Count > 0;
+            Settings.COMPorts.ForEach(port =>
+            {
+                lstPorts.Items.Add(port, port, null);
+            });
+            lstPorts.ListViewItemSorter = new ListViewItemComparer();
+            lstPorts.Sort();
 
-            cbPort2.Items.AddRange(_ports.Except(new List<string> { Settings.COMPort1 }).ToArray<object>());
-            cbPort2.SelectedItem = Settings.COMPort2;
-            cbPort2.Enabled = cbPort2.Items.Count > 0;
+            _ports.ForEach(port =>
+            {
+                if (lstPorts.Items.ContainsKey(port))
+                    return;
 
-            cbPort3.Items.AddRange(_ports.Except(new List<string> { Settings.COMPort2 }).ToArray<object>());
-            cbPort3.SelectedItem = Settings.COMPort3;
-            cbPort3.Enabled = cbPort3.Items.Count > 0;
+                cbPorts.Items.Add(port);
+            });
+            cbPorts.Items.Insert(0, "");
+            cbPorts.Enabled = cbPorts.Items.Count > 1;
+
+            btnAddPort.Enabled = cbPorts.SelectedIndex > 0;
+            btnRemovePort.Enabled = false;
 
             cbParity.Items.AddRange(Enum.GetNames(typeof (Parity)).ToArray<object>());
             cbParity.SelectedItem = Settings.Parity;
@@ -123,29 +126,6 @@ namespace DATASCAN.View.Forms
             SetChanged();
         }
 
-        private void cbPort1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbPort1.SelectedItem != null)
-            {
-                _port1Changed = !cbPort1.SelectedItem.Equals(Settings.COMPort1);
-                SetChanged();
-            }
-        }
-
-        private void cbPort2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbPort2.SelectedItem == null) return;
-            _port2Changed = !cbPort2.SelectedItem.Equals(Settings.COMPort2);
-            SetChanged();
-        }
-
-        private void cbPort3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbPort3.SelectedItem == null) return;
-            _port3Changed = !cbPort3.SelectedItem.Equals(Settings.COMPort3);
-            SetChanged();
-        }
-
         private void cbBaudrate_SelectedIndexChanged(object sender, EventArgs e)
         {
             _baudrateChanged = !cbBaudrate.SelectedItem.Equals(Settings.Baudrate);
@@ -174,9 +154,12 @@ namespace DATASCAN.View.Forms
         {
             if (_changed)
             {
-                Settings.COMPort1 = cbPort1.SelectedItem?.ToString();
-                Settings.COMPort2 = cbPort2.SelectedItem?.ToString();
-                Settings.COMPort3 = cbPort3.SelectedItem?.ToString();
+                Settings.COMPorts.Clear();
+                lstPorts.Items.OfType<ListViewItem>().ToList().ForEach(item =>
+                {
+                    Settings.COMPorts.Add(item.Text);
+                });
+
                 Settings.Baudrate = cbBaudrate.SelectedItem?.ToString();
                 Settings.Parity = cbParity.SelectedItem?.ToString();
                 Settings.StopBits = cbStopBits.SelectedItem?.ToString();
@@ -209,38 +192,25 @@ namespace DATASCAN.View.Forms
         private void SetChanged()
         {
             _changed = _dbfPathChanged || _baudrateChanged || _dataBitsChanged || _parityChanged || 
-                       _port1Changed || _port2Changed || _port3Changed || _stopBitsChanged ||
-                       _retriesChanged || _writeDelayChanged || _readDelayChanged || _timeoutChanged ||
-                       _waitingTimeChanged;
+                       _portsChanged || _stopBitsChanged || _retriesChanged || _writeDelayChanged || 
+                       _readDelayChanged || _timeoutChanged || _waitingTimeChanged;
 
             Text = _changed ? TITLE + " *" : TITLE;            
         }
 
-        private void cbPort1_DropDown(object sender, EventArgs e)
+        private void cbPorts_DropDown(object sender, EventArgs e)
         {
-            var item = cbPort1.SelectedItem;
-            cbPort1.Items.Clear();            
-            cbPort1.Items.AddRange(_ports.Except(new List<object> { cbPort2.SelectedItem, cbPort3.SelectedItem }).ToArray());
-            cbPort1.Items.Insert(0, "");
-            cbPort1.SelectedItem = item;
-        }
+            var item = cbPorts.SelectedItem;
+            cbPorts.Items.Clear();                   
+            _ports.ForEach(port =>
+            {
+                if (lstPorts.Items.ContainsKey(port))
+                    return;
 
-        private void cbPort2_DropDown(object sender, EventArgs e)
-        {
-            var item = cbPort2.SelectedItem;
-            cbPort2.Items.Clear();
-            cbPort2.Items.AddRange(_ports.Except(new List<object> { cbPort1.SelectedItem, cbPort3.SelectedItem }).ToArray());
-            cbPort2.Items.Insert(0, "");
-            cbPort2.SelectedItem = item;
-        }
-
-        private void cbPort3_DropDown(object sender, EventArgs e)
-        {
-            var item = cbPort3.SelectedItem;
-            cbPort3.Items.Clear();
-            cbPort3.Items.AddRange(_ports.Except(new List<object> { cbPort2.SelectedItem, cbPort1.SelectedItem }).ToArray());
-            cbPort3.Items.Insert(0, "");
-            cbPort3.SelectedItem = item;
+                cbPorts.Items.Add(port);
+            });
+            cbPorts.Items.Insert(0, "");
+            cbPorts.SelectedItem = item;
         }
 
         private void numRetries_ValueChanged(object sender, EventArgs e)
@@ -271,6 +241,67 @@ namespace DATASCAN.View.Forms
         {
             _waitingTimeChanged = !numWaitingTime.Value.Equals(int.Parse(Settings.WaitingTime));
             SetChanged();
+        }
+
+        private void btnAddPort_Click(object sender, EventArgs e)
+        {
+            lstPorts.Items.Add(cbPorts.SelectedItem.ToString(), cbPorts.SelectedItem.ToString(), null);
+            lstPorts.Sort();
+            _portsChanged = true;
+            SetChanged();
+
+            cbPorts.Items.Clear();
+            _ports.ForEach(port =>
+            {
+                if (lstPorts.Items.ContainsKey(port))
+                    return;
+
+                cbPorts.Items.Add(port);
+            });
+            cbPorts.Items.Insert(0, "");
+            cbPorts.SelectedIndex = 0;
+
+            cbPorts.Enabled = cbPorts.Items.Count > 1;
+        }
+
+        private void btnRemovePort_Click(object sender, EventArgs e)
+        {
+            lstPorts.Items.Remove(lstPorts.SelectedItems[0]);
+            _portsChanged = true;
+            SetChanged();
+
+            cbPorts.Items.Clear();
+            _ports.ForEach(port =>
+            {
+                if (lstPorts.Items.ContainsKey(port))
+                    return;
+
+                cbPorts.Items.Add(port);
+            });
+            cbPorts.Items.Insert(0, "");
+            cbPorts.SelectedIndex = 0;
+
+            cbPorts.Enabled = cbPorts.Items.Count > 1;
+        }
+
+        private void lstPorts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnRemovePort.Enabled = lstPorts.SelectedItems.Count > 0;
+        }
+
+        private void cbPorts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnAddPort.Enabled = cbPorts.SelectedIndex > 0;
+        }
+
+        private class ListViewItemComparer : IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                return
+                    int.Parse(((ListViewItem) x).Text.Substring(3, ((ListViewItem) x).Text.Length - 3))
+                        .CompareTo(int.Parse(((ListViewItem) y).Text.Substring(3, ((ListViewItem) y).Text.Length - 3)));
+            }
         }
     }
 }

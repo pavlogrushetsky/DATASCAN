@@ -124,7 +124,7 @@ namespace DATASCAN.Communication.Clients
                         var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
                         {
                             if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                                SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port });
+                                SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.RECEIVE, Port = port });
                         });
                         await Task.WhenAny(task, Task.Delay(Timeout*1000));
 
@@ -197,7 +197,7 @@ namespace DATASCAN.Communication.Clients
                 var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
                 {
                     if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
+                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
                 });                 
                 await Task.WhenAny(task, Task.Delay(Timeout * 1000));                
 
@@ -218,7 +218,7 @@ namespace DATASCAN.Communication.Clients
                 task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
                 {
                     if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
+                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
                 }); 
                 await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
@@ -264,7 +264,7 @@ namespace DATASCAN.Communication.Clients
             var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
             {
                 if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                    SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
+                    SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
             }); 
             await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
@@ -306,13 +306,12 @@ namespace DATASCAN.Communication.Clients
                 var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
                 {
                     if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.INFO, Port = port.PortName });
+                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
                 });
                 await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
                 if (task.IsCompleted && !task.IsCanceled && !task.IsFaulted)
                 {
-                    SetStatus(new ModemLogEntry { Message = BytesToString(response), Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
                     return response;
                 }
 

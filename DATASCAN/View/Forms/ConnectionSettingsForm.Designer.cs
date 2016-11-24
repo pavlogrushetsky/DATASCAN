@@ -34,6 +34,11 @@
             this.txtDbfPath = new System.Windows.Forms.TextBox();
             this.lblDbfPath = new System.Windows.Forms.Label();
             this.gbGPRS = new System.Windows.Forms.GroupBox();
+            this.btnAddPort = new System.Windows.Forms.Button();
+            this.btnRemovePort = new System.Windows.Forms.Button();
+            this.lstPorts = new System.Windows.Forms.ListView();
+            this.lblWaitingTime = new System.Windows.Forms.Label();
+            this.numWaitingTime = new System.Windows.Forms.NumericUpDown();
             this.lblTimeout = new System.Windows.Forms.Label();
             this.numTimeout = new System.Windows.Forms.NumericUpDown();
             this.lblReadDelay = new System.Windows.Forms.Label();
@@ -52,20 +57,16 @@
             this.cbParity = new System.Windows.Forms.ComboBox();
             this.cbBaudrate = new System.Windows.Forms.ComboBox();
             this.lblPorts = new System.Windows.Forms.Label();
-            this.cbPort3 = new System.Windows.Forms.ComboBox();
-            this.cbPort2 = new System.Windows.Forms.ComboBox();
-            this.cbPort1 = new System.Windows.Forms.ComboBox();
+            this.cbPorts = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.lblWaitingTime = new System.Windows.Forms.Label();
-            this.numWaitingTime = new System.Windows.Forms.NumericUpDown();
             this.gbDbf.SuspendLayout();
             this.gbGPRS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWaitingTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReadDelay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWriteDelay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRetries)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWaitingTime)).BeginInit();
             this.SuspendLayout();
             // 
             // gbDbf
@@ -110,6 +111,9 @@
             // 
             // gbGPRS
             // 
+            this.gbGPRS.Controls.Add(this.btnAddPort);
+            this.gbGPRS.Controls.Add(this.btnRemovePort);
+            this.gbGPRS.Controls.Add(this.lstPorts);
             this.gbGPRS.Controls.Add(this.lblWaitingTime);
             this.gbGPRS.Controls.Add(this.numWaitingTime);
             this.gbGPRS.Controls.Add(this.lblTimeout);
@@ -130,15 +134,68 @@
             this.gbGPRS.Controls.Add(this.cbParity);
             this.gbGPRS.Controls.Add(this.cbBaudrate);
             this.gbGPRS.Controls.Add(this.lblPorts);
-            this.gbGPRS.Controls.Add(this.cbPort3);
-            this.gbGPRS.Controls.Add(this.cbPort2);
-            this.gbGPRS.Controls.Add(this.cbPort1);
+            this.gbGPRS.Controls.Add(this.cbPorts);
             this.gbGPRS.Location = new System.Drawing.Point(13, 81);
             this.gbGPRS.Name = "gbGPRS";
             this.gbGPRS.Size = new System.Drawing.Size(379, 400);
             this.gbGPRS.TabIndex = 1;
             this.gbGPRS.TabStop = false;
             this.gbGPRS.Text = "GPRS";
+            // 
+            // btnAddPort
+            // 
+            this.btnAddPort.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnAddPort.Image = global::DATASCAN.Properties.Resources.Plus;
+            this.btnAddPort.Location = new System.Drawing.Point(137, 93);
+            this.btnAddPort.Name = "btnAddPort";
+            this.btnAddPort.Size = new System.Drawing.Size(30, 30);
+            this.btnAddPort.TabIndex = 28;
+            this.btnAddPort.UseVisualStyleBackColor = true;
+            this.btnAddPort.Click += new System.EventHandler(this.btnAddPort_Click);
+            // 
+            // btnRemovePort
+            // 
+            this.btnRemovePort.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnRemovePort.Image = global::DATASCAN.Properties.Resources.Minus;
+            this.btnRemovePort.Location = new System.Drawing.Point(137, 129);
+            this.btnRemovePort.Name = "btnRemovePort";
+            this.btnRemovePort.Size = new System.Drawing.Size(30, 30);
+            this.btnRemovePort.TabIndex = 27;
+            this.btnRemovePort.UseVisualStyleBackColor = true;
+            this.btnRemovePort.Click += new System.EventHandler(this.btnRemovePort_Click);
+            // 
+            // lstPorts
+            // 
+            this.lstPorts.Location = new System.Drawing.Point(10, 93);
+            this.lstPorts.MultiSelect = false;
+            this.lstPorts.Name = "lstPorts";
+            this.lstPorts.Size = new System.Drawing.Size(121, 298);
+            this.lstPorts.TabIndex = 26;
+            this.lstPorts.UseCompatibleStateImageBehavior = false;
+            this.lstPorts.View = System.Windows.Forms.View.List;
+            this.lstPorts.SelectedIndexChanged += new System.EventHandler(this.lstPorts_SelectedIndexChanged);
+            // 
+            // lblWaitingTime
+            // 
+            this.lblWaitingTime.AutoSize = true;
+            this.lblWaitingTime.Location = new System.Drawing.Point(176, 295);
+            this.lblWaitingTime.Name = "lblWaitingTime";
+            this.lblWaitingTime.Size = new System.Drawing.Size(143, 13);
+            this.lblWaitingTime.TabIndex = 25;
+            this.lblWaitingTime.Text = "Очікування з\'єднання, сек.";
+            // 
+            // numWaitingTime
+            // 
+            this.numWaitingTime.Location = new System.Drawing.Point(325, 293);
+            this.numWaitingTime.Maximum = new decimal(new int[] {
+            1200,
+            0,
+            0,
+            0});
+            this.numWaitingTime.Name = "numWaitingTime";
+            this.numWaitingTime.Size = new System.Drawing.Size(48, 20);
+            this.numWaitingTime.TabIndex = 24;
+            this.numWaitingTime.ValueChanged += new System.EventHandler(this.numWaitingTime_ValueChanged);
             // 
             // lblTimeout
             // 
@@ -342,38 +399,16 @@
             this.lblPorts.TabIndex = 3;
             this.lblPorts.Text = "COM-порти";
             // 
-            // cbPort3
+            // cbPorts
             // 
-            this.cbPort3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbPort3.FormattingEnabled = true;
-            this.cbPort3.Location = new System.Drawing.Point(9, 134);
-            this.cbPort3.Name = "cbPort3";
-            this.cbPort3.Size = new System.Drawing.Size(123, 21);
-            this.cbPort3.TabIndex = 2;
-            this.cbPort3.DropDown += new System.EventHandler(this.cbPort3_DropDown);
-            this.cbPort3.SelectedIndexChanged += new System.EventHandler(this.cbPort3_SelectedIndexChanged);
-            // 
-            // cbPort2
-            // 
-            this.cbPort2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbPort2.FormattingEnabled = true;
-            this.cbPort2.Location = new System.Drawing.Point(9, 93);
-            this.cbPort2.Name = "cbPort2";
-            this.cbPort2.Size = new System.Drawing.Size(123, 21);
-            this.cbPort2.TabIndex = 1;
-            this.cbPort2.DropDown += new System.EventHandler(this.cbPort2_DropDown);
-            this.cbPort2.SelectedIndexChanged += new System.EventHandler(this.cbPort2_SelectedIndexChanged);
-            // 
-            // cbPort1
-            // 
-            this.cbPort1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbPort1.FormattingEnabled = true;
-            this.cbPort1.Location = new System.Drawing.Point(9, 52);
-            this.cbPort1.Name = "cbPort1";
-            this.cbPort1.Size = new System.Drawing.Size(123, 21);
-            this.cbPort1.TabIndex = 0;
-            this.cbPort1.DropDown += new System.EventHandler(this.cbPort1_DropDown);
-            this.cbPort1.SelectedIndexChanged += new System.EventHandler(this.cbPort1_SelectedIndexChanged);
+            this.cbPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbPorts.FormattingEnabled = true;
+            this.cbPorts.Location = new System.Drawing.Point(9, 52);
+            this.cbPorts.Name = "cbPorts";
+            this.cbPorts.Size = new System.Drawing.Size(123, 21);
+            this.cbPorts.TabIndex = 0;
+            this.cbPorts.DropDown += new System.EventHandler(this.cbPorts_DropDown);
+            this.cbPorts.SelectedIndexChanged += new System.EventHandler(this.cbPorts_SelectedIndexChanged);
             // 
             // btnCancel
             // 
@@ -394,28 +429,6 @@
             this.btnSave.Text = "Зберегти";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // lblWaitingTime
-            // 
-            this.lblWaitingTime.AutoSize = true;
-            this.lblWaitingTime.Location = new System.Drawing.Point(176, 295);
-            this.lblWaitingTime.Name = "lblWaitingTime";
-            this.lblWaitingTime.Size = new System.Drawing.Size(143, 13);
-            this.lblWaitingTime.TabIndex = 25;
-            this.lblWaitingTime.Text = "Очікування з\'єднання, сек.";
-            // 
-            // numWaitingTime
-            // 
-            this.numWaitingTime.Location = new System.Drawing.Point(325, 293);
-            this.numWaitingTime.Maximum = new decimal(new int[] {
-            1200,
-            0,
-            0,
-            0});
-            this.numWaitingTime.Name = "numWaitingTime";
-            this.numWaitingTime.Size = new System.Drawing.Size(48, 20);
-            this.numWaitingTime.TabIndex = 24;
-            this.numWaitingTime.ValueChanged += new System.EventHandler(this.numWaitingTime_ValueChanged);
             // 
             // ConnectionSettingsForm
             // 
@@ -438,11 +451,11 @@
             this.gbDbf.PerformLayout();
             this.gbGPRS.ResumeLayout(false);
             this.gbGPRS.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWaitingTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReadDelay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWriteDelay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRetries)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWaitingTime)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -454,10 +467,8 @@
         private System.Windows.Forms.TextBox txtDbfPath;
         private System.Windows.Forms.Label lblDbfPath;
         private System.Windows.Forms.GroupBox gbGPRS;
-        private System.Windows.Forms.ComboBox cbPort1;
+        private System.Windows.Forms.ComboBox cbPorts;
         private System.Windows.Forms.Label lblPorts;
-        private System.Windows.Forms.ComboBox cbPort3;
-        private System.Windows.Forms.ComboBox cbPort2;
         private System.Windows.Forms.ComboBox cbBaudrate;
         private System.Windows.Forms.ComboBox cbStopBits;
         private System.Windows.Forms.ComboBox cbDataBits;
@@ -479,5 +490,8 @@
         private System.Windows.Forms.NumericUpDown numTimeout;
         private System.Windows.Forms.Label lblWaitingTime;
         private System.Windows.Forms.NumericUpDown numWaitingTime;
+        private System.Windows.Forms.ListView lstPorts;
+        private System.Windows.Forms.Button btnRemovePort;
+        private System.Windows.Forms.Button btnAddPort;
     }
 }

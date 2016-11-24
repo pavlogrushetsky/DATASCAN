@@ -266,9 +266,11 @@
     <Content Include="Resources\Images\CallTransfer.png" />
     <Content Include="Resources\Images\EndCall.png" />
     <Content Include="Resources\Images\IncomingData.png" />
+    <Content Include="Resources\Images\Minus.png" />
     <Content Include="Resources\Images\OutgoingData.png" />
     <Content Include="Resources\Images\Phone.png" />
     <Content Include="Resources\Images\PhoneDisconnected.png" />
+    <Content Include="Resources\Images\Plus.png" />
     <Content Include="Resources\Images\RS-232.png" />
     <Content Include="Resources\Images\Trash.png" />
     <Content Include="Resources\Images\Wait.png" />

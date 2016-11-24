@@ -26,10 +26,10 @@ namespace DATASCAN.View.Forms
         {
             InitializeComponent();
 
-            ToolTip addPeriodTooltip = new ToolTip();
+            var addPeriodTooltip = new ToolTip();
             addPeriodTooltip.SetToolTip(btnAddPeriod, "Додати період");
 
-            ToolTip deletePeriodTooltip = new ToolTip();
+            var deletePeriodTooltip = new ToolTip();
             deletePeriodTooltip.SetToolTip(btnDeletePeriod, "Видалити період");
 
             Load += (sender, args) =>
@@ -68,29 +68,29 @@ namespace DATASCAN.View.Forms
 
         private void btnAddPeriod_Click(object sender, EventArgs e)
         {
-            if (ValidatePeriod())
+            if (!ValidatePeriod())
+                return;
+
+            TimeSpan period;
+            var valid = TimeSpan.TryParse(txtPeriod.Text, out period);
+
+            if (!valid)
+                return;
+
+            Scan.Periods.Add(new ScanPeriod
             {
-                TimeSpan period;
-                bool valid = TimeSpan.TryParse(txtPeriod.Text, out period);
+                Period = period
+            });
 
-                if (valid)
-                {
-                    Scan.Periods.Add(new ScanPeriod
-                    {
-                        Period = period
-                    });
-
-                    UpdatePeriods();
-                    _periodsChanged = true;
-                    SetChanged();
-                    txtPeriod.Text = string.Empty;
-                }                
-            }
+            UpdatePeriods();
+            _periodsChanged = true;
+            SetChanged();
+            txtPeriod.Text = string.Empty;
         }
 
         private void btnDeletePeriod_Click(object sender, EventArgs e)
         {
-            ScanPeriod period = lstPeriods.SelectedItems[0].Tag as ScanPeriod;
+            var period = lstPeriods.SelectedItems[0].Tag as ScanPeriod;
 
             Scan.Periods.Remove(period);
             UpdatePeriods();
@@ -101,20 +101,20 @@ namespace DATASCAN.View.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (ValidateTitle())
-            {
-                Scan.Title = txtTitle.Text;
+            if (!ValidateTitle())
+                return;
 
-                if (IsEdit && !_changed)
-                {
-                    DialogResult = DialogResult.Cancel;
-                    Close();
-                }
-                else
-                {
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
+            Scan.Title = txtTitle.Text;
+
+            if (IsEdit && !_changed)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+            else
+            {
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
@@ -157,7 +157,7 @@ namespace DATASCAN.View.Forms
 
             Scan.Periods.OrderBy(o => o.Period).ToList().ForEach(p =>
             {
-                ListViewItem item = new ListViewItem
+                var item = new ListViewItem
                 {
                     Text = p.Period.ToString(@"hh\:mm"),
                     Tag = p

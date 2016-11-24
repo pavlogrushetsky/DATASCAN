@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -24,11 +25,7 @@ namespace DATASCAN.Infrastructure.Settings
 
         public static string ConnectionTimeout { get; set; } = "10";
 
-        public static string COMPort1 { get; set; } = "";
-
-        public static string COMPort2 { get; set; } = "";
-
-        public static string COMPort3 { get; set; } = "";
+        public static List<string> COMPorts { get; set; } = new List<string>();
 
         public static string Baudrate { get; set; } = "9600";
 
@@ -73,9 +70,7 @@ namespace DATASCAN.Infrastructure.Settings
                     UserName = settings["UserName"]?.ToString() ?? "";
                     UserPassword = settings["UserPassword"]?.ToString() ?? "";
                     ConnectionTimeout = settings["ConnectionTimeout"]?.ToString() ?? "";
-                    COMPort1 = settings["COMPort1"]?.ToString() ?? "";
-                    COMPort2 = settings["COMPort2"]?.ToString() ?? "";
-                    COMPort3 = settings["COMPort3"]?.ToString() ?? "";
+                    COMPorts = settings["COMPorts"] as List<string>;
                     Baudrate = settings["Baudrate"]?.ToString() ?? "";
                     Parity = settings["Parity"]?.ToString() ?? "";
                     DataBits = settings["DataBits"]?.ToString() ?? "";
@@ -106,9 +101,7 @@ namespace DATASCAN.Infrastructure.Settings
                 { "UserName", UserName },
                 { "UserPassword", UserPassword },
                 { "ConnectionTimeout", ConnectionTimeout },
-                { "COMPort1", COMPort1 },
-                { "COMPort2", COMPort2 },
-                { "COMPort3", COMPort3 },
+                { "COMPorts", COMPorts },
                 { "Baudrate", Baudrate },
                 { "Parity", Parity },
                 { "DataBits", DataBits },
