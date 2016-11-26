@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
@@ -98,6 +99,8 @@ namespace DATASCAN.View
                 mnuRun_Click(this, new EventArgs());
 
             trvScans.KeyPress += TrvScans_KeyPress;
+
+            helpProvider.SetShowHelp(this, true);
         }
         
         #endregion
@@ -1380,6 +1383,11 @@ namespace DATASCAN.View
 
         #region Form event handlers
 
+        private void mnuHelp_Click(object sender, EventArgs e)
+        {
+            Help.ShowHelp(this, helpProvider.HelpNamespace);
+        }
+
         private void mnuAbout_Click(object sender, EventArgs e)
         {
             var aboutForm = new AboutForm();
@@ -1766,6 +1774,6 @@ namespace DATASCAN.View
                     .Any(p => p > prev && p < next));
         }
 
-        #endregion        
+        #endregion
     }
 }

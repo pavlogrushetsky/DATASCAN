@@ -228,6 +228,7 @@
     <EmbeddedResource Include="View\Forms\ServerSettingsForm.resx">
       <DependentUpon>ServerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="DATASCAN.chm" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -269,6 +270,7 @@
     <Content Include="Resources\Images\Business.png" />
     <Content Include="Resources\Images\CallTransfer.png" />
     <Content Include="Resources\Images\EndCall.png" />
+    <Content Include="Resources\Images\Help.png" />
     <Content Include="Resources\Images\IncomingData.png" />
     <Content Include="Resources\Images\Minus.png" />
     <Content Include="Resources\Images\OutgoingData.png" />

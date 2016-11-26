@@ -41,6 +41,7 @@ namespace DATASCAN.View
             this.mnuModemStatus = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.splHorizontal = new System.Windows.Forms.SplitContainer();
             this.splVertical = new System.Windows.Forms.SplitContainer();
             this.grpEstimators = new System.Windows.Forms.GroupBox();
@@ -63,6 +64,7 @@ namespace DATASCAN.View
             this.mnuNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuExpand = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpProvider = new System.Windows.Forms.HelpProvider();
             this.mnuDATASCAN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splHorizontal)).BeginInit();
             this.splHorizontal.Panel1.SuspendLayout();
@@ -86,6 +88,7 @@ namespace DATASCAN.View
             this.mnuPause,
             this.mnuSettings,
             this.mnuModemStatus,
+            this.mnuHelp,
             this.mnuAbout,
             this.toolStripMenuItem1});
             this.mnuDATASCAN.Location = new System.Drawing.Point(0, 0);
@@ -157,6 +160,16 @@ namespace DATASCAN.View
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
+            // 
+            // mnuHelp
+            // 
+            this.mnuHelp.Checked = true;
+            this.mnuHelp.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mnuHelp.Image = global::DATASCAN.Properties.Resources.Help;
+            this.mnuHelp.Name = "mnuHelp";
+            this.mnuHelp.Size = new System.Drawing.Size(77, 20);
+            this.mnuHelp.Text = "Довідка";
+            this.mnuHelp.Click += new System.EventHandler(this.mnuHelp_Click);
             // 
             // splHorizontal
             // 
@@ -382,6 +395,10 @@ namespace DATASCAN.View
             this.mnuExit.Text = "Вийти";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
+            // helpProvider
+            // 
+            this.helpProvider.HelpNamespace = "C:\\Users\\pavlo\\Source\\Repos\\DATASCAN\\DATASCAN\\DATASCAN.chm";
+            // 
             // DATASCANForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -450,6 +467,8 @@ namespace DATASCAN.View
         private System.Windows.Forms.ToolStripMenuItem mnuPause;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem mnuModemStatus;
+        private System.Windows.Forms.HelpProvider helpProvider;
+        private System.Windows.Forms.ToolStripMenuItem mnuHelp;
     }
 }
 

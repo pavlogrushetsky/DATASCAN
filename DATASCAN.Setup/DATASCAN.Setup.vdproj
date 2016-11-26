@@ -57,6 +57,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9F12A038FD284CF5830E2579EEF4B56F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B2945DDED339B1FBC03D09A76056205A"
         "OwnerKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
         "MsmSig" = "8:_UNDEFINED"
@@ -364,6 +370,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9F12A038FD284CF5830E2579EEF4B56F"
+            {
+            "SourcePath" = "8:..\\DATASCAN\\DATASCAN.chm"
+            "TargetName" = "8:DATASCAN.chm"
+            "Tag" = "8:"
+            "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B2945DDED339B1FBC03D09A76056205A"
             {
             "AssemblyRegister" = "3:1"
@@ -533,15 +559,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DATASCAN"
-        "ProductCode" = "8:{E5BBC649-CCA0-4B9B-B9ED-0E19D99642CB}"
-        "PackageCode" = "8:{20964146-70D8-4D30-AF53-3B4AFFA97D16}"
+        "ProductCode" = "8:{138376F3-6D3E-43BC-8A2B-93A5F48CC363}"
+        "PackageCode" = "8:{875D319E-4F52-41D9-B686-111904D2EB7F}"
         "UpgradeCode" = "8:{04CD8C48-FBC6-483B-BE01-FC26A10AE915}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.4"
+        "ProductVersion" = "8:1.0.5"
         "Manufacturer" = "8:LLC Triada"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
