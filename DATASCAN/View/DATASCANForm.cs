@@ -1318,12 +1318,26 @@ namespace DATASCAN.View
             var node = trvScans.SelectedNode;
 
             var scan = node?.Tag as ScanBase;
+            var member = node?.Tag as ScanMemberBase;
 
-            if (scan == null || e.KeyChar != (char)13)
+            if ((scan == null && member == null) || e.KeyChar != (char)13)
                 return;
 
-            var floutecMembers = scan.Members.Where(m => m is FloutecScanMember).ToList();
-            var rocMembers = scan.Members.Where(m => m is RocScanMember).ToList();
+            var floutecMembers = new List<ScanMemberBase>();
+            var rocMembers = new List<ScanMemberBase>();
+
+            if (scan != null)
+            {
+                floutecMembers = scan.Members.Where(m => m is FloutecScanMember).ToList();
+                rocMembers = scan.Members.Where(m => m is RocScanMember).ToList();
+            }
+            else
+            {
+                if (member is FloutecScanMember)
+                    floutecMembers = new List<ScanMemberBase> { member };
+                else
+                    rocMembers = new List<ScanMemberBase> { member };
+            }
 
             if (floutecMembers.Any())
             {
@@ -1335,8 +1349,11 @@ namespace DATASCAN.View
                 _rocScanner.Process(_sqlConnection, rocMembers, _estimators);
             }
 
-            scan.DateLastScanned = DateTime.Now;
-            await _entitiesService.Update((EntityBase)scan, null, ex => LogException(ex.Message));
+            if (scan != null)
+            {
+                scan.DateLastScanned = DateTime.Now;
+                await _entitiesService.Update((EntityBase) scan, null, ex => LogException(ex.Message));
+            }
 
             if (trvScans.Nodes.Count == 1)
             {
@@ -1400,7 +1417,7 @@ namespace DATASCAN.View
             Logger.Log(lstMessages, new LogEntry { Message = "Налаштування сервера баз даних змінено", Status = LogStatus.Info, Type = LogType.System });
 
             InitializeConnection();
-            await UpdateData(false);
+            await UpdateData(true);
         }
 
         private void mnuConnection_Click(object sender, EventArgs e)
@@ -1420,7 +1437,7 @@ namespace DATASCAN.View
         private async void RefreshMenu_Click(object sender, EventArgs e)
         {
             InitializeConnection();
-            await UpdateData(false);
+            await UpdateData(true);
         }
 
         private void mnuExpand_Click(object sender, EventArgs e)
