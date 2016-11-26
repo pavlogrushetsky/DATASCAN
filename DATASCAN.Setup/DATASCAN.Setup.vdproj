@@ -46,13 +46,13 @@
         "Entry"
         {
         "MsmKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
-        "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
+        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
-        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
+        "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -64,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B2945DDED339B1FBC03D09A76056205A"
-        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
+        "OwnerKey" = "8:_17321705BF6872C5A31500BB3E2F0503"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,7 +76,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B2945DDED339B1FBC03D09A76056205A"
-        "OwnerKey" = "8:_17321705BF6872C5A31500BB3E2F0503"
+        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -106,31 +106,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6C24231CB4260771EC826C026E140142"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B2945DDED339B1FBC03D09A76056205A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
+        "OwnerKey" = "8:_B5C69545F6C2555C08A35587A31A9D25"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -142,7 +118,31 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B5C69545F6C2555C08A35587A31A9D25"
+        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B2945DDED339B1FBC03D09A76056205A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6C24231CB4260771EC826C026E140142"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -247,6 +247,11 @@
             "AssemblyAsmDisplayName" = "8:DATASCAN.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
+                    {
+                    "Name" = "8:DATASCAN.Communication.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:DATASCAN.Communication.dll"
             "TargetName" = "8:"
@@ -273,6 +278,11 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_17321705BF6872C5A31500BB3E2F0503"
+                    {
+                    "Name" = "8:EntityFramework.SqlServer.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:EntityFramework.SqlServer.dll"
             "TargetName" = "8:"
@@ -299,6 +309,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_6C24231CB4260771EC826C026E140142"
+                    {
+                    "Name" = "8:System.Net.Http.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -325,6 +340,11 @@
             "AssemblyAsmDisplayName" = "8:DATASCAN.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_7B094860DC5935F37EE965E8834F2E04"
+                    {
+                    "Name" = "8:DATASCAN.Core.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:DATASCAN.Core.dll"
             "TargetName" = "8:"
@@ -351,6 +371,11 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_B2945DDED339B1FBC03D09A76056205A"
+                    {
+                    "Name" = "8:EntityFramework.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:EntityFramework.dll"
             "TargetName" = "8:"
@@ -377,6 +402,11 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_B5C69545F6C2555C08A35587A31A9D25"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -423,6 +453,11 @@
             "AssemblyAsmDisplayName" = "8:DATASCAN.DataAccess, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_FB271E049A8336FE126B38A9312B2B5A"
+                    {
+                    "Name" = "8:DATASCAN.DataAccess.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:DATASCAN.DataAccess.dll"
             "TargetName" = "8:"
@@ -498,15 +533,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DATASCAN"
-        "ProductCode" = "8:{1665665A-E86A-4E29-A326-E8AEB248D454}"
-        "PackageCode" = "8:{308B05A7-18F4-4DE8-9BC4-808EA34C7027}"
+        "ProductCode" = "8:{E5BBC649-CCA0-4B9B-B9ED-0E19D99642CB}"
+        "PackageCode" = "8:{20964146-70D8-4D30-AF53-3B4AFFA97D16}"
         "UpgradeCode" = "8:{04CD8C48-FBC6-483B-BE01-FC26A10AE915}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.3"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:LLC Triada"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

@@ -1353,25 +1353,25 @@ namespace DATASCAN.View
             {
                 scan.DateLastScanned = DateTime.Now;
                 await _entitiesService.Update((EntityBase) scan, null, ex => LogException(ex.Message));
-            }
 
-            if (trvScans.Nodes.Count == 1)
-            {
-                foreach (TreeNode n in trvScans.Nodes[0].Nodes)
+                if (trvScans.Nodes.Count == 1)
                 {
-                    var s = n.Tag as PeriodicScan;
-                    n.ToolTipText = s.Info();
+                    foreach (TreeNode n in trvScans.Nodes[0].Nodes)
+                    {
+                        var s = n.Tag as PeriodicScan;
+                        n.ToolTipText = s.Info();
+                    }
                 }
-            }
 
-            if (trvScans.Nodes.Count == 2)
-            {
-                foreach (TreeNode n in trvScans.Nodes[1].Nodes)
+                if (trvScans.Nodes.Count == 2)
                 {
-                    var s = n.Tag as ScheduledScan;
-                    n.ToolTipText = s.Info();
+                    foreach (TreeNode n in trvScans.Nodes[1].Nodes)
+                    {
+                        var s = n.Tag as ScheduledScan;
+                        n.ToolTipText = s.Info();
+                    }
                 }
-            }
+            }            
 
             e.Handled = true;
         }
