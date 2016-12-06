@@ -1360,19 +1360,13 @@ namespace DATASCAN.View
                 if (trvScans.Nodes.Count == 1)
                 {
                     foreach (TreeNode n in trvScans.Nodes[0].Nodes)
-                    {
-                        var s = n.Tag as PeriodicScan;
-                        n.ToolTipText = s.Info();
-                    }
+                        UpdateScanInfo(n);
                 }
 
                 if (trvScans.Nodes.Count == 2)
                 {
                     foreach (TreeNode n in trvScans.Nodes[1].Nodes)
-                    {
-                        var s = n.Tag as ScheduledScan;
-                        n.ToolTipText = s.Info();
-                    }
+                        UpdateScanInfo(n);
                 }
             }            
 
@@ -1671,6 +1665,18 @@ namespace DATASCAN.View
 
         #region Helping methods
 
+        private void UpdateScanInfo(TreeNode scaNode)
+        {
+            var ps = scaNode.Tag as PeriodicScan;
+            var ss = scaNode.Tag as ScheduledScan;
+
+            if (ps != null)
+                scaNode.ToolTipText = ps.Info();
+
+            if (ss != null)
+                scaNode.ToolTipText = ss.Info();
+        }
+
         private void LogException(string message)
         {
             Logger.Log(lstMessages, new LogEntry { Message = message, Status = LogStatus.Error, Type = LogType.System });
@@ -1741,20 +1747,14 @@ namespace DATASCAN.View
             if (trvScans.Nodes.Count > 0)
             {
                 foreach (TreeNode node in trvScans.Nodes[0].Nodes)
-                {
-                    var scan = node.Tag as PeriodicScan;
-                    node.ToolTipText = scan.Info();
-                }
+                    UpdateScanInfo(node);
             }
 
             if (trvScans.Nodes.Count <= 1)
                 return;
 
             foreach (TreeNode node in trvScans.Nodes[1].Nodes)
-            {
-                var scan = node.Tag as ScheduledScan;
-                node.ToolTipText = scan.Info();
-            }
+                UpdateScanInfo(node);
         }
 
         private IEnumerable<PeriodicScan> GetPeriodicScansToProcess()
