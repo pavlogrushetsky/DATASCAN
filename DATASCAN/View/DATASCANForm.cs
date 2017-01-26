@@ -869,8 +869,9 @@ namespace DATASCAN.View
                     .Cast<Roc809>()
                     .Single(r => r.Id == point.EstimatorId)
                     .MeasurePoints.Cast<Roc809MeasurePoint>()
+                    .Where(p => p.Id != point.Id)
                     .GroupBy(p => p.HistSegment)
-                    .Select(g => new KeyValuePair<int, List<int>>(g.Key, g.Except(new List<Roc809MeasurePoint> { point }).Select(p => p.Number).ToList()))
+                    .Select(g => new KeyValuePair<int, List<int>>(g.Key, g.Select(p => p.Number).ToList()))
                     .ToDictionary(d => d.Key, d => d.Value);
 
             }
