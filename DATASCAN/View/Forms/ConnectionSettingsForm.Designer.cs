@@ -188,7 +188,7 @@
             // 
             this.numWaitingTime.Location = new System.Drawing.Point(325, 293);
             this.numWaitingTime.Maximum = new decimal(new int[] {
-            1200,
+            3600,
             0,
             0,
             0});

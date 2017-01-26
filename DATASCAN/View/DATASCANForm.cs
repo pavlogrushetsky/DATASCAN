@@ -1469,6 +1469,11 @@ namespace DATASCAN.View
             Application.Exit();
         }
 
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ShowMe();
+        }
+
         private void DATASCANForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason != CloseReason.UserClosing)
@@ -1775,6 +1780,6 @@ namespace DATASCAN.View
                     .Any(p => p > prev && p < next));
         }
 
-        #endregion
+        #endregion      
     }
 }
