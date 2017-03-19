@@ -39,9 +39,9 @@ namespace DATASCAN.View
             this.mnuDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModemStatus = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.splHorizontal = new System.Windows.Forms.SplitContainer();
             this.splVertical = new System.Windows.Forms.SplitContainer();
             this.grpEstimators = new System.Windows.Forms.GroupBox();
@@ -148,6 +148,16 @@ namespace DATASCAN.View
             this.mnuModemStatus.Text = "Статус зв\'язку по модему";
             this.mnuModemStatus.Click += new System.EventHandler(this.mnuModemStatus_Click);
             // 
+            // mnuHelp
+            // 
+            this.mnuHelp.Checked = true;
+            this.mnuHelp.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mnuHelp.Image = global::DATASCAN.Properties.Resources.Help;
+            this.mnuHelp.Name = "mnuHelp";
+            this.mnuHelp.Size = new System.Drawing.Size(77, 20);
+            this.mnuHelp.Text = "Довідка";
+            this.mnuHelp.Click += new System.EventHandler(this.mnuHelp_Click);
+            // 
             // mnuAbout
             // 
             this.mnuAbout.Image = global::DATASCAN.Properties.Resources.Info;
@@ -160,16 +170,6 @@ namespace DATASCAN.View
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
-            // 
-            // mnuHelp
-            // 
-            this.mnuHelp.Checked = true;
-            this.mnuHelp.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.mnuHelp.Image = global::DATASCAN.Properties.Resources.Help;
-            this.mnuHelp.Name = "mnuHelp";
-            this.mnuHelp.Size = new System.Drawing.Size(77, 20);
-            this.mnuHelp.Text = "Довідка";
-            this.mnuHelp.Click += new System.EventHandler(this.mnuHelp_Click);
             // 
             // splHorizontal
             // 
@@ -372,6 +372,7 @@ namespace DATASCAN.View
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "DATASCAN";
             this.notifyIcon.Visible = true;
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
             // mnuNotifyIcon
             // 

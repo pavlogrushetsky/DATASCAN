@@ -869,8 +869,9 @@ namespace DATASCAN.View
                     .Cast<Roc809>()
                     .Single(r => r.Id == point.EstimatorId)
                     .MeasurePoints.Cast<Roc809MeasurePoint>()
+                    .Where(p => p.Id != point.Id)
                     .GroupBy(p => p.HistSegment)
-                    .Select(g => new KeyValuePair<int, List<int>>(g.Key, g.Except(new List<Roc809MeasurePoint> { point }).Select(p => p.Number).ToList()))
+                    .Select(g => new KeyValuePair<int, List<int>>(g.Key, g.Select(p => p.Number).ToList()))
                     .ToDictionary(d => d.Key, d => d.Value);
 
             }
@@ -1468,6 +1469,11 @@ namespace DATASCAN.View
             Application.Exit();
         }
 
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ShowMe();
+        }
+
         private void DATASCANForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason != CloseReason.UserClosing)
@@ -1774,6 +1780,6 @@ namespace DATASCAN.View
                     .Any(p => p > prev && p < next));
         }
 
-        #endregion
+        #endregion      
     }
 }
