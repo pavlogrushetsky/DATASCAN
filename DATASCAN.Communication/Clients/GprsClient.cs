@@ -301,21 +301,30 @@ namespace DATASCAN.Communication.Clients
 
                 await Task.Delay(WriteDelay * 1000);
                 SetStatus(new ModemLogEntry { Message = BytesToString(request), Status = Common.ModemStatus.SEND, Port = port.PortName });
-                port.Write(request, 0, request.Length);
-                await Task.Delay(ReadDelay * 1000);
-                var task = stream.ReadAsync(response, 0, response.Length).ContinueWith(result =>
-                {
-                    if (result.IsCompleted && !(result.IsFaulted || result.IsCanceled))
-                        SetStatus(new ModemLogEntry { Message = $"Отримано {result.Result} байтів", Status = Common.ModemStatus.RECEIVE, Port = port.PortName });
-                });
-                await Task.WhenAny(task, Task.Delay(Timeout * 1000));
 
-                if (task.IsCompleted && !task.IsCanceled && !task.IsFaulted)
+                var task = Task.Factory.StartNew(async () =>
+                {
+                    await stream.WriteAsync(request, 0, request.Length);
+ 
+                    await Task.Delay(ReadDelay * 1000);
+
+                    var result = await stream.ReadAsync(response, 0, response.Length);
+
+                    SetStatus(new ModemLogEntry
+                    {
+                        Message = $"Отримано {result} байтів",
+                        Status = Common.ModemStatus.RECEIVE,
+                        Port = port.PortName
+                    });
+                }).Unwrap();
+
+                if (await Task.WhenAny(task, Task.Delay(Timeout * 1000)) == task)
                 {
                     return response;
                 }
 
                 retries--;
+
             } while (retries > 0);
 
             await Disconnect(roc.Phone);
