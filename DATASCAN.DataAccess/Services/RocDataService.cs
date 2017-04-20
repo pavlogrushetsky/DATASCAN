@@ -58,21 +58,23 @@ namespace DATASCAN.DataAccess.Services
             {
                 using (var repo = new DataRecordRepository<Roc809PeriodicData>(_connection))
                 {
-                    var lastData = repo.GetAll()
-                        .Where(d => d.Roc809MeasurePointId == pointId)
-                        .OrderByDescending(o => o.Period)
-                        .FirstOrDefault();
+                    var q =
+                        from d in data
+                        join ed in repo.GetAll().Where(d => d.Roc809MeasurePointId == pointId)
+                        on d.Period equals ed.Period
+                        into nd
+                        from ed in nd.DefaultIfEmpty()
+                        select d;
 
-                    if (lastData != null)
+                    var newData = q as List<Roc809PeriodicData> ?? q.ToList();
+
+                    if (!newData.Any())
                     {
-                        var filtered = data.Where(d => d.Period > lastData.Period).ToList();
-                        repo.Insert(filtered);
-                        return filtered.Count;
+                        return 0;
                     }
 
-                    repo.Insert(data);
-
-                    return data.Count;
+                    repo.Insert(newData);
+                    return newData.Count;
                 }
             }, TaskCreationOptions.LongRunning)
             .ContinueWith(result =>
