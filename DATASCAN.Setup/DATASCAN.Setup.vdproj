@@ -15,25 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_17321705BF6872C5A31500BB3E2F0503"
+        "MsmKey" = "8:_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
         "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_20D30E58CBDA7225EC22F982BA7E2569"
-        "OwnerKey" = "8:_BAC6D30B9CF78F65D9F76A1B886A350E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_20D30E58CBDA7225EC22F982BA7E2569"
-        "OwnerKey" = "8:_BD677BDAF6C52907178BA1333838CD17"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_20D30E58CBDA7225EC22F982BA7E2569"
+        "MsmKey" = "8:_17321705BF6872C5A31500BB3E2F0503"
         "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -51,6 +39,24 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
+        "OwnerKey" = "8:_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
+        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
+        "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9F12A038FD284CF5830E2579EEF4B56F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -58,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B2945DDED339B1FBC03D09A76056205A"
-        "OwnerKey" = "8:_20D30E58CBDA7225EC22F982BA7E2569"
+        "OwnerKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,7 +82,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B2945DDED339B1FBC03D09A76056205A"
-        "OwnerKey" = "8:_BD677BDAF6C52907178BA1333838CD17"
+        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -87,20 +93,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BAC6D30B9CF78F65D9F76A1B886A350E"
-        "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BD677BDAF6C52907178BA1333838CD17"
-        "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C74B1F24BBE445FB8C19CD49221CB395"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
+        "OwnerKey" = "8:_2D6F974D279D4A4396D4ACB573842278"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -124,19 +124,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BD677BDAF6C52907178BA1333838CD17"
+        "OwnerKey" = "8:_FB271E049A8336FE126B38A9312B2B5A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BAC6D30B9CF78F65D9F76A1B886A350E"
+        "OwnerKey" = "8:_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_20D30E58CBDA7225EC22F982BA7E2569"
+        "OwnerKey" = "8:_7B094860DC5935F37EE965E8834F2E04"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -246,6 +246,37 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:DATASCAN.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_0E1EBE9C347AB6DAD2D1FB09047DFFBE"
+                    {
+                    "Name" = "8:DATASCAN.Communication.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:DATASCAN.Communication.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_17321705BF6872C5A31500BB3E2F0503"
             {
             "AssemblyRegister" = "3:1"
@@ -277,20 +308,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_20D30E58CBDA7225EC22F982BA7E2569"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6C24231CB4260771EC826C026E140142"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DATASCAN.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_20D30E58CBDA7225EC22F982BA7E2569"
+                    "_6C24231CB4260771EC826C026E140142"
                     {
-                    "Name" = "8:DATASCAN.Core.dll"
+                    "Name" = "8:System.Net.Http.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:DATASCAN.Core.dll"
+            "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
@@ -308,20 +339,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6C24231CB4260771EC826C026E140142"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7B094860DC5935F37EE965E8834F2E04"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+            "AssemblyAsmDisplayName" = "8:DATASCAN.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6C24231CB4260771EC826C026E140142"
+                    "_7B094860DC5935F37EE965E8834F2E04"
                     {
-                    "Name" = "8:System.Net.Http.dll"
+                    "Name" = "8:DATASCAN.Core.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:System.Net.Http.dll"
+            "SourcePath" = "8:DATASCAN.Core.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
@@ -421,21 +452,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BAC6D30B9CF78F65D9F76A1B886A350E"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C74B1F24BBE445FB8C19CD49221CB395"
             {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DATASCAN.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_BAC6D30B9CF78F65D9F76A1B886A350E"
-                    {
-                    "Name" = "8:DATASCAN.Communication.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:DATASCAN.Communication.dll"
-            "TargetName" = "8:"
+            "SourcePath" = "8:..\\DATASCAN\\Resources\\Icons\\DATASCAN.ico"
+            "TargetName" = "8:DATASCAN.ico"
             "Tag" = "8:"
             "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
             "Condition" = "8:"
@@ -449,17 +469,17 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BD677BDAF6C52907178BA1333838CD17"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FB271E049A8336FE126B38A9312B2B5A"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:DATASCAN.DataAccess, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BD677BDAF6C52907178BA1333838CD17"
+                    "_FB271E049A8336FE126B38A9312B2B5A"
                     {
                     "Name" = "8:DATASCAN.DataAccess.dll"
                     "Attributes" = "3:512"
@@ -481,26 +501,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C74B1F24BBE445FB8C19CD49221CB395"
-            {
-            "SourcePath" = "8:..\\DATASCAN\\Resources\\Icons\\DATASCAN.ico"
-            "TargetName" = "8:DATASCAN.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
         }
@@ -559,15 +559,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DATASCAN"
-        "ProductCode" = "8:{1605E8E9-D49D-4509-B6EF-528E20EA3DAE}"
-        "PackageCode" = "8:{B910A6BB-6573-4946-B264-5516907C01D6}"
+        "ProductCode" = "8:{652396DD-6EC4-440D-B125-658D748F5B37}"
+        "PackageCode" = "8:{49DA3867-D526-4543-B284-8A7932F9224D}"
         "UpgradeCode" = "8:{04CD8C48-FBC6-483B-BE01-FC26A10AE915}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.9"
+        "ProductVersion" = "8:1.0.10"
         "Manufacturer" = "8:LLC Triada"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1081,7 +1081,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2D6F974D279D4A4396D4ACB573842278"
             {
-            "SourcePath" = "8:..\\DATASCAN\\obj\\Debug\\DATASCAN.exe"
+            "SourcePath" = "8:..\\DATASCAN\\obj\\Release\\DATASCAN.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F26CA4CDA8048F2913838B7B2C96E79"
